@@ -54,20 +54,20 @@ end
 function molar_mass = get_molar_masses()
 
 
-    molar_mass.ethylene_oxide = 28.05;              % [ g / mol ]
-        % source: 
-    molar_mass.carbon_dioxide = 44.01;              % [ g / mol ]
-        % source: 
-    molar_mass.ethylene_carbonate = 88.06;          % [ g / mol ]
-        % source: 
-    molar_mass.methanol = 32.04;                    % [ g / mol ]
-        % source: 
-    molar_mass.dimethyl_carbonate = 90.08;          % [ g / mol ]
-        % source: 
-    molar_mass.ethylene_glycol = 62.07;             % [ g / mol ]
-        % source: 
-    molar_mass.methoxyethanol = 76.10;              % [ g / mol ]
-        % source: 
+    molar_mass.ethylene_oxide = 44.0526;            % [ g / mol ]
+        % source: https://webbook.nist.gov/cgi/cbook.cgi?ID=C75218&Mask=80 
+    molar_mass.carbon_dioxide =  44.0095;           % [ g / mol ]
+        % source: https://webbook.nist.gov/cgi/cbook.cgi?ID=124-38-9 
+    molar_mass.ethylene_carbonate =  88.0621;       % [ g / mol ]
+        % source: https://webbook.nist.gov/cgi/cbook.cgi?ID=C96491&Mask=200 
+    molar_mass.methanol = 32.0419;                  % [ g / mol ]
+        % source: https://webbook.nist.gov/cgi/cbook.cgi?ID=67-56-1
+    molar_mass.dimethyl_carbonate = 90.0779;        % [ g / mol ]
+        % source: https://webbook.nist.gov/cgi/cbook.cgi?ID=C616386&Mask=200
+    molar_mass.ethylene_glycol =62.0678;            % [ g / mol ]
+        % source: https://webbook.nist.gov/cgi/cbook.cgi?ID=107-21-1 
+    molar_mass.methoxy_ethanol = 76.10;              % [ g / mol ]
+        % source: https://webbook.nist.gov/cgi/cbook.cgi?ID=109-86-4
 
 end
 
@@ -80,7 +80,6 @@ function stoich = get_stoichiometric_coeff()
     stoich.r1.carbon_dioxide = 1; 
     stoich.r1.ethylene_carbonate = 1;
 
-
     stoich.r2.ethylene_carbonate = 1;
     stoich.r2.methanol = 2; 
     stoich.r2.dimethyl_carbonate = 1;
@@ -88,6 +87,7 @@ function stoich = get_stoichiometric_coeff()
 
     stoich.r3.ethylene_carbonate = 1;
     stoich.r3.methanol = 1;
-    stoich.r3.meht
+    stoich.r3.methoxy_ethanol = 1; 
+    stoic.r3.carbon_dioxide = 1;
 
 end
