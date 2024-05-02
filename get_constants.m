@@ -18,22 +18,71 @@ function thermo = get_thermodynamic_constants()
 
     % thermo.heat_cap = get_heat_capacities();
 
-    % themrmo.rate_const.units = ""
-    thermo.rate_const.isoP.k2f = @(T_K) 6.59 * 10^2 * exp( -37000 / thermo.R / T_K);
-    thermo.rate_const.isoP.k2r = @(T_K) 1.19 * 10^4 * exp( -53700 / thermo.R / T_K);
-    thermo.rate_const.isoP.k3 = @(T_K) 1.89 * 10^6 * exp( -82400 / thermo.R / T_K);
+    % themrmo.rate_const.isoP.units = "";
+    % thermo.rate_const.isoP.k2f = @(T_K) 6.59 * 10^2 * exp( -37000 / thermo.R / T_K);
+    % thermo.rate_const.isoP.k2r = @(T_K) 1.19 * 10^4 * exp( -53700 / thermo.R / T_K);
+    % thermo.rate_const.isoP.k3 = @(T_K) 1.89 * 10^6 * exp( -82400 / thermo.R / T_K);
+    thermo.rate_const = get_rate_constants();
 
+    % thermo.rate.units = "";
+    % thermo.rate.r2f = @(T_K,C_EC) thermo.rate_const.k2f(T_K) * C_EC^0.8;
+    % thermo.rate.r2r = @(T_K,C_DMC, C_EG) thermo.rate_const.k2r(T_K) * C_DMC * C_EG;
+    % thermo.rate.r3 = @(T_K, C_EC) thermo.rate_const.k3(T_K) * C_EC;
 
-    thermo.rate.units = ""
-    thermo.rate.r2f = @(T_K,C_EC) thermo.rate_const.k2f(T_K) * C_EC^0.8;
-    thermo.rate.r2r = @(T_K,C_DMC, C_EG) thermo.rate_const.k2r(T_K) * C_DMC * C_EG;
-    thermo.rate.r3 = @(T_K, C_EC) thermo.rate_const.k3(T_K) * C_EC;
+    thermo.rate = get_reaction_rates();
 
+    % thermo.rate_const.isoT.unitt = "";
+    % thermo.rate_const.isoT.k2f_lowRho = 0.013; 
+    % thermo.rate_const.isoT.k2f_highRho = @(rho) 0.02486 - 4.943 * 10^-5 * rho;
+    % thermo.rate_const.isoT.k3 = @(rho) 3.014 * 10^-4 * exp(-5.99 * rho);
 
-    thermo.rate_const.isoT.k2f_lowRho = 0.013; 
-    thermo.rate_const.isoT.k2f_highRho = @(rho) 0.02486 - 4.943 * 10^-5 * rho;
-    thermo.rate_const.isoT.k3 = @(rho) 3.014 * 10^-4 * exp(-5.99 * rho);
+    thermo.rate_const = get_isothermal_rate_constants();
+
+    thermo.enthalpy.heat_formation.units = "BS VALUES";
+    thermo.enthalpy.heat_formation.ethylene_oxide = 44.0526;            
+        % source:  
+    thermo.enthalpy.heat_formation.carbon_dioxide =  44.0095;          
+        % source:  
+    thermo.enthalpy.heat_formation.ethylene_carbonate =  88.0621;      
+        % source:  
+    thermo.enthalpy.heat_formation.methanol = 32.0419;                 
+        % source: 
+    thermo.enthalpy.heat_formation.dimethyl_carbonate = 90.0779;       
+        % source: 
+    thermo.enthalpy.heat_formation.ethylene_glycol =62.0678;          
+        % source: 
+    thermo.enthalpy.heat_formation.methoxy_ethanol = 76.10;           
+        % source: 
+
+    stoich = get_stoichiometric_coeff()
+    thermo.enthalpy.e1 = 
+
 end 
+
+function rate_const = get_rate_constants() 
+
+    rate_const.isoP.units = "";
+    rate_const.isoP.k2f = @(T_K) 6.59 * 10^2 * exp( -37000 / thermo.R / T_K);
+    rate_const.isoP.k2r = @(T_K) 1.19 * 10^4 * exp( -53700 / thermo.R / T_K);
+    rate_const.isoP.k3 = @(T_K) 1.89 * 10^6 * exp( -82400 / thermo.R / T_K);
+end
+
+function rate = get_reaction_rates()
+
+    rate.units = "";
+    rate.r2f = @(T_K,C_EC) thermo.rate_const.k2f(T_K) * C_EC^0.8;
+    rate.r2r = @(T_K,C_DMC, C_EG) thermo.rate_const.k2r(T_K) * C_DMC * C_EG;
+    rate.r3 = @(T_K, C_EC) thermo.rate_const.k3(T_K) * C_EC;
+end
+
+
+function isoT = get_isothermal_rate_constants() 
+
+    isoT.unitt = "";
+    isoT.k2f_lowRho = 0.013; 
+    isoT.k2f_highRho = @(rho) 0.02486 - 4.943 * 10^-5 * rho;
+    isoT.k3 = @(rho) 3.014 * 10^-4 * exp(-5.99 * rho);
+end
 
 % function heat_cap = get_heat_capacities()
 
