@@ -6,9 +6,55 @@ function const = get_constants()
     const.molar_mass = get_molar_masses();
     
     const.stoich = get_stoichiometric_coeff();
+    
+    const.thermo = get_thermodynamic_constants();
+
 
 end 
 
+function thermo = get_thermodynamic_constants()
+
+    thermo.R = 8.314;					% [ J / mol K ]
+
+    % thermo.heat_cap = get_heat_capacities();
+
+    % themrmo.rate_const.units = ""
+    thermo.rate_const.isoP.k2f = @(T_K) 6.59 * 10^2 * exp( -37000 / thermo.R / T_K);
+    thermo.rate_const.isoP.k2r = @(T_K) 1.19 * 10^4 * exp( -53700 / thermo.R / T_K);
+    thermo.rate_const.isoP.k3 = @(T_K) 1.89 * 10^6 * exp( -82400 / thermo.R / T_K);
+
+
+    thermo.rate.units = ""
+    thermo.rate.r2f = @(T_K,C_EC) thermo.rate_const.k2f(T_K) * C_EC^0.8;
+    thermo.rate.r2r = @(T_K,C_DMC, C_EG) thermo.rate_const.k2r(T_K) * C_DMC * C_EG;
+    thermo.rate.r3 = @(T_K, C_EC) thermo.rate_const.k3(T_K) * C_EC;
+
+
+    thermo.rate_const.isoT.k2f_lowRho = 0.013; 
+    thermo.rate_const.isoT.k2f_highRho = @(rho) 0.02486 - 4.943 * 10^-5 * rho;
+    thermo.rate_const.isoT.k3 = @(rho) 3.014 * 10^-4 * exp(-5.99 * rho);
+end 
+
+% function heat_cap = get_heat_capacities()
+
+%     heat_cap.units = 'kJ / mol K';
+
+%     heat_cap.ethylene_oxide =             % [ kJ / mol K ]
+%         % source:
+%     heat_cap.carbon_dioxide =             % [ kJ / mol K ]
+%         % source:
+%     heat_cap.ethylene_carbonate =        % [ kJ / mol K ]
+%         % source:
+%     heat_cap.methanol =                 % [ kJ / mol K ]
+%         % source:
+%     heat_cap.dimethyl_carbonate =         % [ kJ / mol K ]
+%         % source:
+%     heat_cap.ethylene_glycol =        % [ kJ / mol K ]
+%         % source:
+%     heat_cap.methoxy_ethanol = ;              % [ kJ / mol K ]
+%         % source:
+
+% end
 
 function units = get_unit_conversions() 
     
@@ -53,6 +99,7 @@ function units = get_unit_conversions()
 end
 
 function molar_mass = get_molar_masses()
+    molar_mass.units = "g / mol";
 
     molar_mass.ethylene_oxide = 44.0526;            % [ g / mol ]
         % source: https://webbook.nist.gov/cgi/cbook.cgi?ID=C75218&Mask=80 
