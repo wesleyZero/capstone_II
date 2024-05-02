@@ -9,8 +9,24 @@ function const = get_constants()
     
     const.thermo = get_thermodynamic_constants();
 
+    const.econ = get_economic_constants();
 
 end 
+
+function econ = get_economic_constants()
+
+    econ.value.units = "$ / MT";
+    econ.value.dimethyl_carbonate = 1100;
+    econ.value.ethylene_glycol = 500;
+    econ.value.methanol = 600;
+    econ.value.ethylene_oxide = 1250;
+    econ.value.carbon_dioxide_feedstock = 45;
+
+    econ.value.fuel.units = "$ / GJ";
+    econ.value.fuel.natural_gas = 3;
+
+    % econ.value
+end
 
 function thermo = get_thermodynamic_constants()
 
@@ -51,10 +67,32 @@ end
 function enthalpy = get_reaction_enthalpies()
 
     stoich = get_stoichiometric_coeff();
-    % enthalpy.e1 = stoich. 
-    enthalpy = NaN;
+    h_f = get_heats_of_formation();
+
+    enthalpy.e1 = h_f.ethylene_oxide - (h_f.ethylene_oxide + h_f.carbon_dioxide);
+    enthalpy.e2 = (h_f.dimethyl_carbonate + h_f.ethylene_glycol) - (h_f.ethylene_carbonate - stoich.r2.methanol * h_f.methanol);
+    enthalpy.e3 = (h_f.carbon_dioxide + h_f.methoxy_ethanol) - (h_f.ethylene_carbonate + h_f.methanol);
 end
 
+
+function stoich = get_stoichiometric_coeff()
+    % WARNING : DOES NOT GIVE NEGATIVE VALUES
+
+    stoich.r1.ethylene_oxide = 1;
+    stoich.r1.carbon_dioxide = 1; 
+    stoich.r1.ethylene_carbonate = 1;
+
+    stoich.r2.ethylene_carbonate = 1;
+    stoich.r2.methanol = 2; 
+    stoich.r2.dimethyl_carbonate = 1;
+    stoich.r2.ethylene_glycol = 1;
+
+    stoich.r3.ethylene_carbonate = 1;
+    stoich.r3.methanol = 1;
+    stoich.r3.methoxy_ethanol = 1; 
+    stoic.r3.carbon_dioxide = 1;
+
+end
 function rate_const = get_rate_constants() 
 
     rate_const.isoP.units = "";
@@ -164,22 +202,3 @@ function molar_mass = get_molar_masses()
 end
 
 
-
-function stoich = get_stoichiometric_coeff()
-    % WARNING : DOES NOT GIVE NEGATIVE VALUES
-
-    stoich.r1.ethylene_oxide = 1;
-    stoich.r1.carbon_dioxide = 1; 
-    stoich.r1.ethylene_carbonate = 1;
-
-    stoich.r2.ethylene_carbonate = 1;
-    stoich.r2.methanol = 2; 
-    stoich.r2.dimethyl_carbonate = 1;
-    stoich.r2.ethylene_glycol = 1;
-
-    stoich.r3.ethylene_carbonate = 1;
-    stoich.r3.methanol = 1;
-    stoich.r3.methoxy_ethanol = 1; 
-    stoic.r3.carbon_dioxide = 1;
-
-end
