@@ -5,6 +5,7 @@ function const = get_constants()
 
     const.molar_mass = get_molar_masses();
     
+    const.stoich = get_stoichiometric_coeff();
 
 end 
 
@@ -52,7 +53,6 @@ function units = get_unit_conversions()
 end
 
 function molar_mass = get_molar_masses()
-
 
     molar_mass.ethylene_oxide = 44.0526;            % [ g / mol ]
         % source: https://webbook.nist.gov/cgi/cbook.cgi?ID=C75218&Mask=80 
