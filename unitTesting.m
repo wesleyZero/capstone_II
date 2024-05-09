@@ -1,20 +1,38 @@
 clc; clear; close all ;
 
 test_level2_feedstream()
+test_units()
 % test_constants()
 
-function void = test_units(units)
-	disp("test units")
-	units
+function void = test_units()
+	const = get_constants();
+	console = get_console_constants();
 
-	units.mass
-	units.energy
-	units.temperature
-	units.value
-	units.pressure
-	units.time
-	units.volume
-	units.heat
+	fprintf("TESTING UNIT CONVERSIONS%s\n",  console.divider);
+	fprintf("\tmass %s\n",  console.divider);
+	const.units.mass
+	
+	fprintf("\tenergy %s\n",  console.divider);
+	const.units.energy
+	
+	fprintf("\ttemperature %s\n",  console.divider);
+	const.units.temperature
+	
+	fprintf("\tvalue %s\n",  console.divider);
+	const.units.value
+	
+	fprintf("\tpressure %s\n",  console.divider);
+	const.units.pressure
+	
+	fprintf("\ttime %s\n",  console.divider);
+	const.units.time
+	
+	fprintf("\tvolume %s\n",  console.divider);
+	const.units.volume
+	
+	fprintf("\theat %s\n",  console.divider);
+	const.units.heat
+	
 end
 
 function void = test_constants()
