@@ -3,6 +3,7 @@
 function fxns = flowrate_fxns()
 
     fxns.set_F_kta = @set_F_kta;
+    fxns.set_F_mol = @set_F_mol;
 
 end
 
@@ -34,3 +35,27 @@ function F = set_F_kta(F)
 
 end
 
+function F = set_F_mol(F)
+    const = get_constants();
+
+    % kt / yr            = (mol / s)            * (g / mol)
+    F.carbon_dioxide.kta = F.carbon_dioxide.mol * const.molar_mass.carbon_dioxide * ...
+        ... % (kt / g)            * (s / yr) 
+        const.units.mass.kt_per_g * const.units.time.sec_per_yr;
+
+    F.ethylene_oxide.kta = F.ethylene_oxide.mol * const.molar_mass.ethylene_oxide * ...
+        const.units.mass.kt_per_g * const.units.time.sec_per_yr;
+
+    F.methanol.kta = F.methanol.mol * const.molar_mass.methanol * ...
+        const.units.mass.kt_per_g * const.units.time.sec_per_yr;
+
+    F.ethylene_carbonate.kta = F.ethylene_carbonate.mol * const.molar_mass.ethylene_carbonate * ...
+        const.units.mass.kt_per_g * const.units.time.sec_per_yr;
+
+    F.ethylene_glycol.kta = F.ethylene_glycol.mol * const.molar_mass.ethylene_glycol * ...
+        const.units.mass.kt_per_g * const.units.time.sec_per_yr;
+
+    F.methoxy_ethanol.kta = F.methoxy_ethanol.mol * const.molar_mass.methoxy_ethanol * ...
+        const.units.mass.kt_per_g * const.units.time.sec_per_yr;
+
+end

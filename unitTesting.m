@@ -38,7 +38,7 @@ end
 function void = test_constants()
 	
 	disp("const")
-	const = get_constants()
+	const = get_constants();
 
 	test_units(const.units);
 	% test_molar_mass(const.molar_mass);

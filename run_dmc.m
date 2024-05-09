@@ -20,11 +20,14 @@ function void = level_2()
     F_fxns = flowrate_fxns();
 
     F = user.level2.feed_stream;
-    
+
 
     for s = user.level2.selectivity_range();
         
-
+        F.dimethyl_carbonate.kta = 100;
+        
+        F.ethylene_glycol.kta = F.dimethyl_carbonate.kta;
+        F.carbon_dioxide
 
     end
     
