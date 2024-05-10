@@ -23,7 +23,7 @@ function void = level3()
     for s = user.level2.selectivity_range
         for chi = user.level3.conversion_range
 
-            F = level2_flowrates(F, s);
+            F = level3_flowrates(F, s, chi);
         end
 
     end
@@ -33,7 +33,9 @@ function void = level3()
 end
 
 
-function F = level3_flowrates(F, s, chi)
+function [F, F_rxtr, R] = level3_flowrates(F, s, chi)
+    % I need to really check the F_fresh and P flows because I think I am messing them up
+    user = get_user_inputs();
 
     % Specify Constraints in kta
     F.dimethyl_carbonate.kta = 100;
@@ -47,14 +49,54 @@ function F = level3_flowrates(F, s, chi)
     F.ethylene_oxide.mol = F.dimethyl_carbonate.mol / s;
     F.methoxy_ethanol.mol = F.dimethyl_carbonate.mol * ((1/s) - 1);
     F.methanol.mol = F.dimethyl_carbonate.mol * ( 1 + (1/s));
-
-    
     F.ethylene_carbonate.mol = 0 ;
         % Ethylene carbonate is recycled to completion
-
-    
-    % Update the flowstream
+        % ?? Level 3 tho ??? 
     F = flowrate_fxns().set_F_mol(F);
+
+    % Recycle Flowrates
+    % R = flowrate_fxns().get_blank_flowstream(); 
+    % MR = user.level3.molar_ratio_methanol;
+    % R.methanol.mol = F.dimethyl_carbonate.mol * ((MR/s) - 1 - (1/s));
+    % MR = user.level3.molar_ratio_carbon_dioxide;
+    % R.carbon_dioxide.mol = F.dimethyl_carbonate.mol * (((MR + 1)/s) - 1);
+    % R.ethylene_carbonate.mol = (F.dimethyl_carbonate.mol / s) * ( (1-chi) / chi);
+    % R = flowrate_fxns().set_F_mol(R);
+    R = get_recycle_flowrates(F, s, chi);
+
+    % Reactor flowrates 
+    F_rxtr = get_reactor_flowrates(F, R);
+    % F_rxtr = flowrate_fxns().get_blank_flowstream();
+    % F_rxtr.ethylene_carbonate.mol = F.ethylene_carbonate.mol + R.ethylene_carbonate.mol;
+    % F_rxtr.ethylene_oxide.mol = F.ethylene_carbonate.mol + R.ethylene_carbonate.mol;
+    % F_rxtr.methanol.mol = F.methanol.mol + R.methanol.mol;
+    % F_rxtr.carbon_dioxide.mol = F.carbon_dioxide.mol + R.carbon_dioxide.mol;
+    % F_rxtr = flowrate_fxns().set_F_mol(F_rxtr);
+
+end
+
+function F_rxtr = get_reactor_flowrates(F, R)
+    F_rxtr = flowrate_fxns().get_blank_flowstream();
+    F_rxtr.ethylene_carbonate.mol = F.ethylene_carbonate.mol + R.ethylene_carbonate.mol;
+    F_rxtr.ethylene_oxide.mol = F.ethylene_carbonate.mol + R.ethylene_carbonate.mol;
+    F_rxtr.methanol.mol = F.methanol.mol + R.methanol.mol;
+    F_rxtr.carbon_dioxide.mol = F.carbon_dioxide.mol + R.carbon_dioxide.mol;
+    F_rxtr = flowrate_fxns().set_F_mol(F_rxtr);
+end
+
+
+
+function F = get_recycle_flowrates(F, s, chi)
+    user = get_user_inputs();
+
+    R = flowrate_fxns().get_blank_flowstream(); 
+    MR = user.level3.molar_ratio_methanol;
+    R.methanol.mol = F.dimethyl_carbonate.mol * ((MR/s) - 1 - (1/s));
+    MR = user.level3.molar_ratio_carbon_dioxide;
+    R.carbon_dioxide.mol = F.dimethyl_carbonate.mol * (((MR + 1)/s) - 1);
+    R.ethylene_carbonate.mol = (F.dimethyl_carbonate.mol / s) * ( (1-chi) / chi);
+    R = flowrate_fxns().set_F_mol(R);
+
 
 end
 
