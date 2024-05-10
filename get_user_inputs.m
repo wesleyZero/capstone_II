@@ -13,6 +13,8 @@ function user = get_user_inputs()
     user.level3.conversion_range = ...
         linspace(1/user.level3.precision, 1, user.level3.precision);
 
+    
+
 end 
 
 function F = get_feed_flowrates()
