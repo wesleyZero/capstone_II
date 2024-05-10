@@ -1,14 +1,9 @@
 
 function const = get_constants()
-
     const.units = get_unit_conversions();
-
     const.molar_mass = get_molar_masses();
-    
     const.stoich = get_stoichiometric_coeff();
-    
     const.thermo = get_thermodynamic_constants();
-
     const.econ = get_economic_constants();
 
 end 
@@ -29,20 +24,12 @@ function econ = get_economic_constants()
 end
 
 function thermo = get_thermodynamic_constants()
-
     thermo.R = 8.314;					% [ J / mol K ]
-
     % thermo.heat_cap = get_heat_capacities();
-
     thermo.rate_const = get_rate_constants();
-
     thermo.rate = get_reaction_rates();
-
     thermo.rate_const = get_isothermal_rate_constants();
-
     thermo.enthalpy = get_reaction_enthalpies();
-
-    
 end 
 
 function heat_formation = get_heats_of_formation()
@@ -65,7 +52,6 @@ function heat_formation = get_heats_of_formation()
 end
 
 function enthalpy = get_reaction_enthalpies()
-
     stoich = get_stoichiometric_coeff();
     h_f = get_heats_of_formation();
 
@@ -73,7 +59,6 @@ function enthalpy = get_reaction_enthalpies()
     enthalpy.e2 = (h_f.dimethyl_carbonate + h_f.ethylene_glycol) - (h_f.ethylene_carbonate - stoich.r2.methanol * h_f.methanol);
     enthalpy.e3 = (h_f.carbon_dioxide + h_f.methoxy_ethanol) - (h_f.ethylene_carbonate + h_f.methanol);
 end
-
 
 function stoich = get_stoichiometric_coeff()
     % WARNING : DOES NOT GIVE NEGATIVE VALUES
@@ -91,8 +76,8 @@ function stoich = get_stoichiometric_coeff()
     stoich.r3.methanol = 1;
     stoich.r3.methoxy_ethanol = 1; 
     stoic.r3.carbon_dioxide = 1;
-
 end
+
 function rate_const = get_rate_constants() 
 
     rate_const.isoP.units = "";
@@ -108,7 +93,6 @@ function rate = get_reaction_rates()
     rate.r2r = @(T_K,C_DMC, C_EG) thermo.rate_const.k2r(T_K) * C_DMC * C_EG;
     rate.r3 = @(T_K, C_EC) thermo.rate_const.k3(T_K) * C_EC;
 end
-
 
 function isoT = get_isothermal_rate_constants() 
 
@@ -143,12 +127,9 @@ function units = get_unit_conversions()
     
     % Mass
     units.mass.mt_per_kt = 10^3;     % [ MT / kt ]
-
     units.mass.g_per_kt = 10^9;       % [ g / kt ]
     units.mass.kt_per_g = 10^-9;       % [ kt / g ]  
-
     units.mass.kg_per_kt =  10^6;     % [ kg / MT ]
-
     units.mass.mt_per_g = 10^-6;       % [ MT / g ] 
 
     % Energy
@@ -177,8 +158,6 @@ function units = get_unit_conversions()
 
     % heat 
     units.heat.millionbtu_per_gj = 1.0551;       % [ ]
-
-
 end
 
 function molar_mass = get_molar_masses()
@@ -198,7 +177,6 @@ function molar_mass = get_molar_masses()
         % source: https://webbook.nist.gov/cgi/cbook.cgi?ID=107-21-1 
     molar_mass.methoxy_ethanol = 76.10;              % [ g / mol ]
         % source: https://webbook.nist.gov/cgi/cbook.cgi?ID=109-86-4
-
 end
 
 
