@@ -1,7 +1,7 @@
 
 
 
-function console = get_console_constants() 
+function console = get_console() 
 
     console.divider = ...
     "_________________________________________________________________________";

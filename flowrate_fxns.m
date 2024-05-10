@@ -4,6 +4,7 @@ function fxns = flowrate_fxns()
 
     fxns.set_F_kta = @set_F_kta;
     fxns.set_F_mol = @set_F_mol;
+    fxns.get_mol_fractions = @get_mol_fractions;
 
 end
 
@@ -32,6 +33,11 @@ function F = set_F_kta(F)
     F.methoxy_ethanol.mol = F.methoxy_ethanol.kta * const.units.mass.g_per_kt * ...
         const.units.time.yr_per_sec * (1 / const.molar_mass.methoxy_ethanol);
 
+	F.dimethyl_carbonate.mol = F.dimethyl_carbonate.kta * const.units.mass.g_per_kt * ...
+    const.units.time.yr_per_sec * (1 / const.molar_mass.dimethyl_carbonate);
+
+    % update the mol fractions
+    F = get_mol_fractions(F);
 
 end
 
@@ -57,5 +63,26 @@ function F = set_F_mol(F)
 
     F.methoxy_ethanol.kta = F.methoxy_ethanol.mol * const.molar_mass.methoxy_ethanol * ...
         const.units.mass.kt_per_g * const.units.time.sec_per_yr;
+	
+	F.dimethyl_carbonate.kta = F.dimethyl_carbonate.mol * const.molar_mass.dimethyl_carbonate * ...
+    const.units.mass.kt_per_g * const.units.time.sec_per_yr;
+
+    % update the mol fractions
+    F = get_mol_fractions(F);
+
+end
+
+function F = get_mol_fractions(F)
+
+    fieldNames = fieldnames(F);
+    F_total = 0;
+    for i = 1:length(fieldNames)
+		species = fieldNames{i};
+        F_total = F_total + F.(species).mol;
+    end
+
+    for i = 1:length(fieldNames)
+        F.(fieldNames{i}).mol = F.(fieldNames{i}).mol / F_total;
+    end
 
 end
