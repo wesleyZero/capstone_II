@@ -19,7 +19,7 @@ function void = level2()
 
     console.section("Starting Level 2 calculations")
 
-    for s = user.level2.selectivity_range()
+    for s = user.level2.selectivity_range
 
         F = level2_flowrates(F, s);
 
@@ -44,6 +44,8 @@ function F = level2_flowrates(F, s)
     F.ethylene_oxide.mol = F.dimethyl_carbonate.mol / s;
     F.methoxy_ethanol.mol = F.dimethyl_carbonate.mol * ((1/s) - 1);
     F.methanol.mol = F.dimethyl_carbonate.mol * ( 1 + (1/s));
+    % Ethylene carbonate is recycled to completion
+    
 
     % Update the flowstream
     F = flowrate_fxns().set_F_mol(F);

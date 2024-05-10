@@ -1,10 +1,18 @@
 
 function user = get_user_inputs()
  
-
-    user.level2.selectivity_range = linspace(0.1, 1,100);
+    % Level 2
+    user.level2.precision = 100;
+    user.level2.selectivity_range = ...
+        linspace(1/user.level2.precision, 1, user.level2.precision);
     F = get_feed_flowrates();
     user.level2.feed_stream = flowrate_fxns().set_F_kta(F);    
+
+    % Level 3
+    user.level3.precision = 100;
+    user.level3.conversion_range = ...
+        linspace(1/user.level3.precision, 1, user.level3.precision);
+
 end 
 
 function F = get_feed_flowrates()
