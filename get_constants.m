@@ -32,25 +32,6 @@ function thermo = get_thermodynamic_constants()
     thermo.enthalpy = get_reaction_enthalpies();
 end 
 
-% function heat_formation = get_heats_of_formation()
-
-%     heat_formation.units = "BS VALUES";
-%     heat_formation.ethylene_oxide = 44.0526;            
-%         % source:  
-%     heat_formation.carbon_dioxide =  44.0095;          
-%         % source:  
-%     heat_formation.ethylene_carbonate =  88.0621;      
-%         % source:  
-%     heat_formation.methanol = 32.0419;                 
-%         % source: 
-%     heat_formation.dimethyl_carbonate = 90.0779;       
-%         % source: 
-%     heat_formation.ethylene_glycol =62.0678;          
-%         % source: 
-%     heat_formation.methoxy_ethanol = 76.10;           
-%         % source: 
-% end
-
 function enthalpy = get_reaction_enthalpies()
     % stoich = get_stoichiometric_coeff();
     % h_f = get_heats_of_formation();
@@ -82,51 +63,6 @@ function stoich = get_stoichiometric_coeff()
     stoich.r3.methoxy_ethanol = 1; 
     stoic.r3.carbon_dioxide = 1;
 end
-
-% function rate_const = get_rate_constants() 
-
-%     rate_const.isoP.units = "";
-%     rate_const.isoP.k2f = @(T_K) 6.59 * 10^2 * exp( -37000 / thermo.R / T_K);
-%     rate_const.isoP.k2r = @(T_K) 1.19 * 10^4 * exp( -53700 / thermo.R / T_K);
-%     rate_const.isoP.k3 = @(T_K) 1.89 * 10^6 * exp( -82400 / thermo.R / T_K);
-% end
-
-% function rate = get_reaction_rates()
-
-%     rate.units = "";
-%     rate.r2f = @(T_K,C_EC) thermo.rate_const.k2f(T_K) * C_EC^0.8;
-%     rate.r2r = @(T_K,C_DMC, C_EG) thermo.rate_const.k2r(T_K) * C_DMC * C_EG;
-%     rate.r3 = @(T_K, C_EC) thermo.rate_const.k3(T_K) * C_EC;
-% end
-
-% function isoT = get_isothermal_rate_constants() 
-
-%     isoT.unitt = "";
-%     isoT.k2f_lowRho = 0.013; 
-%     isoT.k2f_highRho = @(rho) 0.02486 - 4.943 * 10^-5 * rho;
-%     isoT.k3 = @(rho) 3.014 * 10^-4 * exp(-5.99 * rho);
-% end
-
-% function heat_cap = get_heat_capacities()
-
-%     heat_cap.units = 'kJ / mol K';
-
-%     heat_cap.ethylene_oxide =             % [ kJ / mol K ]
-%         % source:
-%     heat_cap.carbon_dioxide =             % [ kJ / mol K ]
-%         % source:
-%     heat_cap.ethylene_carbonate =        % [ kJ / mol K ]
-%         % source:
-%     heat_cap.methanol =                 % [ kJ / mol K ]
-%         % source:
-%     heat_cap.dimethyl_carbonate =         % [ kJ / mol K ]
-%         % source:
-%     heat_cap.ethylene_glycol =        % [ kJ / mol K ]
-%         % source:
-%     heat_cap.methoxy_ethanol = ;              % [ kJ / mol K ]
-%         % source:
-
-% end
 
 function units = get_unit_conversions() 
     
