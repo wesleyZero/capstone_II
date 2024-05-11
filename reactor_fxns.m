@@ -27,3 +27,31 @@ function rho = get_supercritical_c02_density(condition, opt)
     end
 
 end
+
+
+
+
+function isoT = get_isothermal_rate_constants() 
+
+    isoT.unitt = "";
+    isoT.k2f_lowRho = 0.013; 
+    isoT.k2f_highRho = @(rho) 0.02486 - 4.943 * 10^-5 * rho;
+    isoT.k3 = @(rho) 3.014 * 10^-4 * exp(-5.99 * rho);
+end
+
+
+function rate_const = get_rate_constants() 
+
+    rate_const.isoP.units = "";
+    rate_const.isoP.k2f = @(T_K) 6.59 * 10^2 * exp( -37000 / thermo.R / T_K);
+    rate_const.isoP.k2r = @(T_K) 1.19 * 10^4 * exp( -53700 / thermo.R / T_K);
+    rate_const.isoP.k3 = @(T_K) 1.89 * 10^6 * exp( -82400 / thermo.R / T_K);
+end
+
+function rate = get_reaction_rates()
+
+    rate.units = "";
+    rate.r2f = @(T_K,C_EC) thermo.rate_const.k2f(T_K) * C_EC^0.8;
+    rate.r2r = @(T_K,C_DMC, C_EG) thermo.rate_const.k2r(T_K) * C_DMC * C_EG;
+    rate.r3 = @(T_K, C_EC) thermo.rate_const.k3(T_K) * C_EC;
+end
