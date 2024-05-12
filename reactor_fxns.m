@@ -49,14 +49,14 @@ function k = get_isothermal_rate_constant(reaction, P)
     if reaction == '2f'
         rho = get_supercritical_c02_density(P, 'isothermal')
         if rho > 246.82 % [g / L] 
-
+            k = 0.02486 - 4.943 * (10^(-5)) * rho; 
         else
-
+            k = 0.013; 
         end
     elseif reaction == '2r'
-
+        k = 0.01486 * rho^(-0.873);
     elseif reaction == '3'
-
+        k = 3.014 * (10^(-4)) * exp(-5.99 * (10^(-3)) * rho);
     else 
         disp("ERROR: get_isothermal_rate_constant(): invalid reaction option")
     end
