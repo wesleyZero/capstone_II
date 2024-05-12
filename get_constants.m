@@ -33,13 +33,6 @@ function thermo = get_thermodynamic_constants()
 end 
 
 function enthalpy = get_reaction_enthalpies()
-    % stoich = get_stoichiometric_coeff();
-    % h_f = get_heats_of_formation();
-
-    % enthalpy.e1 = h_f.ethylene_oxide - (h_f.ethylene_oxide + h_f.carbon_dioxide);
-    % enthalpy.e2 = (h_f.dimethyl_carbonate + h_f.ethylene_glycol) - (h_f.ethylene_carbonate - stoich.r2.methanol * h_f.methanol);
-    % enthalpy.e3 = (h_f.carbon_dioxide + h_f.methoxy_ethanol) - (h_f.ethylene_carbonate + h_f.methanol);
-
     enthalpy.e1.kj_per_mol = -60.8;
     enthalpy.e2.kj_per_mol = -53.5;
     enthalpy.e3.kj_per_mol = -55.3;
