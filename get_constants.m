@@ -79,7 +79,7 @@ function units = get_unit_conversions()
 
     % Temperature      
 	units.temperature.c_to_k = @(T_C) T_C + 273.15;        % [ C -> K ]
-	units.temperature.c_to_k = @(T_K) T_K - 273.15;        % [ C -> K ]
+	units.temperature.k_to_c = @(T_K) T_K - 273.15;        % [ K -> C ]
 
     % Value
     units.value.mmdolla_per_dolla = 10^-6;    % [ $ MM / $]

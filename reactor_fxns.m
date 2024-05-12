@@ -18,8 +18,10 @@ function r = get_reaction_rate(reaction, condition, opt, F)
             r = k * C.dimethyl_carbonate * C.ethylene_carbonate;
         case '3'
             r = k * C.ethylene_carbonate;
+        otherwise
+            r = NaN;
+            disp("ERROR: get_reaction_rate(): invalid reaction option")
     end
-
 end
 
 function C = get_concentrations()
@@ -29,7 +31,7 @@ end
 
 
 function V = get_reactor_volume()
-
+    V = 1; % ?? 
 end
 
 function k = get_rate_constant(reaction, condition, opt)
@@ -41,17 +43,20 @@ function k = get_rate_constant(reaction, condition, opt)
         T = condition;
         k = get_isobaric_rate_constant(reaction, T);
     else
+        k = NaN;
         disp("ERROR: get_rate_constant(): invalid opt")
     end
 end
 
 function k = get_isobaric_rate_constant(reaction, T)
     % input: 
-    %   T [ K ]
+    %   T [ C ]
     % output:
     %   k [mol / L s ]
 
-    thermo = get_constants().thermo;
+    const = get_constants();
+    thermo = const.thermo;
+    T = const.units.temperature.c_to_k(T); % [ K ]
 
     switch reaction
         case '2f'
@@ -61,6 +66,7 @@ function k = get_isobaric_rate_constant(reaction, T)
         case '3'
             k = 1.89 * 10^6 * exp(-82400 / (thermo.R * T));
         otherwise
+            k = NaN;
             disp("ERROR: get_isobaric_rate_constant(): invalid reaction option");
     end
 end
@@ -81,6 +87,7 @@ function k = get_isothermal_rate_constant(reaction, P)
     elseif reaction == '3'
         k = 3.014 * (10^(-4)) * exp(-5.99 * (10^(-3)) * rho);
     else 
+        k = NaN;
         disp("ERROR: get_isothermal_rate_constant(): invalid reaction option")
     end
 
@@ -102,6 +109,7 @@ function rho = get_supercritical_c02_density(condition, opt)
         rho.kg_m3 = 1.8853 * P - 31.755;
     elseif opt == 'isobaric'
         T = condition;
+        T = get_constants().units.temperature.c_to_k(T); % [ K ]
         rho.kg_m3 = 0.037 * T^2 - 10.46 * T + 1060.8;
     else
         disp("SUPERCRICIAL C02 DENSITY FUNCTION ERROR: invalid opt")
