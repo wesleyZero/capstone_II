@@ -5,6 +5,7 @@ function const = get_constants()
     const.stoich = get_stoichiometric_coeff();
     const.thermo = get_thermodynamic_constants();
     const.econ = get_economic_constants();
+    % const.heat_cap = get_heat_capacities();
 
 end 
 
