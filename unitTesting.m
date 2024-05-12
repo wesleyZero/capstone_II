@@ -6,7 +6,7 @@ test_units()
 
 function void = test_units()
 	const = get_constants();
-	console = get_console_constants();
+	console = get_console();
 
 	fprintf("TESTING UNIT CONVERSIONS%s\n",  console.divider);
 	fprintf("\tmass %s\n",  console.divider);
@@ -56,7 +56,7 @@ function void = test_level2_feedstream()
 
     F_fxns = flowrate_fxns();
 
-	console = get_console_constants();
+	console = get_console();
 
     F = user.level2.feed_stream;
 

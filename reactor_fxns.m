@@ -1,7 +1,6 @@
 
 function fxns = reactor_fxns() 
-    % fxns.get_supercritical_c02_density = @get_supercritical_c02_density;
-
+    fxns.get_reaction_rate = @get_reaction_rate;
 end
 
 function r = get_reaction_rate(reaction, condition, opt, F)
