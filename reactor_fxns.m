@@ -4,13 +4,33 @@ function fxns = reactor_fxns()
 
 end
 
-% function rate = get_reaction_rates()
+function r = get_reaction_rate(reaction, condition, opt, F)
+    % input:
+    %   condition = T or P
+    %   opt = 'isothermal' or 'isobaric'
 
-%     rate.units = "";
-%     rate.r2f = @(T_K,C_EC) thermo.rate_const.k2f(T_K) * C_EC^0.8;
-%     rate.r2r = @(T_K,C_DMC, C_EG) thermo.rate_const.k2r(T_K) * C_DMC * C_EG;
-%     rate.r3 = @(T_K, C_EC) thermo.rate_const.k3(T_K) * C_EC;
-% end
+    C = get_concentrations();
+    k = get_rate_constant(reaction, condition, opt);
+    switch reaction
+        case '2f'
+            r = k * (C.ethylene_carbonate)^0.8;
+        case '2r'
+            r = k * C.dimethyl_carbonate * C.ethylene_carbonate;
+        case '3'
+            r = k * C.ethylene_carbonate;
+    end
+
+end
+
+function C = get_concentrations()
+    C.ethylene_carbonate = 1; % ?? 
+    C.dimethyl_carbonate = 1; % ?? 
+end 
+
+
+function V = get_reactor_volume()
+
+end
 
 function k = get_rate_constant(reaction, condition, opt)
 
@@ -46,6 +66,9 @@ function k = get_isobaric_rate_constant(reaction, T)
 end
 
 function k = get_isothermal_rate_constant(reaction, P)
+    % input:
+    %   P [ bar ]
+
     if reaction == '2f'
         rho = get_supercritical_c02_density(P, 'isothermal')
         if rho > 246.82 % [g / L] 
@@ -86,3 +109,6 @@ function rho = get_supercritical_c02_density(condition, opt)
     end
 
 end
+
+
+
