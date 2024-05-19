@@ -92,7 +92,7 @@ function k = get_isothermal_rate_constant(reaction, P)
 
 end
 
-function rho = get_supercritical_c02_density(condition, opt)
+function rho = get_supercritical_c02_density(condition, opt, pressure)
     % Input: condition = T or P. Depending on option
     %   P [=] bar
     %   T [=] celcius   
@@ -100,16 +100,74 @@ function rho = get_supercritical_c02_density(condition, opt)
     %   Isobaric model is at 140 C
     %   Isothermal model is at 150 bar
     % Ranges of input
-    %   P = [150 bar, 200 bar] ???
-    %   T = [30 C, 150 C] ???
+    %   P = [50 bar, 150 bar]
+    %   T = [80 C, 140 C]
+    % Output: 
+    %   rho [=] kg / m^3
+    withinTempRange = @(T) T >= 80 && T <= 140;
+    withinPressureRange = @(P) P >= 50 && P <= 150;
     
     if opt == 'isothermal'
         P = condition;
-        rho.kg_m3 = 1.8853 * P - 31.755;
+        if withinPressureRange(P)
+            rho.kg_m3 = 1.6746 * P - 12.592;
+                % NIST / Excel Regression
+        else
+            rho = NaN;
+            disp("get_supercritical_c02_density : ERROR : P out of range")
+        end
     elseif opt == 'isobaric'
         T = condition;
-        T = get_constants().units.temperature.c_to_k(T); % [ K ]
-        rho.kg_m3 = 0.037 * T^2 - 10.46 * T + 1060.8;
+        if withinTempRange(T)
+            if pressure < 125; % [C]
+                rho.kg_m3 = 356.08 * exp(-0.006 * T);)
+                    % NIST Data at 100 bar
+            else
+                rho.kg_m3 = 838.87 * exp(-0.009 * T);)
+                    % NIST Data at 150 bar
+            end
+        else
+            rho = NaN;
+            disp("get_supercritical_c02_density : ERROR : T out of range")
+        end
+    else
+        disp("SUPERCRICIAL C02 DENSITY FUNCTION ERROR: invalid opt")
+        rho = NaN;
+    end
+
+end
+
+function rho = get_methanol_density(condition, option)
+    % Input: condition = T or P. Depending on option
+    %   P [=] bar
+    %   T [=] celcius   
+    % Assumptions:
+    %   Isobaric model is at 140 C
+    %   Isothermal model is at 150 bar
+    % Ranges of input
+    %   P = [50 bar, 150 bar]
+    %   T = [80 C, 140 C]
+    % Output: 
+    %   rho [=] kg / m^3
+    withinTempRange = @(T) T >= 80 && T <= 140;
+    withinPressureRange = @(P) P >= 50 && P <= 150;
+    
+    if opt == 'isothermal'
+        P = condition;
+        if withinPressureRange(P)
+            rho.kg_m3 = 1.8853 * P - 31.755;
+        else
+            rho = NaN;
+            disp("get_supercritical_c02_density : ERROR : P out of range")
+        end
+    elseif opt == 'isobaric'
+        T = condition;
+        if withinTempRange(T)
+            rho.kg_m3 = -1.0866 * T + 833.31;
+        else
+            rho = NaN;
+            disp("get_supercritical_c02_density : ERROR : T out of range")
+        end
     else
         disp("SUPERCRICIAL C02 DENSITY FUNCTION ERROR: invalid opt")
         rho = NaN;

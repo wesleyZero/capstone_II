@@ -12,8 +12,8 @@ function user = get_user_inputs()
     user.level3.precision = 100;
     user.level3.conversion_range = ...
         linspace(1/user.level3.precision, 1, user.level3.precision);
-    user.level3.molar_ratio_methanol = 2;
-    user.level3.molar_ratio_carbon_dioxide = 15; 
+    user.level3.molar_ratio_methanol_EO = 15;
+    user.level3.molar_ratio_carbon_dioxide_EO = 13; 
 
 end 
 
