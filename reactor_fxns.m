@@ -137,8 +137,8 @@ function rho = get_supercritical_c02_density(condition, opt, pressure)
 
 end
 
-function rho = get_methanol_density(condition, option)
-    % Input: condition = T or P. Depending on option
+function rho = get_methanol_density(T, option, P)
+    % Input:
     %   P [=] bar
     %   T [=] celcius   
     % Assumptions:
@@ -152,25 +152,17 @@ function rho = get_methanol_density(condition, option)
     withinTempRange = @(T) T >= 80 && T <= 140;
     withinPressureRange = @(P) P >= 50 && P <= 150;
     
-    if opt == 'isothermal'
-        P = condition;
-        if withinPressureRange(P)
-            rho.kg_m3 = 1.8853 * P - 31.755;
-        else
-            rho = NaN;
-            disp("get_supercritical_c02_density : ERROR : P out of range")
-        end
-    elseif opt == 'isobaric'
-        T = condition;
-        if withinTempRange(T)
+    if withinTempRange(T) && withinPressureRange()
+        if P < 125; % [C]
             rho.kg_m3 = -1.0866 * T + 833.31;
+                % NIST Data at 100 bar
         else
-            rho = NaN;
-            disp("get_supercritical_c02_density : ERROR : T out of range")
+            rho.kg_m3 = -1.0354 * T + 834.79;
+                % NIST Data at 150 bar
         end
     else
-        disp("SUPERCRICIAL C02 DENSITY FUNCTION ERROR: invalid opt")
         rho = NaN;
+        disp("get_methanol_density : ERROR : T or P out of range")
     end
 
 end
