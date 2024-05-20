@@ -120,10 +120,10 @@ function rho = get_supercritical_c02_density(condition, opt, pressure)
         T = condition;
         if withinTempRange(T)
             if pressure < 125; % [C]
-                rho.kg_m3 = 356.08 * exp(-0.006 * T);)
+                rho.kg_m3 = 356.08 * exp(-0.006 * T);
                     % NIST Data at 100 bar
             else
-                rho.kg_m3 = 838.87 * exp(-0.009 * T);)
+                rho.kg_m3 = 838.87 * exp(-0.009 * T);
                     % NIST Data at 150 bar
             end
         else

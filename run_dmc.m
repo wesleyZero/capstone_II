@@ -12,48 +12,58 @@ function void = level3()
     const = get_constants(); 
     user = get_user_inputs();
     F_fxns = flowrate_fxns();
-    F = user.level2.feed_stream;
+    % F = user.level2.feed_stream;
 
     console.section("Starting Level 3 calculations")
 
-    for s = user.level2.selectivity_range
-        for chi = user.level3.conversion_range
+    % for s = user.level2.selectivity_range
+    %     for chi = user.level3.conversion_range
 
-            F = level3_flowrates(F, s, chi);
-        end
+    %         F = level3_flowrates(F, s, chi);
+    %     end
 
-    end
+    % end
     
     console.section("Level 3 calculations are complete")
 
 end
 
-function [F, F_rxtr, R] = level3_flowrates(F, s, chi)
-    % I need to really check the F_fresh and P flows because I think I am messing them up
-    user = get_user_inputs();
 
-    % Specify Constraints in kta
-    F.dimethyl_carbonate.kta = 100;
+function [F, P, R] = level3_flowrates(tau)
+    user = get_user_inputs(); 
 
-    % Update the flowstream  
-    F = flowrate_fxns().set_F_kta(F);
-    
-    % Calculate the molar flowrates as a result of reaction
-    F.ethylene_glycol.mol = F.dimethyl_carbonate.mol;
-    F.carbon_dioxide.mol = F.dimethyl_carbonate.mol;
-    F.ethylene_oxide.mol = F.dimethyl_carbonate.mol / s;
-    F.methoxy_ethanol.mol = F.dimethyl_carbonate.mol * ((1/s) - 1);
-    F.methanol.mol = F.dimethyl_carbonate.mol * ( 1 + (1/s));
-    F.ethylene_carbonate.mol = 0 ;
-        % Ethylene carbonate is recycled to completion
-        % ?? Level 3 tho ??? 
-    F = flowrate_fxns().set_F_mol(F);
-    % I SHOULD CALL THIS P
+    % % Basis calculations 
+    % F = get_feed_flowrates(
 
-    R = get_recycle_flowrates(F, s, chi);
-
-    F_rxtr = get_reactor_flowrates(F, R);
 end
+
+
+% function [F, F_rxtr, R] = level3_flowrates(F, s, chi)
+%     % I need to really check the F_fresh and P flows because I think I am messing them up
+%     user = get_user_inputs();
+
+%     % Specify Constraints in kta
+%     F.dimethyl_carbonate.kta = 100;
+
+%     % Update the flowstream  
+%     F = flowrate_fxns().set_F_kta(F);
+    
+%     % Calculate the molar flowrates as a result of reaction
+%     F.ethylene_glycol.mol = F.dimethyl_carbonate.mol;
+%     F.carbon_dioxide.mol = F.dimethyl_carbonate.mol;
+%     F.ethylene_oxide.mol = F.dimethyl_carbonate.mol / s;
+%     F.methoxy_ethanol.mol = F.dimethyl_carbonate.mol * ((1/s) - 1);
+%     F.methanol.mol = F.dimethyl_carbonate.mol * ( 1 + (1/s));
+%     F.ethylene_carbonate.mol = 0 ;
+%         % Ethylene carbonate is recycled to completion
+%         % ?? Level 3 tho ??? 
+%     F = flowrate_fxns().set_F_mol(F);
+%     % I SHOULD CALL THIS P
+
+%     R = get_recycle_flowrates(F, s, chi);
+
+%     F_rxtr = get_reactor_flowrates(F, R);
+% end
 
 function F_rxtr = get_reactor_flowrates(F, R)
     F_rxtr = flowrate_fxns().get_blank_flowstream();

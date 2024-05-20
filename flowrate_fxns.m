@@ -6,6 +6,21 @@ function fxns = flowrate_fxns()
     fxns.get_blank_flowstream = @get_blank_flowstream;
 end
 
+function F = get_basis_feed_flowrates()
+    user = get_user_inputs();
+
+    F = get_blank_flowstream();
+
+    % Define the basis ratios
+    F.ethylene_carbonate.mol = 1; 
+    F.methanol.mol = F.ethylene_carbonate.mol * user.level3.molar_ratio_methanol_EO;
+    F.carbon_dioxide.mol = F.ethylene_carbonate.mol * user.level3.molar_ratio_carbon_dioxide_EO;
+
+    % set the flowrates
+    F = flowrate_fxns().set_F_kta(F);
+
+end 
+
 function F = get_blank_flowstream()
     % mol / s            = (kt / yr )           * (g / kt) 
     F.carbon_dioxide.mol = 0;
