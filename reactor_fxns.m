@@ -12,7 +12,7 @@ function [F, P, R] = get_reactor_flows(F, tau, T, P, opt)
     F = NaN; P = NaN; R = NaN;
 end
 
-function condition = get_condition(opt)
+function condition = get_condition(T, P, opt)
     switch opt
         case 'isobaric'
             condition = T;
@@ -26,15 +26,16 @@ end
 
 function q = get_volumetric_flowrates(F, T, P, opt)
     const = get_constants();
-    switch opt
-        case 'isobaric'
-            condition = T;
-        case 'isothermal'
-            condition = P; 
-        otherwise
-            condition = NaN; 
-            disp("ERROR : get_volumetric_flowrates : opt not valid");
-    end
+    % switch opt
+    %     case 'isobaric'
+    %         condition = T;
+    %     case 'isothermal'
+    %         condition = P; 
+    %     otherwise
+    %         condition = NaN; 
+    %         disp("ERROR : get_volumetric_flowrates : opt not valid");
+    % end
+    condition = get_condition(T, P, opt);
     rho = const.densities; 
     rho.methanol = get_methanol_density(T, P);
     rho.carbon_dioxide = get_supercritical_c02_density(condition, opt, P);
