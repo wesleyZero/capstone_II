@@ -27,17 +27,45 @@ function C_vector = get_conc_vector(C)
     C_vector(6) = C.methoxy_ethanol;
 end
 
-function C = get_reactor_effluent_concentrations(C_init, tau, condition, opt)
-    C_init_vector = get_conc_vector(C_init);
+function k = get_all_rate_constants(condition, opt)
     k.k2f = get_rate_constant('2f', condition, opt);
     k.k2r = get_rate_constant('2r', condition, opt);
     k.k3 = get_rate_constant('3', condition, opt);
+end
+
+function b = get_sys_eqns_constants(T, P, opt)
+    user = get_user_inputs(); 
+    rho = get_all_densities(T, P, opt); 
+
+    sum = 0;
+    sum = user.level3.molar_ratio_carbon_dioxide_EO / rho.carbon_dioxide;
+    sum = sum + user.level3.molar_ratio_methanol_EO / rho.methanol;
+    sum = sum + 1 / rho.carbon_dioxide;
+    sum_recip = 1 / sum;
+    % Note: this calculation is kind of weird, because of the way that we are 
+    % modeling this 'virtual reactor' before the first 'real' reactor. Reminder 
+    % for myself in the future and others is that the kinetics of the first 
+    % reaction are so fast that we are assuming that first reaction goes 
+    % to completion. This first reaction is the 'virtual reactor'. When 
+    % calculating the 'real' reactor feed we are using the molar ratios to 
+    % ethylene oxide, however we don't actually have any ethylene oxide
+    % because it ran to completion with C02 in massive stiochiometric excess. 
+    % So we are using the ethylene carbonotate instead. 
+
+end
+
+function C = get_reactor_effluent_concentrations(C_init, tau, T, P, opt)
+    C_init_vector = get_conc_vector(C_init);
+    condition = get_condition(T, P, opt);
+    k = get_all_rate_constants(condition, opt);
+    b = get_sys_eqns_constants(T, P, opt);
+    
     % C = fsolve() 
 
     C = NaN;
 end
 
-function F = sys_of_eqns()
+function F = sys_of_eqns(C, k, tau)
     F(1) = 
 
 end
