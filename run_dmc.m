@@ -36,7 +36,6 @@ function [F, P, R] = level3_flowrates(tau, T, P, opt)
     [F, P, R] = rxtr_fxns.get_reactor_flows(F_basis, tau, T, P, opt);
     
 
-    F = NaN; P = NaN; R = NaN; 
 end
 
 
@@ -68,25 +67,25 @@ end
 %     F_rxtr = get_reactor_flowrates(F, R);
 % end
 
-function F_rxtr = get_reactor_flowrates(F, R)
-    % Depreciated I think 
-    F_rxtr = flowrate_fxns().get_blank_flowstream();
-    F_rxtr.ethylene_carbonate.mol = F.ethylene_carbonate.mol + R.ethylene_carbonate.mol;
-    F_rxtr.ethylene_oxide.mol = F.ethylene_carbonate.mol + R.ethylene_carbonate.mol;
-    F_rxtr.methanol.mol = F.methanol.mol + R.methanol.mol;
-    F_rxtr.carbon_dioxide.mol = F.carbon_dioxide.mol + R.carbon_dioxide.mol;
-    F_rxtr = flowrate_fxns().set_F_mol(F_rxtr);
-end
+% function F_rxtr = get_reactor_flowrates(F, R)
+%     % Depreciated I think 
+%     F_rxtr = flowrate_fxns().get_blank_flowstream();
+%     F_rxtr.ethylene_carbonate.mol = F.ethylene_carbonate.mol + R.ethylene_carbonate.mol;
+%     F_rxtr.ethylene_oxide.mol = F.ethylene_carbonate.mol + R.ethylene_carbonate.mol;
+%     F_rxtr.methanol.mol = F.methanol.mol + R.methanol.mol;
+%     F_rxtr.carbon_dioxide.mol = F.carbon_dioxide.mol + R.carbon_dioxide.mol;
+%     F_rxtr = flowrate_fxns().set_F_mol(F_rxtr);
+% end
 
-function F = get_recycle_flowrates(F, s, chi)
-    % Depreciated I think 
-    user = get_user_inputs();
+% function F = get_recycle_flowrates(F, s, chi)
+%     % Depreciated I think 
+%     user = get_user_inputs();
 
-    R = flowrate_fxns().get_blank_flowstream(); 
-    MR = user.level3.molar_ratio_methanol;
-    R.methanol.mol = F.dimethyl_carbonate.mol * ((MR/s) - 1 - (1/s));
-    MR = user.level3.molar_ratio_carbon_dioxide;
-    R.carbon_dioxide.mol = F.dimethyl_carbonate.mol * (((MR + 1)/s) - 1);
-    R.ethylene_carbonate.mol = (F.dimethyl_carbonate.mol / s) * ( (1-chi) / chi);
-    R = flowrate_fxns().set_F_mol(R);
-end
+%     R = flowrate_fxns().get_blank_flowstream(); 
+%     MR = user.level3.molar_ratio_methanol;
+%     R.methanol.mol = F.dimethyl_carbonate.mol * ((MR/s) - 1 - (1/s));
+%     MR = user.level3.molar_ratio_carbon_dioxide;
+%     R.carbon_dioxide.mol = F.dimethyl_carbonate.mol * (((MR + 1)/s) - 1);
+%     R.ethylene_carbonate.mol = (F.dimethyl_carbonate.mol / s) * ( (1-chi) / chi);
+%     R = flowrate_fxns().set_F_mol(R);
+% end

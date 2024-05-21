@@ -11,9 +11,35 @@ function [F, P, R] = get_reactor_flows(F, tau, T, P, opt)
     V_rxtr.basis = q_total * tau;
     
     C_init = get_initial_concentrations(F, V_rxtr.basis, tau);
+    condition = get_condition(T, P, opt);
+    C = get_reactor_effluent_concentrations(C_init, tau, condition, opt);
 
 
     F = NaN; P = NaN; R = NaN;
+end
+
+function C_vector = get_conc_vector(C)
+    C_vector(1) = C.ethylene_carbonate;
+    C_vector(2) = C.ethylene_glycol;
+    C_vector(3) = C.methanol;
+    C_vector(4) = C.carbon_dioxide;
+    C_vector(5) = C.dimethyl_carbonate;
+    C_vector(6) = C.methoxy_ethanol;
+end
+
+function C = get_reactor_effluent_concentrations(C_init, tau, condition, opt)
+    C_init_vector = get_conc_vector(C_init);
+    k.k2f = get_rate_constant('2f', condition, opt);
+    k.k2r = get_rate_constant('2r', condition, opt);
+    k.k3 = get_rate_constant('3', condition, opt);
+    % C = fsolve() 
+
+    C = NaN;
+end
+
+function F = sys_of_eqns()
+    F(1) = 
+
 end
 
 function C = get_initial_concentrations(F, V_rxtr, tau);
@@ -55,7 +81,7 @@ function q_total = get_total_volumetric_flowrate(q)
     q_total.value = 0;
     fieldNames = fieldnames(q);
     for i = 1:length(fieldNames)
-        if fieldNames{i} == "units"
+        if fieldNames{i} == 'units'
             q_total.units = q.units; 
             continue
         end
@@ -71,7 +97,7 @@ function q = get_volumetric_flowrates(F, T, P, opt)
     % rho.carbon_dioxide = get_supercritical_c02_density(condition, opt, P);
     rho = get_all_densities(T, P, opt);    
 
-    q.units = "m^3 / s";
+    q.units = 'm^3 / s';
     % Carbon dioxide 
     % (L / s)        = (mol / s)            * (g / mol)                      
     q.carbon_dioxide = F.carbon_dioxide.mol * const.molar_mass.carbon_dioxide * ... 
@@ -87,7 +113,7 @@ function q = get_volumetric_flowrates(F, T, P, opt)
     q.carbon_dioxide = q.carbon_dioxide * const.units.volume.l_per_m3;
     q.methanol = q.methanol * const.units.volume.l_per_m3;
     q.ethylene_carbonate = q.ethylene_carbonate * const.units.volume.l_per_m3;
-    q.units = "L / s" ;
+    q.units = 'L / s' ;
     
 end
 
@@ -194,7 +220,7 @@ function rho = get_supercritical_c02_density(condition, opt, pressure)
     withinTempRange = @(T) T >= 80 && T <= 140;
     withinPressureRange = @(P) P >= 50 && P <= 150;
     
-    rho.units = "kg / m^3";
+    rho.units = 'kg / m^3';
     switch opt
         case 'isothermal'
             P = condition;
