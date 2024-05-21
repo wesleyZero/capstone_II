@@ -6,8 +6,8 @@ end
 
 function [F, P, R] = get_reactor_flows(F, tau, T, P, opt)
     
-    V_rxtr.basis.L = 1;
     q = get_volumetric_flowrates(F, T, P, opt);
+    q_total = get_total_volumetric_flowrate(q);
 
     F = NaN; P = NaN; R = NaN;
 end
@@ -24,22 +24,40 @@ function condition = get_condition(T, P, opt)
     end
 end
 
-function q = get_volumetric_flowrates(F, T, P, opt)
-    const = get_constants();
-    % switch opt
-    %     case 'isobaric'
-    %         condition = T;
-    %     case 'isothermal'
-    %         condition = P; 
-    %     otherwise
-    %         condition = NaN; 
-    %         disp("ERROR : get_volumetric_flowrates : opt not valid");
-    % end
+function rho = get_all_densities(T, P, opt)
+    % rho = const.densities; 
+    % rho.methanol = get_methanol_density(T, P);
+    % rho.carbon_dioxide = get_supercritical_c02_density(condition, opt, P);
+
     condition = get_condition(T, P, opt);
-    rho = const.densities; 
+    rho = get_constants().densities; 
     rho.methanol = get_methanol_density(T, P);
     rho.carbon_dioxide = get_supercritical_c02_density(condition, opt, P);
     
+end
+
+function q_total = get_total_volumetric_flowrate(q)
+    q_total.value = 0;
+    fieldNames = fieldnames(q);
+    for i = 1:length(fieldNames)
+        if fieldNames{i} == "units"
+            q_total.units = q.units; 
+            continue
+        end
+        q_total.value = q_total.value +  q.(fieldNames{i});
+        
+    end
+
+end
+
+function q = get_volumetric_flowrates(F, T, P, opt)
+    const = get_constants();
+    % condition = get_condition(T, P, opt);
+    % rho = const.densities; 
+    % rho.methanol = get_methanol_density(T, P);
+    % rho.carbon_dioxide = get_supercritical_c02_density(condition, opt, P);
+    rho = get_all_densities(T, P, opt);    
+
     q.units = "m^3 / s";
     % Carbon dioxide 
     % (L / s)        = (mol / s)            * (g / mol)                      
@@ -52,6 +70,11 @@ function q = get_volumetric_flowrates(F, T, P, opt)
     % Ethylene Carbonate
     q.ethylene_carbonate = F.ethylene_carbonate.mol * const.molar_mass.ethylene_carbonate *...
          const.units.mass.kg_per_g * (1 / rho.ethylene_carbonate) * const.units.volume.l_per_m3;
+    
+    q.carbon_dioxide = q.carbon_dioxide * const.units.volume.l_per_m3;
+    q.methanol = q.methanol * const.units.volume.l_per_m3;
+    q.ethylene_carbonate = q.ethylene_carbonate * const.units.volume.l_per_m3;
+    q.units = "L / s" ;
     
 end
 
