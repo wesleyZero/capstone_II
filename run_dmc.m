@@ -32,8 +32,8 @@ function [F, P, R] = level3_flowrates(tau, T, P)
     rxtr_fxns = reactor_fxns();
 
     % Basis calculations 
-    F = flow_fxns.get_basis_feed_flowrates();
-    P = rxtr_fxns.get_reactor_effluent(F, tau, T, P);
+    F_basis = flow_fxns.get_basis_feed_flowrates();
+    [F, P, R] = rxtr_fxns.get_reactor_effluent(F_basis, tau, T, P);
     
 
     F = NaN; P = NaN; R = NaN; 

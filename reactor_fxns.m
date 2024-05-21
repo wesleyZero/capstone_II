@@ -4,13 +4,16 @@ function fxns = reactor_fxns()
     fxns.get_reactor_effluent = @get_reactor_effluent;
 end
 
-function idk = get_reactor_effluent(F, tau, T, P)
-    idk = NaN;
+function [F, P, R] = get_reactor_effluent(F, tau, T, P)
     
     V_rxtr.basis.L = 1;
 
 
+    F = NaN; P = NaN; R = NaN;
+end
 
+function q = get_inlet_volumetic_flowrate(F, tau)
+    q = 0;
 end
 
 function r = get_reaction_rate(reaction, condition, opt, F)
@@ -84,21 +87,23 @@ function k = get_isothermal_rate_constant(reaction, P)
     % input:
     %   P [ bar ]
 
-    if reaction == '2f'
-        rho = get_supercritical_c02_density(P, 'isothermal')
-        if rho > 246.82 % [g / L] 
-            k = 0.02486 - 4.943 * (10^(-5)) * rho; 
-        else
-            k = 0.013; 
-        end
-    elseif reaction == '2r'
-        k = 0.01486 * rho^(-0.873);
-    elseif reaction == '3'
-        k = 3.014 * (10^(-4)) * exp(-5.99 * (10^(-3)) * rho);
-    else 
-        k = NaN;
-        disp("ERROR: get_isothermal_rate_constant(): invalid reaction option")
+    switch reaction
+        case '2f'
+            rho = get_supercritical_c02_density(P, 'isothermal');
+            if rho > 246.82 % [g / L]
+                k = 0.02486 - 4.943 * (10^(-5)) * rho;
+            else
+                k = 0.013;
+            end
+        case '2r'
+            k = 0.01486 * rho^(-0.873);
+        case '3'
+            k = 3.014 * (10^(-4)) * exp(-5.99 * (10^(-3)) * rho);
+        otherwise
+            k = NaN;
+            disp("ERROR: get_isothermal_rate_constant(): invalid reaction option")
     end
+
 
 end
 
@@ -117,34 +122,34 @@ function rho = get_supercritical_c02_density(condition, opt, pressure)
     withinTempRange = @(T) T >= 80 && T <= 140;
     withinPressureRange = @(P) P >= 50 && P <= 150;
     
-    if opt == 'isothermal'
-        P = condition;
-        if withinPressureRange(P)
-            rho.kg_m3 = 1.6746 * P - 12.592;
-                % NIST / Excel Regression
-        else
-            rho = NaN;
-            disp("get_supercritical_c02_density : ERROR : P out of range")
-        end
-    elseif opt == 'isobaric'
-        T = condition;
-        if withinTempRange(T)
-            if pressure < 125; % [C]
-                rho.kg_m3 = 356.08 * exp(-0.006 * T);
-                    % NIST Data at 100 bar
+    switch opt
+        case 'isothermal'
+            P = condition;
+            if withinPressureRange(P)
+                rho.kg_m3 = 1.6746 * P - 12.592;
+                    % NIST / Excel Regression
             else
-                rho.kg_m3 = 838.87 * exp(-0.009 * T);
-                    % NIST Data at 150 bar
+                rho = NaN;
+                disp("get_supercritical_c02_density : ERROR : P out of range")
             end
-        else
+        case 'isobaric'
+            T = condition;
+            if withinTempRange(T)
+                if pressure < 125 % [C]
+                    rho.kg_m3 = 356.08 * exp(-0.006 * T);
+                        % NIST Data at 100 bar
+                else
+                    rho.kg_m3 = 838.87 * exp(-0.009 * T);
+                        % NIST Data at 150 bar
+                end
+            else
+                rho = NaN;
+                disp("get_supercritical_c02_density : ERROR : T out of range")
+            end
+        otherwise
+            disp("SUPERCRITICAL C02 DENSITY FUNCTION ERROR: invalid opt")
             rho = NaN;
-            disp("get_supercritical_c02_density : ERROR : T out of range")
-        end
-    else
-        disp("SUPERCRICIAL C02 DENSITY FUNCTION ERROR: invalid opt")
-        rho = NaN;
     end
-
 end
 
 function rho = get_methanol_density(T, option, P)

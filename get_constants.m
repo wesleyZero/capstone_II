@@ -12,7 +12,10 @@ end
 
 
 function rho = get_species_densities();
-    rho = NaN;
+    rho.units = "kg / m^3 "
+    rho.ethylene_carbonate = 1.3214;
+        % https://pubchem.ncbi.nlm.nih.gov/compound/Ethylene-carbonate#section=Melting-Point
+        % g / ml = kg / m^3 right? 
 
 end 
 
