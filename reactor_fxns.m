@@ -5,12 +5,27 @@ function fxns = reactor_fxns()
 end
 
 function [F, P, R] = get_reactor_flows(F, tau, T, P, opt)
-    
+    % basis calculations  
     q = get_volumetric_flowrates(F, T, P, opt);
-    q_total = get_total_volumetric_flowrate(q);
+    q_total = get_total_volumetric_flowrate(q).value;
+    V_rxtr.basis = q_total * tau;
+    
+    C_init = get_initial_concentrations(F, V_rxtr.basis, tau);
+
 
     F = NaN; P = NaN; R = NaN;
 end
+
+function C = get_initial_concentrations(F, V_rxtr, tau);
+    % F.mol = mol /s 
+    % V = L
+    % tau = s
+
+    fieldNames = fieldnames(F);
+    for i = 1:length(fieldNames)
+        C.(fieldNames{i}) = F.(fieldNames{i}).mol * tau / V_rxtr;
+    end
+end 
 
 function condition = get_condition(T, P, opt)
     switch opt
@@ -45,9 +60,7 @@ function q_total = get_total_volumetric_flowrate(q)
             continue
         end
         q_total.value = q_total.value +  q.(fieldNames{i});
-        
     end
-
 end
 
 function q = get_volumetric_flowrates(F, T, P, opt)
@@ -98,15 +111,12 @@ function r = get_reaction_rate(reaction, condition, opt, F)
     end
 end
 
-function C = get_concentrations()
-    C.ethylene_carbonate = 1; % ?? 
-    C.dimethyl_carbonate = 1; % ?? 
-end 
 
 
-function V = get_reactor_volume()
-    V = 1; % ?? 
-end
+
+% function V = get_reactor_volume()
+%     V = 1; % ?? 
+% end
 
 function k = get_rate_constant(reaction, condition, opt)
 
