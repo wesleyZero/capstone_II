@@ -1,10 +1,10 @@
 
 function fxns = reactor_fxns() 
     fxns.get_reaction_rate = @get_reaction_rate;
-    fxns.get_reactor_effluent = @get_reactor_effluent;
+    fxns.get_reactor_flows = @get_reactor_flows;
 end
 
-function [F, P, R] = get_reactor_effluent(F, tau, T, P)
+function [F, P, R] = get_reactor_flows(F, tau, T, P, opt)
     
     V_rxtr.basis.L = 1;
 
@@ -12,7 +12,26 @@ function [F, P, R] = get_reactor_effluent(F, tau, T, P)
     F = NaN; P = NaN; R = NaN;
 end
 
-function q = get_inlet_volumetic_flowrate(F, tau)
+function q = get_volumetric_flowrates(F, tau, T, P, opt)
+    const = get_constants();
+    rho = const.density; 
+    switch opt
+        case 'isobaric'
+            condition = T;
+        case 'isothermal'
+            condition = P; 
+        otherwise
+            condition = NaN; 
+            disp("ERROR : get_volumetric_flowrates : opt not valid");
+    end
+    
+    rho.carbon_dioxide = get_supercritical_c02_density(condition, opt, P);
+    q.units = "m^3 / s";
+    % (L / s)        = (mol / s)            * (g / mol)                      
+    q.carbon_dioxide = F.carbon_dioxide.mol * const.molar_mass.carbon_dioxide * ... 
+        ...% (kg / g)        * (m^3 / kg)             * (L / m^3) 
+        const.units.kg_per_g * (1/rho.carbon_dioxide) * const.units.volume.l_per_m3;
+    
     q = 0;
 end
 

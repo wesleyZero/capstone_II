@@ -12,10 +12,11 @@ end
 
 
 function rho = get_species_densities();
-    rho.units = "kg / m^3 "
-    rho.ethylene_carbonate = 1.3214;
+    rho.units = "kg / m^3 ";
+    rho.ethylene_carbonate = 1.3214; % g / ml 
         % https://pubchem.ncbi.nlm.nih.gov/compound/Ethylene-carbonate#section=Melting-Point
-        % g / ml = kg / m^3 right? 
+        % kg / m3 = (g/ml) * (1000ml / L) * (kg / 1000 g) * (1000L / m^3)
+    rho.ethylene_carbonate = rho.ethylene_carbonate * 1000;
 
 end 
 
@@ -101,6 +102,7 @@ function units = get_unit_conversions()
 
     % Volumes 
     units.volume.m3_per_l = 0.001;
+    units.volume.l_per_m3 = 1000;
 
     % heat 
     units.heat.millionbtu_per_gj = 1.0551;       % [ ]
