@@ -5,9 +5,17 @@ function const = get_constants()
     const.stoich = get_stoichiometric_coeff();
     const.thermo = get_thermodynamic_constants();
     const.econ = get_economic_constants();
+    const.densities = get_species_densities();
     % const.heat_cap = get_heat_capacities();
 
 end 
+
+
+function rho = get_species_densities();
+    rho = NaN;
+
+end 
+
 
 function econ = get_economic_constants()
 

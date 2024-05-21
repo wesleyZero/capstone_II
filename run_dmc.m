@@ -2,40 +2,43 @@ clc; clear; close all;
 
 % SCRIPT________________________________________________________________________
 
-level3();
+level3_isobaric();
 
 % FUNCTIONS_____________________________________________________________________
 
-function void = level3()
+function void = level3_isobaric()
 
     console = get_console();
     const = get_constants(); 
     user = get_user_inputs();
     F_fxns = flowrate_fxns();
-    % F = user.level2.feed_stream;
+    P = user.level3.isobaric_press.bar;
 
     console.section("Starting Level 3 calculations")
 
-    % for s = user.level2.selectivity_range
-    %     for chi = user.level3.conversion_range
-
-    %         F = level3_flowrates(F, s, chi);
-    %     end
-
-    % end
+    for tau = user.level3.tau_range
+        for T = user.level3.temp_range
+            [F, P, R] = level3_flowrates(tau, T, P); 
+        end
+    end
     
     console.section("Level 3 calculations are complete")
-
 end
 
 
-function [F, P, R] = level3_flowrates(tau)
+function [F, P, R] = level3_flowrates(tau, T, P)
     user = get_user_inputs(); 
+    flow_fxns = flowrate_fxns();
+    rxtr_fxns = reactor_fxns();
 
-    % % Basis calculations 
-    % F = get_feed_flowrates(
+    % Basis calculations 
+    F = flow_fxns.get_basis_feed_flowrates();
+    P = rxtr_fxns.get_reactor_effluent(F, tau, T, P);
+    
 
+    F = NaN; P = NaN; R = NaN; 
 end
+
 
 
 % function [F, F_rxtr, R] = level3_flowrates(F, s, chi)
@@ -66,6 +69,7 @@ end
 % end
 
 function F_rxtr = get_reactor_flowrates(F, R)
+    % Depreciated I think 
     F_rxtr = flowrate_fxns().get_blank_flowstream();
     F_rxtr.ethylene_carbonate.mol = F.ethylene_carbonate.mol + R.ethylene_carbonate.mol;
     F_rxtr.ethylene_oxide.mol = F.ethylene_carbonate.mol + R.ethylene_carbonate.mol;
@@ -75,6 +79,7 @@ function F_rxtr = get_reactor_flowrates(F, R)
 end
 
 function F = get_recycle_flowrates(F, s, chi)
+    % Depreciated I think 
     user = get_user_inputs();
 
     R = flowrate_fxns().get_blank_flowstream(); 

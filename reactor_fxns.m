@@ -1,6 +1,16 @@
 
 function fxns = reactor_fxns() 
     fxns.get_reaction_rate = @get_reaction_rate;
+    fxns.get_reactor_effluent = @get_reactor_effluent;
+end
+
+function idk = get_reactor_effluent(F, tau, T, P)
+    idk = NaN;
+    
+    V_rxtr.basis.L = 1;
+
+
+
 end
 
 function r = get_reaction_rate(reaction, condition, opt, F)

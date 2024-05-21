@@ -1,8 +1,27 @@
 clc; clear; close all ;
 
-test_level2_feedstream()
-test_units()
+% test_level2_feedstream()
+% test_units()
 % test_constants()
+
+test_scripts() 
+disp("running main script")	
+% run_dmc
+
+function void = test_scripts()
+	void = NaN;
+	
+	disp("running all scripts")
+	flowrate_fxns
+	get_console
+	get_constants
+	get_user_inputs
+	reactor_fxns 
+	% separation_fxns
+	% heat_exchange_fxns
+	economic_fxns
+
+end
 
 function void = test_units()
 	const = get_constants();
@@ -34,6 +53,7 @@ function void = test_units()
 	const.units.heat
 	
 end
+
 
 function void = test_constants()
 	

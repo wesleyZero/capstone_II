@@ -2,8 +2,8 @@
 function fxns = flowrate_fxns()
     fxns.set_F_kta = @set_F_kta;
     fxns.set_F_mol = @set_F_mol;
-    fxns.get_mol_fractions = @get_mol_fractions;
     fxns.get_blank_flowstream = @get_blank_flowstream;
+    fxns.get_basis_feed_flowrates = @get_basis_feed_flowrates;
 end
 
 function F = get_basis_feed_flowrates()
@@ -17,8 +17,7 @@ function F = get_basis_feed_flowrates()
     F.carbon_dioxide.mol = F.ethylene_carbonate.mol * user.level3.molar_ratio_carbon_dioxide_EO;
 
     % set the flowrates
-    F = flowrate_fxns().set_F_kta(F);
-
+    F = set_F_mol(F);
 end 
 
 function F = get_blank_flowstream()
@@ -31,14 +30,17 @@ function F = get_blank_flowstream()
     F.methoxy_ethanol.mol = 0; 
 	F.dimethyl_carbonate.mol = 0; 
 
+    F = set_F_mol(F);
+
     % update the mol fractions
-    F = get_mol_fractions(F);
+    F = set_mol_fractions(F);
 end
 
 function F = set_F_kta(F) 
     % Calculates the molar flow rates in mol / s for a given flow rates in kta
     const = get_constants();
 
+    % Calculate the mol / s flowrate for given kta flowrate inputs
     fieldNames = fieldnames(F);
     for i = 1:length(fieldNames)
         % mol / s            = (kt / yr )           * (g / kt) 
@@ -47,13 +49,15 @@ function F = set_F_kta(F)
             const.units.time.yr_per_sec * (1 / const.molar_mass.(fieldNames{i}));
     end
 
-    % update the mol fractions
-    F = get_mol_fractions(F);
+    % update the mol fractions with new calculated molar flowrates
+    F = set_mol_fractions(F);
 end
 
 function F = set_F_mol(F)
+    % Calculates the the molar flow rates in kta for given flow rates in mol / s
     const = get_constants();
 
+    % Set the kta flowrates, for given flowrates in mol / s 
     fieldNames = fieldnames(F);
     for i = 1:length(fieldNames)
         % kt / yr            = (mol / s)            * (g / mol)
@@ -63,11 +67,12 @@ function F = set_F_mol(F)
     end
 
    % update the mol fractions
-    F = get_mol_fractions(F);
+    F = set_mol_fractions(F);
 end
 
-function F = get_mol_fractions(F)
+function F = set_mol_fractions(F)
 
+    % Find total molar flow rate
     fieldNames = fieldnames(F);
     F_total = 0;
     for i = 1:length(fieldNames)
@@ -75,6 +80,7 @@ function F = get_mol_fractions(F)
         F_total = F_total + F.(species).mol;
     end
 
+    % Calculate the mol fractions
     for i = 1:length(fieldNames)
         if ~F_total
             F.(fieldNames{i}).x = F.(fieldNames{i}).mol / F_total;
