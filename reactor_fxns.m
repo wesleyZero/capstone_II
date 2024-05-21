@@ -12,7 +12,7 @@ function [F, P, R] = get_reactor_flows(F, tau, T, P, opt)
     
     C_init = get_initial_concentrations(F, V_rxtr.basis, tau);
     condition = get_condition(T, P, opt);
-    C = get_reactor_effluent_concentrations(C_init, tau, condition, opt);
+    C = get_reactor_effluent_concentrations(C_init, tau, T, P, opt);
 
 
     F = NaN; P = NaN; R = NaN;
@@ -34,6 +34,9 @@ function k = get_all_rate_constants(condition, opt)
 end
 
 function b = get_sys_eqns_constants(T, P, opt)
+    % This b vector are what the system of non-linear equations are equal to.
+    % I used 'b' because it's like a non-linear version of Ax=b
+
     user = get_user_inputs(); 
     rho = get_all_densities(T, P, opt); 
 
@@ -42,6 +45,7 @@ function b = get_sys_eqns_constants(T, P, opt)
     sum = sum + user.level3.molar_ratio_methanol_EO / rho.methanol;
     sum = sum + 1 / rho.carbon_dioxide;
     sum_recip = 1 / sum;
+
     % Note: this calculation is kind of weird, because of the way that we are 
     % modeling this 'virtual reactor' before the first 'real' reactor. Reminder 
     % for myself in the future and others is that the kinetics of the first 
@@ -52,6 +56,13 @@ function b = get_sys_eqns_constants(T, P, opt)
     % because it ran to completion with C02 in massive stiochiometric excess. 
     % So we are using the ethylene carbonotate instead. 
 
+    b(1) = sum_recip;
+    b(2) = -user.level3.molar_ratio_methanol_EO * sum_recip;
+    b(3) = user.level3.molar_ratio_carbon_dioxide_EO * sum_recip;
+    b(4) = 0;
+    b(5) = 0;
+    b(6) = 0;
+
 end
 
 function C = get_reactor_effluent_concentrations(C_init, tau, T, P, opt)
@@ -59,14 +70,19 @@ function C = get_reactor_effluent_concentrations(C_init, tau, T, P, opt)
     condition = get_condition(T, P, opt);
     k = get_all_rate_constants(condition, opt);
     b = get_sys_eqns_constants(T, P, opt);
-    
+    eqns = @(C) sys_of_eqns(C, k, b, tau);
+
     % C = fsolve() 
 
     C = NaN;
 end
 
-function F = sys_of_eqns(C, k, tau)
-    F(1) = 
+function F = sys_of_eqns(C, k, b, tau)
+    F(1) = -C(1) - tau * C(1)^0.8 - tau * k.k3 * C(1) + tau * k.k2r * C(5) * C(2) - b(1); 
+    F(2) = -tau * k.k2f * C(1)^0.8 - tau * k.k3 * C(1) - C(3) + tau * k.k2r * C(5) * C(2) + b(2);
+    F(3) = -C(4) + tau * k.k3 * C(1) - b(3);
+    F(4) = -C(5) + tau * k.k2f * C(1)^0.8 - tau * k.k2r * C(5) * C(2) - b(4);
+    F(5) = C(2) + tau * k.k2f * C(1)^0.8
 
 end
 
@@ -109,7 +125,7 @@ function q_total = get_total_volumetric_flowrate(q)
     q_total.value = 0;
     fieldNames = fieldnames(q);
     for i = 1:length(fieldNames)
-        if fieldNames{i} == 'units'
+		if strcmp(fieldNames{i},'units')
             q_total.units = q.units; 
             continue
         end
@@ -174,16 +190,17 @@ end
 
 function k = get_rate_constant(reaction, condition, opt)
 
-    if opt == 'isothermal'
-        P = condition;
-        k = get_isothermal_rate_constant(reaction, P);
-    elseif opt == 'isobaric'
-        T = condition;
-        k = get_isobaric_rate_constant(reaction, T);
-    else
-        k = NaN;
-        disp("ERROR: get_rate_constant(): invalid opt")
-    end
+	if strcmp(opt, 'isothermal')
+    	P = condition;
+    	k = get_isothermal_rate_constant(reaction, P);
+	elseif strcmp(opt, 'isobaric')
+    	T = condition;
+    	k = get_isobaric_rate_constant(reaction, T);
+	else
+    	k = NaN;
+    	disp("ERROR: get_rate_constant(): invalid opt");
+	end
+
 end
 
 function k = get_isobaric_rate_constant(reaction, T)
