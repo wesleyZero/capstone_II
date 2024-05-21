@@ -13,12 +13,12 @@ function void = level3_isobaric()
     user = get_user_inputs();
     F_fxns = flowrate_fxns();
     P = user.level3.isobaric_press.bar;
-    opt = "isobaric";
+    opt = 'isobaric';
     console.section("Starting Level 3 calculations")
 
     for tau = user.level3.tau_range
         for T = user.level3.temp_range
-            [F, P, R] = level3_flowrates(tau, T, P, "isobaric"); 
+            [F, P, R] = level3_flowrates(tau, T, P, opt); 
         end
     end
     

@@ -7,14 +7,13 @@ end
 function [F, P, R] = get_reactor_flows(F, tau, T, P, opt)
     
     V_rxtr.basis.L = 1;
-
+    q = get_volumetric_flowrates(F, T, P, opt);
 
     F = NaN; P = NaN; R = NaN;
 end
 
-function q = get_volumetric_flowrates(F, tau, T, P, opt)
+function q = get_volumetric_flowrates(F, T, P, opt)
     const = get_constants();
-    rho = const.density; 
     switch opt
         case 'isobaric'
             condition = T;
@@ -24,15 +23,23 @@ function q = get_volumetric_flowrates(F, tau, T, P, opt)
             condition = NaN; 
             disp("ERROR : get_volumetric_flowrates : opt not valid");
     end
-    
+    rho = const.densities; 
+    rho.methanol = get_methanol_density(T, P);
     rho.carbon_dioxide = get_supercritical_c02_density(condition, opt, P);
+    
     q.units = "m^3 / s";
+    % Carbon dioxide 
     % (L / s)        = (mol / s)            * (g / mol)                      
     q.carbon_dioxide = F.carbon_dioxide.mol * const.molar_mass.carbon_dioxide * ... 
         ...% (kg / g)        * (m^3 / kg)             * (L / m^3) 
-        const.units.kg_per_g * (1/rho.carbon_dioxide) * const.units.volume.l_per_m3;
+        const.units.mass.kg_per_g * (1/rho.carbon_dioxide) * const.units.volume.l_per_m3;
+    % Methanol
+    q.methanol = F.methanol.mol * const.molar_mass.methanol * ...
+        const.units.mass.kg_per_g * (1 / rho.methanol) * const.units.volume.l_per_m3;
+    % Ethylene Carbonate
+    q.ethylene_carbonate = F.ethylene_carbonate.mol * const.molar_mass.ethylene_carbonate *...
+         const.units.mass.kg_per_g * (1 / rho.ethylene_carbonate) * const.units.volume.l_per_m3;
     
-    q = 0;
 end
 
 function r = get_reaction_rate(reaction, condition, opt, F)
@@ -141,11 +148,12 @@ function rho = get_supercritical_c02_density(condition, opt, pressure)
     withinTempRange = @(T) T >= 80 && T <= 140;
     withinPressureRange = @(P) P >= 50 && P <= 150;
     
+    rho.units = "kg / m^3";
     switch opt
         case 'isothermal'
             P = condition;
             if withinPressureRange(P)
-                rho.kg_m3 = 1.6746 * P - 12.592;
+                rho = 1.6746 * P - 12.592;
                     % NIST / Excel Regression
             else
                 rho = NaN;
@@ -155,10 +163,10 @@ function rho = get_supercritical_c02_density(condition, opt, pressure)
             T = condition;
             if withinTempRange(T)
                 if pressure < 125 % [C]
-                    rho.kg_m3 = 356.08 * exp(-0.006 * T);
+                    rho = 356.08 * exp(-0.006 * T);
                         % NIST Data at 100 bar
                 else
-                    rho.kg_m3 = 838.87 * exp(-0.009 * T);
+                    rho = 838.87 * exp(-0.009 * T);
                         % NIST Data at 150 bar
                 end
             else
@@ -171,7 +179,7 @@ function rho = get_supercritical_c02_density(condition, opt, pressure)
     end
 end
 
-function rho = get_methanol_density(T, option, P)
+function rho = get_methanol_density(T, P)
     % Input:
     %   P [=] bar
     %   T [=] celcius   
@@ -184,14 +192,14 @@ function rho = get_methanol_density(T, option, P)
     % Output: 
     %   rho [=] kg / m^3
     withinTempRange = @(T) T >= 80 && T <= 140;
-    withinPressureRange = @(P) P >= 50 && P <= 150;
-    
-    if withinTempRange(T) && withinPressureRange()
+    % withinPressureRange = @(P) P >= 50 && P <= 150;
+    rho.units = "kg / m^3";  
+    if withinTempRange(T)%  && withinPressureRange(P)
         if P < 125; % [C]
-            rho.kg_m3 = -1.0866 * T + 833.31;
+            rho = -1.0866 * T + 833.31;
                 % NIST Data at 100 bar
         else
-            rho.kg_m3 = -1.0354 * T + 834.79;
+            rho = -1.0354 * T + 834.79;
                 % NIST Data at 150 bar
         end
     else
