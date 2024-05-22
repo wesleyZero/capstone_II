@@ -21,7 +21,6 @@ function F = get_basis_feed_flowrates()
 end 
 
 function F = get_blank_flowstream()
-    % mol / s            = (kt / yr )           * (g / kt) 
     F.carbon_dioxide.mol = 0;
     F.ethylene_oxide.mol = 0; 
     F.methanol.mol = 0; 

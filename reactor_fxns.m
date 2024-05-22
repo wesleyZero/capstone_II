@@ -14,7 +14,13 @@ function [F, P, R] = get_reactor_flows(F, tau, T, P, opt)
     condition = get_condition(T, P, opt);
     C = get_reactor_effluent_concentrations(C_init, tau, T, P, opt);
 
-
+    if any(imag(C) ~= 0)
+        disp('ERROR : Complex valued concentrations');
+    elseif any(real(C) < 0)
+        disp('ERROR : Negative valued concentrations');
+    else
+        disp('Valid solution!!!!!!!!!!')
+    end
     F = NaN; P = NaN; R = NaN;
 end
 
@@ -65,25 +71,46 @@ function b = get_sys_eqns_constants(T, P, opt)
 
 end
 
+% function C_i0 = get_initial_concentrations()
+
+%     sum = 0;
+%     sum = user.level3.molar_ratio_carbon_dioxide_EO / rho.carbon_dioxide;
+%     sum = sum + user.level3.molar_ratio_methanol_EO / rho.methanol;
+%     sum = sum + 1 / rho.carbon_dioxide;
+%     sum_recip = 1 / sum;
+
+% end
+
 function C = get_reactor_effluent_concentrations(C_init, tau, T, P, opt)
     C_init_vector = get_conc_vector(C_init);
     condition = get_condition(T, P, opt);
     k = get_all_rate_constants(condition, opt);
     b = get_sys_eqns_constants(T, P, opt);
+    C_init_vector = [ b(1); b(2); b(3); 0 ; 0 ; 0];
     eqns = @(C) sys_of_eqns(C, k, b, tau);
+    user = get_user_inputs();
 
-    % C = fsolve() 
+    C = fsolve(eqns, C_init_vector, user.level3.fsolveOpt);
 
-    C = NaN;
 end
 
+% function F = sys_of_eqns(C, k, b, tau)
+
+%     F(1) = 
+%     F(2) = -tau * k.k2f * C(1)^0.8 - tau * k.k3 * C(1) - C(3) + tau * k.k2r * C(5) * C(2) - b(2);
+%     F(3) = -C(4) + tau * k.k3 * C(1) - b(3);
+%     F(4) = -C(5) + tau * k.k2f * C(1)^0.8 - tau * k.k2r * C(5) * C(2) - b(4);
+%     F(5) = -C(2) + tau * k.k2f * C(1)^0.8 - tau * k.k2r * C(5) * C(2) - b(5); 
+%     F(6) = -C(6) + tau * k.k3 * C(1) - b(6);
+% end
+
 function F = sys_of_eqns(C, k, b, tau)
-    F(1) = -C(1) - tau * C(1)^0.8 - tau * k.k3 * C(1) + tau * k.k2r * C(5) * C(2) - b(1); 
-    F(2) = -tau * k.k2f * C(1)^0.8 - tau * k.k3 * C(1) - C(3) + tau * k.k2r * C(5) * C(2) + b(2);
+    F(1) = -C(1) - tau * k.k2f * C(1)^0.8 - tau * k.k3 * C(1) + tau * k.k2r * C(5) * C(2) - b(1); 
+    F(2) = -tau * k.k2f * C(1)^0.8 - tau * k.k3 * C(1) - C(3) + tau * k.k2r * C(5) * C(2) - b(2);
     F(3) = -C(4) + tau * k.k3 * C(1) - b(3);
     F(4) = -C(5) + tau * k.k2f * C(1)^0.8 - tau * k.k2r * C(5) * C(2) - b(4);
-    F(5) = C(2) + tau * k.k2f * C(1)^0.8
-
+    F(5) = -C(2) + tau * k.k2f * C(1)^0.8 - tau * k.k2r * C(5) * C(2) - b(5); 
+    F(6) = -C(6) + tau * k.k3 * C(1) - b(6);
 end
 
 function C = get_initial_concentrations(F, V_rxtr, tau);
@@ -170,12 +197,12 @@ function q = get_volumetric_flowrates(F, T, P, opt)
     
 end
 
-function r = get_reaction_rate(reaction, condition, opt, F)
+function r = get_reaction_rate(C, reaction, T, P, opt)
     % input:
     %   condition = T or P
     %   opt = 'isothermal' or 'isobaric'
 
-    C = get_concentrations();
+    condition = get_condition(T, P, opt);
     k = get_rate_constant(reaction, condition, opt);
     switch reaction
         case '2f'
@@ -189,13 +216,6 @@ function r = get_reaction_rate(reaction, condition, opt, F)
             disp("ERROR: get_reaction_rate(): invalid reaction option")
     end
 end
-
-
-
-
-% function V = get_reactor_volume()
-%     V = 1; % ?? 
-% end
 
 function k = get_rate_constant(reaction, condition, opt)
 
