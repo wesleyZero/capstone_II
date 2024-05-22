@@ -18,6 +18,9 @@ function F = get_basis_feed_flowrates()
 
     % set the flowrates
     F = set_F_mol(F);
+
+    % update the mol fractions
+    F = set_mol_fractions(F);
 end 
 
 function F = get_blank_flowstream()
@@ -81,7 +84,7 @@ function F = set_mol_fractions(F)
 
     % Calculate the mol fractions
     for i = 1:length(fieldNames)
-        if ~F_total
+        if F_total
             F.(fieldNames{i}).x = F.(fieldNames{i}).mol / F_total;
         else % For blank flowstreams
             F.(fieldNames{i}).x = 0;

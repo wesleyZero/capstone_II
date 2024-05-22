@@ -16,8 +16,10 @@ function [F, P, R] = get_reactor_flows(F, tau, T, P, opt)
 
     if any(imag(C) ~= 0)
         disp('ERROR : Complex valued concentrations');
+        C
     elseif any(real(C) < 0)
         disp('ERROR : Negative valued concentrations');
+        C
     else
         disp('Valid solution!!!!!!!!!!')
     end
