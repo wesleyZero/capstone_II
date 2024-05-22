@@ -38,7 +38,7 @@ function b = get_sys_eqns_constants(T, P, opt)
     % I used 'b' because it's like a non-linear version of Ax=b
 
     user = get_user_inputs(); 
-    rho = get_all_densities(T, P, opt); 
+    rho = get_all_molar_densities(T, P, opt); 
 
     sum = 0;
     sum = user.level3.molar_ratio_carbon_dioxide_EO / rho.carbon_dioxide;
@@ -109,13 +109,22 @@ function condition = get_condition(T, P, opt)
     end
 end
 
-function rho = get_all_molar_densitites(T, P, opt)
+function rho = get_all_molar_densities(T, P, opt)
     rho = get_all_densities(T, P, opt);
     const = get_constants();
-    % mol / L             = (kg / m^3)              * (g / kg)
-    rho.ethylene_carbonate = rho.ethylene_carbonate * const.units.mass.g_per_kg * ... 
-        
 
+    fieldNames = fieldnames(rho);
+    for i = 1:length(fieldNames)
+        if strcmp(fieldNames{i},'units')
+            rho.(fieldNames{i}) = 'mol / L';
+            continue
+        end
+
+        % mol / L              = (kg / m^3)              * (g / kg)
+        rho.(fieldNames{i}) = rho.(fieldNames{i}) * const.units.mass.g_per_kg * ... 
+        ...% (mol / g)                            * (m^3 / L) 
+        (1 / const.molar_mass.(fieldNames{i})) * const.units.volume.m3_per_l;
+    end
 end
 
 function rho = get_all_densities(T, P, opt)

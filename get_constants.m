@@ -73,34 +73,34 @@ end
 function units = get_unit_conversions() 
     
     % Mass
-    units.mass.mt_per_kt = 10^3;     % [ MT / kt ]
-    units.mass.g_per_kt = 10^9;       % [ g / kt ]
-    units.mass.kt_per_g = 10^-9;       % [ kt / g ]  
-    units.mass.kg_per_kt =  10^6;     % [ kg / MT ]
-    units.mass.mt_per_g = 10^-6;       % [ MT / g ] 
+    units.mass.mt_per_kt = 10^3;     
+    units.mass.g_per_kt = 10^9;       
+    units.mass.kt_per_g = 10^-9;      
+    units.mass.kg_per_kt =  10^6;    
+    units.mass.mt_per_g = 10^-6;       
     units.mass.kg_per_g = 1000;
-    units.mass.g_per_g = 10^-3;
+    units.mass.g_per_kg = 10^-3;
 
     % Energy
-    units.energy.gj_per_kj = 10^-6;        % [ GJ / kJ ]
-    units.energy.kj_per_gj = 10^6;        % [ kJ / GJ ]
+    units.energy.gj_per_kj = 10^-6;       
+    units.energy.kj_per_gj = 10^6;      
 
     % Temperature      
-	units.temperature.c_to_k = @(T_C) T_C + 273.15;        % [ C -> K ]
-	units.temperature.k_to_c = @(T_K) T_K - 273.15;        % [ K -> C ]
+	units.temperature.c_to_k = @(T_C) T_C + 273.15;       
+	units.temperature.k_to_c = @(T_K) T_K - 273.15;      
 
     % Value
     units.value.mmdolla_per_dolla = 10^-6;    % [ $ MM / $]
     units.value.dolla_per_mmdolla = 10^6;    % [ $ / $ MM ]
 
     % Pressure
-    units.pressure.bar_per_psia = 0.0689476;    % [ Bar / Psia ]
+    units.pressure.bar_per_psia = 0.0689476;   
 
     % Time
-    units.time.yr_per_sec = 1 / (3.154 * 10^7);    % [ yr / s ]
-    units.time.sec_per_yr = 3.154 * 10^7;       % [ s / yr ]
-    units.time.yr_per_hr = (1/8760 );       % [ yr / hr ]
-    units.time.hr_per_yr = 8760;       % [ hr / yr ]
+    units.time.yr_per_sec = 1 / (3.154 * 10^7);   
+    units.time.sec_per_yr = 3.154 * 10^7;      
+    units.time.yr_per_hr = (1/8760 );      
+    units.time.hr_per_yr = 8760;    
 
     % Volumes 
     units.volume.m3_per_l = 0.001;
