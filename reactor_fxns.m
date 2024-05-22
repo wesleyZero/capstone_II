@@ -11,7 +11,6 @@ function [F, P, R] = get_reactor_flows(F, tau, T, pressure, opt)
     V_rxtr.basis = q_total * tau;
     
     C_init = get_initial_concentrations(F, V_rxtr.basis, tau);
-    condition = get_condition(T, pressure, opt);
     C = get_reactor_effluent_concentrations(C_init, tau, T, pressure, opt);
 
     if any(imag(C) ~= 0)
@@ -35,10 +34,10 @@ function C_vector = get_conc_vector(C)
     C_vector(6) = C.methoxy_ethanol;
 end
 
-function k = get_all_rate_constants(condition, opt)
-    k.k2f = get_rate_constant('2f', condition, opt);
-    k.k2r = get_rate_constant('2r', condition, opt);
-    k.k3 = get_rate_constant('3', condition, opt);
+function k = get_all_rate_constants(T, P, opt)
+    k.k2f = get_rate_constant('2f', T, P, opt);
+    k.k2r = get_rate_constant('2r', T, P, opt);
+    k.k3 = get_rate_constant('3', T, P, opt);
 end
 
 function b = get_sys_eqns_constants(T, P, opt)
@@ -85,8 +84,7 @@ end
 
 function C = get_reactor_effluent_concentrations(C_init, tau, T, P, opt)
     C_init_vector = get_conc_vector(C_init);
-    condition = get_condition(T, P, opt);
-    k = get_all_rate_constants(condition, opt);
+    k = get_all_rate_constants(T, P, opt);
     b = get_sys_eqns_constants(T, P, opt);
 %     C_init_vector = [ b(1); b(2); b(3); 0 ; 0 ; 0];
 		b(2) = -b(2);
@@ -118,11 +116,9 @@ end
 
 function r = get_reaction_rate(C, reaction, T, P, opt)
     % input:
-    %   condition = T or P
     %   opt = 'isothermal' or 'isobaric'
 
-    condition = get_condition(T, P, opt);
-    k = get_rate_constant(reaction, condition, opt);
+    k = get_rate_constant(reaction, T, P, opt);
     switch reaction
         case '2f'
             r = k * (C.ethylene_carbonate)^0.8;
@@ -182,7 +178,6 @@ end
 function rho = get_all_densities(T, P, opt)
     % out is in kg / m^3
 
-    condition = get_condition(T, P, opt);
     rho = get_constants().densities; 
     rho.methanol = get_methanol_density(T, P);
     rho.carbon_dioxide = get_supercritical_c02_density(T, P, opt);
@@ -222,13 +217,10 @@ function q = get_volumetric_flowrates(F, T, P, opt)
     
 end
 
-function k = get_rate_constant(reaction, condition, opt)
-
+function k = get_rate_constant(reaction, T, P, opt)
 	if strcmp(opt, 'isothermal')
-    	P = condition;
     	k = get_isothermal_rate_constant(reaction, P);
 	elseif strcmp(opt, 'isobaric')
-    	T = condition;
     	k = get_isobaric_rate_constant(reaction, T);
 	else
     	k = NaN;
@@ -284,9 +276,7 @@ function k = get_isothermal_rate_constant(reaction, P)
 
 end
 
-% function rho = get_supercritical_c02_density(condition, opt, pressure)
 function rho = get_supercritical_c02_density(T, P, opt)
-    condition = get_condition(T, P, opt);
     % Input: condition = T or P. Depending on option
     %   P [=] bar
     %   T [=] celcius   
@@ -304,7 +294,6 @@ function rho = get_supercritical_c02_density(T, P, opt)
     rho.units = 'kg / m^3';
     switch opt
         case 'isothermal'
-            P = condition;
             if withinPressureRange(P)
                 rho = 1.6746 * P - 12.592;
                     % NIST / Excel Regression
@@ -313,7 +302,6 @@ function rho = get_supercritical_c02_density(T, P, opt)
                 disp("get_supercritical_c02_density : ERROR : P out of range")
             end
         case 'isobaric'
-            T = condition;
             if withinTempRange(T)
                 if P < 125 % [C]
                     rho = 356.08 * exp(-0.006 * T);
