@@ -93,14 +93,6 @@ function r = get_all_reaction_rates(C, T, P, opt)
     r.r2r = get_reaction_rate(C, '2r', T, P, opt);
     r.r3 = get_reaction_rate(C, '3', T, P, opt);
 end
-% function F = sys_of_eqns(C, k, b, tau)
-%     F(1) = -C(1) - tau * k.k2f * C(1)^0.8 - tau * k.k3 * C(1) + tau * k.k2r * C(5) * C(2) - b(1); 
-%     F(2) = -tau * k.k2f * C(1)^0.8 - tau * k.k3 * C(1) - C(3) + tau * k.k2r * C(5) * C(2) - b(2);
-%     F(3) = -C(4) + tau * k.k3 * C(1) - b(3);
-%     F(4) = -C(5) + tau * k.k2f * C(1)^0.8 - tau * k.k2r * C(5) * C(2) - b(4);
-%     F(5) = -C(2) + tau * k.k2f * C(1)^0.8 - tau * k.k2r * C(5) * C(2) - b(5); 
-%     F(6) = -C(6) + tau * k.k3 * C(1) - b(6);
-% end
 
 function r = get_reaction_rate(C, reaction, T, P, opt)
     % input:
