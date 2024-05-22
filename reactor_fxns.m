@@ -4,15 +4,15 @@ function fxns = reactor_fxns()
     fxns.get_reactor_flows = @get_reactor_flows;
 end
 
-function [F, P, R] = get_reactor_flows(F, tau, T, P, opt)
+function [F, P, R] = get_reactor_flows(F, tau, T, pressure, opt)
     % basis calculations  
-    q = get_volumetric_flowrates(F, T, P, opt);
+    q = get_volumetric_flowrates(F, T, pressure, opt);
     q_total = get_total_volumetric_flowrate(q).value;
     V_rxtr.basis = q_total * tau;
     
     C_init = get_initial_concentrations(F, V_rxtr.basis, tau);
-    condition = get_condition(T, P, opt);
-    C = get_reactor_effluent_concentrations(C_init, tau, T, P, opt);
+    condition = get_condition(T, pressure, opt);
+    C = get_reactor_effluent_concentrations(C_init, tau, T, pressure, opt);
 
     if any(imag(C) ~= 0)
         disp('ERROR : Complex valued concentrations');
@@ -88,7 +88,7 @@ function C = get_reactor_effluent_concentrations(C_init, tau, T, P, opt)
     condition = get_condition(T, P, opt);
     k = get_all_rate_constants(condition, opt);
     b = get_sys_eqns_constants(T, P, opt);
-    C_init_vector = [ b(1); b(2); b(3); 0 ; 0 ; 0];
+%     C_init_vector = [ b(1); b(2); b(3); 0 ; 0 ; 0];
     eqns = @(C) sys_of_eqns(C, k, b, tau);
     user = get_user_inputs();
 

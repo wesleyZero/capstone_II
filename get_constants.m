@@ -78,8 +78,8 @@ function units = get_unit_conversions()
     units.mass.kt_per_g = 10^-9;      
     units.mass.kg_per_kt =  10^6;    
     units.mass.mt_per_g = 10^-6;       
-    units.mass.kg_per_g = 1000;
-    units.mass.g_per_kg = 10^-3;
+    units.mass.kg_per_g = 10^-3;
+    units.mass.g_per_kg = 10^3;
 
     % Energy
     units.energy.gj_per_kj = 10^-6;       
