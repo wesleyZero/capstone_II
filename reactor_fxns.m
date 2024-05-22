@@ -6,9 +6,8 @@ end
 
 function [F, P, R] = get_reactor_flows(F, tau, T, pressure, opt)
     % basis calculations  
-    q = get_volumetric_flowrates(F, T, pressure, opt);
-    q_total = get_total_volumetric_flowrate(q).value;
-    V_rxtr.basis = q_total * tau;
+    q_tot = get_total_volumetric_flowrate(F, T, pressure, opt);
+    V_rxtr.basis = q_tot * tau;
     
     C_init = get_initial_concentrations(F, V_rxtr.basis, tau);
     C = get_reactor_effluent_concentrations(C_init, tau, T, pressure, opt);
@@ -95,7 +94,7 @@ function C = get_reactor_effluent_concentrations(C_init, tau, T, P, opt)
 
 end
 
-% function F = sys_of_eqns(C, k, b, tau)
+% function F = sys_of_eqns(C, T, P, opt, tau)
 %     r2f = get_reaction_rate(C, '2f', T, P, opt);
 %     r2r = get_reaction_rate(C, '2r', T, P, opt);
 %     r3 = get_reaction_rate(C, '3', T, P, opt);
@@ -132,7 +131,10 @@ function r = get_reaction_rate(C, reaction, T, P, opt)
     end
 end
 
+function C = get_concentrations(F, T, P, opt)
+    q_tot = get_total_volumetric_flowrate(F, T, P, opt);
 
+end
 
 function C = get_initial_concentrations(F, V_rxtr, tau);
     % F.mol = mol /s 
@@ -144,18 +146,6 @@ function C = get_initial_concentrations(F, V_rxtr, tau);
         C.(fieldNames{i}) = F.(fieldNames{i}).mol * tau / V_rxtr;
     end
 end 
-
-function condition = get_condition(T, P, opt)
-    switch opt
-        case 'isobaric'
-            condition = T;
-        case 'isothermal'
-            condition = P; 
-        otherwise
-            condition = NaN; 
-            disp("ERROR : get_condition : opt not valid");
-    end
-end
 
 function rho = get_all_molar_densities(T, P, opt)
     rho = get_all_densities(T, P, opt);
@@ -184,7 +174,8 @@ function rho = get_all_densities(T, P, opt)
     
 end
 
-function q_total = get_total_volumetric_flowrate(q)
+function q_total = get_total_volumetric_flowrate(F, T, P, opt)
+    q = get_volumetric_flowrates(F, T, P, opt);
     % output [L / s]
     q_total.value = 0;
     fieldNames = fieldnames(q);
@@ -194,7 +185,8 @@ function q_total = get_total_volumetric_flowrate(q)
             continue
         end
         q_total.value = q_total.value +  q.(fieldNames{i});
-    end
+	end
+	q_total = q_total.value;
 end
 
 function q = get_volumetric_flowrates(F, T, P, opt)
