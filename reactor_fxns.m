@@ -9,7 +9,8 @@ function [F, P, R] = get_reactor_flows(F, tau, T, pressure, opt)
     q_tot = get_total_volumetric_flowrate(F, T, pressure, opt);
     V_rxtr.basis = q_tot * tau;
     
-    C_init = get_initial_concentrations(F, V_rxtr.basis, tau);
+    % C_init = get_initial_concentrations(F, V_rxtr.basis, tau);
+    C_init = get_concentrations(F, T, pressure, opt, tau);
     C = get_reactor_effluent_concentrations(C_init, tau, T, pressure, opt);
 
     if any(imag(C) ~= 0)
@@ -71,16 +72,6 @@ function b = get_sys_eqns_constants(T, P, opt)
 
 end
 
-% function C_i0 = get_initial_concentrations()
-
-%     sum = 0;
-%     sum = user.level3.molar_ratio_carbon_dioxide_EO / rho.carbon_dioxide;
-%     sum = sum + user.level3.molar_ratio_methanol_EO / rho.methanol;
-%     sum = sum + 1 / rho.carbon_dioxide;
-%     sum_recip = 1 / sum;
-
-% end
-
 function C = get_reactor_effluent_concentrations(C_init, tau, T, P, opt)
     C_init_vector = get_conc_vector(C_init);
     k = get_all_rate_constants(T, P, opt);
@@ -131,21 +122,29 @@ function r = get_reaction_rate(C, reaction, T, P, opt)
     end
 end
 
-function C = get_concentrations(F, T, P, opt)
-    q_tot = get_total_volumetric_flowrate(F, T, P, opt);
-
-end
-
-function C = get_initial_concentrations(F, V_rxtr, tau);
-    % F.mol = mol /s 
-    % V = L
-    % tau = s
-
+function C = get_concentrations(F, T, P, opt, tau)
+    V = get_reactor_volume(F, T, P, opt, tau);
     fieldNames = fieldnames(F);
     for i = 1:length(fieldNames)
-        C.(fieldNames{i}) = F.(fieldNames{i}).mol * tau / V_rxtr;
+        C.(fieldNames{i}) = F.(fieldNames{i}).mol * tau / V;
     end
-end 
+end
+
+function V = get_reactor_volume(F, T, P, opt, tau)
+    q_tot = get_total_volumetric_flowrate(F, T, P, opt);
+    V = q_tot * tau;
+end
+
+% function C = get_initial_concentrations(F, V_rxtr, tau);
+%     % F.mol = mol /s 
+%     % V = L
+%     % tau = s
+
+%     fieldNames = fieldnames(F);
+%     for i = 1:length(fieldNames)
+%         C.(fieldNames{i}) = F.(fieldNames{i}).mol * tau / V_rxtr;
+%     end
+% end 
 
 function rho = get_all_molar_densities(T, P, opt)
     rho = get_all_densities(T, P, opt);
