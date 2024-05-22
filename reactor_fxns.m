@@ -4,28 +4,28 @@ function fxns = reactor_fxns()
     fxns.get_reactor_flows = @get_reactor_flows;
 end
 
-function [F, P, R] = get_reactor_flows(F, tau, T, pressure, opt)
+function [F_in, F_out, R] = get_reactor_flows(F_basis, T, P, opt, tau)
     % basis calculations  
-    q_tot = get_total_volumetric_flowrate(F, T, pressure, opt);
+    q_tot = get_total_volumetric_flowrate(F_basis, T, P, opt);
     V_rxtr.basis = q_tot * tau;
+    V_rxtr = get_reactor_volume(F_basis, T, P, opt, tau);
     
-    % C_init = get_initial_concentrations(F, V_rxtr.basis, tau);
-    C_init = get_concentrations(F, T, pressure, opt, tau);
-    C = get_reactor_effluent_concentrations(C_init, tau, T, pressure, opt);
+    C = get_reactor_effluent_concentrations(F_basis, T, P, opt, tau);
 
     if any(imag(C) ~= 0)
-%         disp('ERROR : Complex valued concentrations');
+        disp('ERROR : Complex valued concentrations');
 %         C
     elseif any(real(C) < 0)
-%         disp('ERROR : Negative valued concentrations');
+        disp('ERROR : Negative valued concentrations');
 %         C
     else
         disp('Valid solution!!!!!!!!!!')
     end
-    F = NaN; P = NaN; R = NaN;
+    F_in = NaN; F_out = NaN; R = NaN;
 end
 
-function C_vector = get_conc_vector(C)
+function C_vector = get_conc_vector(F, T, P, opt, tau)
+    C = get_concentrations(F, T, P, opt, tau);
     C_vector(1) = C.ethylene_carbonate;
     C_vector(2) = C.ethylene_glycol;
     C_vector(3) = C.methanol;
@@ -40,69 +40,67 @@ function k = get_all_rate_constants(T, P, opt)
     k.k3 = get_rate_constant('3', T, P, opt);
 end
 
-function b = get_sys_eqns_constants(T, P, opt)
-    % This b vector are what the system of non-linear equations are equal to.
-    % I used 'b' because it's like a non-linear version of Ax=b
-
-    user = get_user_inputs(); 
-    rho = get_all_molar_densities(T, P, opt); 
-
-    sum = 0;
-    sum = user.level3.molar_ratio_carbon_dioxide_EO / rho.carbon_dioxide;
-    sum = sum + user.level3.molar_ratio_methanol_EO / rho.methanol;
-    sum = sum + 1 / rho.carbon_dioxide;
-    sum_recip = 1 / sum;
-
-    % Note: this calculation is kind of weird, because of the way that we are 
-    % modeling this 'virtual reactor' before the first 'real' reactor. Reminder 
-    % for myself in the future and others is that the kinetics of the first 
-    % reaction are so fast that we are assuming that first reaction goes 
-    % to completion. This first reaction is the 'virtual reactor'. When 
-    % calculating the 'real' reactor feed we are using the molar ratios to 
-    % ethylene oxide, however we don't actually have any ethylene oxide
-    % because it ran to completion with C02 in massive stiochiometric excess. 
-    % So we are using the ethylene carbonotate instead. 
-
-    b(1) = sum_recip;
-    b(2) = -user.level3.molar_ratio_methanol_EO * sum_recip;
-    b(3) = user.level3.molar_ratio_carbon_dioxide_EO * sum_recip;
-    b(4) = 0;
-    b(5) = 0;
-    b(6) = 0;
-
-end
-
-function C = get_reactor_effluent_concentrations(C_init, tau, T, P, opt)
-    C_init_vector = get_conc_vector(C_init);
-    k = get_all_rate_constants(T, P, opt);
-    b = get_sys_eqns_constants(T, P, opt);
-%     C_init_vector = [ b(1); b(2); b(3); 0 ; 0 ; 0];
-		b(2) = -b(2);
-    eqns = @(C) sys_of_eqns(C, k, b, tau);
+function C = get_reactor_effluent_concentrations(F, T, P, opt, tau)
     user = get_user_inputs();
+    % Ci0 = get_conc_vector(F, T, P, opt, tau);
+    Ci0 = get_concentrations(F, T, P, opt, tau);
+    Ci_init = get_conc_vector(F, T, P, opt, tau);
+    params.Ci0 = Ci0;
+    params.tau = tau;
+    params.T = T;
+    params.P = P;
+    params.opt = opt;
 
-    C = fsolve(eqns, C_init_vector, user.level3.fsolveOpt);
-
+    eqns = @(C) sys_of_eqns(C, params);
+    C = fsolve(eqns, Ci_init, user.level3.fsolveOpt);
 end
 
-% function F = sys_of_eqns(C, T, P, opt, tau)
-%     r2f = get_reaction_rate(C, '2f', T, P, opt);
-%     r2r = get_reaction_rate(C, '2r', T, P, opt);
-%     r3 = get_reaction_rate(C, '3', T, P, opt);
-%     r.ec = r2r - 
-%     r.meoh = - 2 * r2f - r3;
-%     r.co2 =  
-%     % F(1) = C_0.ethylene_carbonate - C.ethylene_carbonate + tau * get_reaction_rate(C, '2f', T, P, opt);
+function C_struct = get_concentration_struct(C_vector)
+    C_struct.ethylene_carbonate = C_vector(1);
+    C_struct.ethylene_glycol = C_vector(2);
+    C_struct.methanol = C_vector(3);
+    C_struct.carbon_dioxide = C_vector(4);
+    C_struct.dimethyl_carbonate = C_vector(5);
+    C_struct.methoxy_ethanol = C_vector(6);
+end
+
+function eqn = sys_of_eqns(C, params)
+    T = params.T;
+    P = params.P;
+    opt = params.opt;
+    Ci0 = params.Ci0;
+    tau = params.tau;
+    C_struct = get_concentration_struct(C);
+    r = get_all_reaction_rates(C_struct, T, P, opt);
+
+    r.ec =  r.r2r - r.r2f - r.r3; 
+    r.meoh = (2 * r.r2r) - (2 * r.r2f) - r.r3;
+    r.co2 = r.r3;
+    r.dmc = r.r2f - r.r2r;
+    r.eg = r.r2f - r.r2r; 
+    r.me = r.r3; 
+
+    eqn(1) = Ci0.ethylene_carbonate - C(1) + (tau * r.ec);
+    eqn(2) = Ci0.methanol - C(3) + (tau * r.meoh);
+    eqn(3) = Ci0.carbon_dioxide - C(4) + (tau * r.co2);
+    eqn(4) = (-C(5)) + (tau * r.dmc); 
+    eqn(5) = (-C(2)) + (tau * r.eg);
+    eqn(6) = (-C(6)) + (tau * r.me);
+end
+
+function r = get_all_reaction_rates(C, T, P, opt)
+    r.r2f = get_reaction_rate(C, '2f', T, P, opt);
+    r.r2r = get_reaction_rate(C, '2r', T, P, opt);
+    r.r3 = get_reaction_rate(C, '3', T, P, opt);
+end
+% function F = sys_of_eqns(C, k, b, tau)
+%     F(1) = -C(1) - tau * k.k2f * C(1)^0.8 - tau * k.k3 * C(1) + tau * k.k2r * C(5) * C(2) - b(1); 
+%     F(2) = -tau * k.k2f * C(1)^0.8 - tau * k.k3 * C(1) - C(3) + tau * k.k2r * C(5) * C(2) - b(2);
+%     F(3) = -C(4) + tau * k.k3 * C(1) - b(3);
+%     F(4) = -C(5) + tau * k.k2f * C(1)^0.8 - tau * k.k2r * C(5) * C(2) - b(4);
+%     F(5) = -C(2) + tau * k.k2f * C(1)^0.8 - tau * k.k2r * C(5) * C(2) - b(5); 
+%     F(6) = -C(6) + tau * k.k3 * C(1) - b(6);
 % end
-
-function F = sys_of_eqns(C, k, b, tau)
-    F(1) = -C(1) - tau * k.k2f * C(1)^0.8 - tau * k.k3 * C(1) + tau * k.k2r * C(5) * C(2) - b(1); 
-    F(2) = -tau * k.k2f * C(1)^0.8 - tau * k.k3 * C(1) - C(3) + tau * k.k2r * C(5) * C(2) - b(2);
-    F(3) = -C(4) + tau * k.k3 * C(1) - b(3);
-    F(4) = -C(5) + tau * k.k2f * C(1)^0.8 - tau * k.k2r * C(5) * C(2) - b(4);
-    F(5) = -C(2) + tau * k.k2f * C(1)^0.8 - tau * k.k2r * C(5) * C(2) - b(5); 
-    F(6) = -C(6) + tau * k.k3 * C(1) - b(6);
-end
 
 function r = get_reaction_rate(C, reaction, T, P, opt)
     % input:
@@ -135,17 +133,6 @@ function V = get_reactor_volume(F, T, P, opt, tau)
     V = q_tot * tau;
 end
 
-% function C = get_initial_concentrations(F, V_rxtr, tau);
-%     % F.mol = mol /s 
-%     % V = L
-%     % tau = s
-
-%     fieldNames = fieldnames(F);
-%     for i = 1:length(fieldNames)
-%         C.(fieldNames{i}) = F.(fieldNames{i}).mol * tau / V_rxtr;
-%     end
-% end 
-
 function rho = get_all_molar_densities(T, P, opt)
     rho = get_all_densities(T, P, opt);
     const = get_constants();
@@ -170,7 +157,6 @@ function rho = get_all_densities(T, P, opt)
     rho = get_constants().densities; 
     rho.methanol = get_methanol_density(T, P);
     rho.carbon_dioxide = get_supercritical_c02_density(T, P, opt);
-    
 end
 
 function q_total = get_total_volumetric_flowrate(F, T, P, opt)
@@ -263,8 +249,6 @@ function k = get_isothermal_rate_constant(reaction, P)
             k = NaN;
             disp("ERROR: get_isothermal_rate_constant(): invalid reaction option")
     end
-
-
 end
 
 function rho = get_supercritical_c02_density(T, P, opt)
@@ -340,6 +324,3 @@ function rho = get_methanol_density(T, P)
     end
 
 end
-
-
-

@@ -12,13 +12,13 @@ function void = level3_isobaric()
     const = get_constants(); 
     user = get_user_inputs();
     F_fxns = flowrate_fxns();
-    pressure = user.level3.isobaric_press.bar;
+    P = user.level3.isobaric_press.bar;
     opt = 'isobaric';
     console.section("Starting Level 3 calculations")
 
     for tau = user.level3.tau_range
-        for temperature = user.level3.temp_range
-            [F, P, R] = level3_flowrates(tau, temperature, pressure, opt); 
+        for T = user.level3.temp_range
+            [F_in, F_out, R] = level3_flowrates(tau, T, P, opt); 
         end
     end
     
@@ -26,14 +26,14 @@ function void = level3_isobaric()
 end
 
 
-function [F, P, R] = level3_flowrates(tau, temp, pressure, opt)
+function [F_in, F_out, R] = level3_flowrates(tau, temp, P, opt)
     user = get_user_inputs(); 
     flow_fxns = flowrate_fxns();
     rxtr_fxns = reactor_fxns();
 
     % Basis calculations 
     F_basis = flow_fxns.get_basis_feed_flowrates();
-    [F, P, R] = rxtr_fxns.get_reactor_flows(F_basis, tau, temp, pressure, opt);
+    [F_in, F_out, R] = rxtr_fxns.get_reactor_flows(F_basis, temp, P, opt, tau);
     
 
 end
