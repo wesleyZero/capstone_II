@@ -105,14 +105,21 @@ function condition = get_condition(T, P, opt)
             condition = P; 
         otherwise
             condition = NaN; 
-            disp("ERROR : get_volumetric_flowrates : opt not valid");
+            disp("ERROR : get_condition : opt not valid");
     end
 end
 
+function rho = get_all_molar_densitites(T, P, opt)
+    rho = get_all_densities(T, P, opt);
+    const = get_constants();
+    % mol / L             = (kg / m^3)              * (g / kg)
+    rho.ethylene_carbonate = rho.ethylene_carbonate * const.units.mass.g_per_kg * ... 
+        
+
+end
+
 function rho = get_all_densities(T, P, opt)
-    % rho = const.densities; 
-    % rho.methanol = get_methanol_density(T, P);
-    % rho.carbon_dioxide = get_supercritical_c02_density(condition, opt, P);
+    % out is in kg / m^3
 
     condition = get_condition(T, P, opt);
     rho = get_constants().densities; 
@@ -122,6 +129,7 @@ function rho = get_all_densities(T, P, opt)
 end
 
 function q_total = get_total_volumetric_flowrate(q)
+    % output [L / s]
     q_total.value = 0;
     fieldNames = fieldnames(q);
     for i = 1:length(fieldNames)
@@ -135,13 +143,8 @@ end
 
 function q = get_volumetric_flowrates(F, T, P, opt)
     const = get_constants();
-    % condition = get_condition(T, P, opt);
-    % rho = const.densities; 
-    % rho.methanol = get_methanol_density(T, P);
-    % rho.carbon_dioxide = get_supercritical_c02_density(condition, opt, P);
     rho = get_all_densities(T, P, opt);    
 
-    q.units = 'm^3 / s';
     % Carbon dioxide 
     % (L / s)        = (mol / s)            * (g / mol)                      
     q.carbon_dioxide = F.carbon_dioxide.mol * const.molar_mass.carbon_dioxide * ... 
@@ -153,10 +156,7 @@ function q = get_volumetric_flowrates(F, T, P, opt)
     % Ethylene Carbonate
     q.ethylene_carbonate = F.ethylene_carbonate.mol * const.molar_mass.ethylene_carbonate *...
          const.units.mass.kg_per_g * (1 / rho.ethylene_carbonate) * const.units.volume.l_per_m3;
-    
-    q.carbon_dioxide = q.carbon_dioxide * const.units.volume.l_per_m3;
-    q.methanol = q.methanol * const.units.volume.l_per_m3;
-    q.ethylene_carbonate = q.ethylene_carbonate * const.units.volume.l_per_m3;
+
     q.units = 'L / s' ;
     
 end
