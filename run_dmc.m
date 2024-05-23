@@ -16,8 +16,9 @@ function void = level3_isobaric()
     opt = 'isobaric';
     console.section("Starting Level 3 calculations")
 
-    for tau = user.level3.tau_range
-        for T = user.level3.temp_range
+    for T = user.level3.temp_range
+        console.subsection(sprintf("T = %3.2f", T), 1);
+        for tau = user.level3.tau_range
             [F_in, F_out, R] = level3_flowrates(tau, T, P, opt); 
         end
     end

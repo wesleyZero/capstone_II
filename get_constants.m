@@ -13,11 +13,27 @@ end
 
 function rho = get_species_densities();
     rho.units = "kg / m^3 ";
+
     rho.ethylene_carbonate = 1.3214; % g / ml 
         % https://pubchem.ncbi.nlm.nih.gov/compound/Ethylene-carbonate#section=Melting-Point
         % kg / m3 = (g/ml) * (1000ml / L) * (kg / 1000 g) * (1000L / m^3)
     rho.ethylene_carbonate = rho.ethylene_carbonate * 1000;
 
+    rho.dimethyl_carbonate = 1.069; % g / ml
+        % https://www.sigmaaldrich.com/US/en/product/sial/517127
+    rho.dimethyl_carbonate = rho.dimethyl_carbonate * 1000;
+
+    rho.ethylene_glycol = 1.113; % g / ml  
+        % https://www.sigmaaldrich.com/US/en/product/sial/324558
+    rho.ethylene_glycol = rho.ethylene_glycol * 1000;
+
+    rho.methoxy_ethanol = 0.965; % g / ml 
+        % https://www.sigmaaldrich.com/US/en/product/sial/284467
+    rho.methoxy_ethanol = rho.methoxy_ethanol * 1000;
+
+    rho.ethylene_oxide = 0.882; % g / ml 
+        % https://www.sigmaaldrich.com/US/en/product/aldrich/387614
+    rho.ethylene_oxide = rho.ethylene_oxide * 1000;
 end 
 
 

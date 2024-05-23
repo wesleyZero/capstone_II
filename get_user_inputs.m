@@ -5,8 +5,8 @@ function user = get_user_inputs()
     user.level3.molar_ratio_methanol_EO = 15;
     user.level3.molar_ratio_carbon_dioxide_EO = 12; 
         % one mol equiv is consumed in the virtual reactor
-    user.level3.tau_precision = 20;
-    user.level3.tau_max = 1000;
+    user.level3.tau_precision = 1000;
+    user.level3.tau_max = 10^4;
     user.level3.temp_precision = 10;
     user.level3.temp_min.C = 80;
     user.level3.temp_max.C = 140;
@@ -25,9 +25,9 @@ function user = get_user_inputs()
         'MaxIterations', 500, ...                     % Maximum number of iterations allowed
         'OptimalityTolerance', 1e-8, ...              % Termination tolerance on the first-order optimality
         'UseParallel', false, ...                     % Use parallel computing
-        'CheckGradients', false, ...                  % Check gradients numerically
-        'FiniteDifferenceStepSize', 1e-6, ...         % Step size for finite differences
-        'FiniteDifferenceType', 'forward', ...        % Finite difference type ('forward' or 'central')
+        'CheckGradients', true, ...                  % Check gradients numerically
+        'FiniteDifferenceStepSize', 1e-3, ...         % Step size for finite differences
+        'FiniteDifferenceType', 'central', ...        % Finite difference type ('forward' or 'central')
         'FunctionTolerance', 1e-6, ...                % Termination tolerance on the function value
         'PlotFcn', [], ...                            % Plot functions
         'OutputFcn', []);                             % Output functions

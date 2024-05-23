@@ -1,6 +1,6 @@
 
 function fxns = reactor_fxns() 
-    fxns.get_reaction_rate = @get_reaction_rate;
+    % fxns.get_reaction_rate = @get_reaction_rate;
     fxns.get_reactor_flows = @get_reactor_flows;
 end
 
@@ -11,6 +11,7 @@ function [F_in, F_out, R] = get_reactor_flows(F_basis, T, P, opt, tau)
     V_rxtr = get_reactor_volume(F_basis, T, P, opt, tau);
     
     C = get_reactor_effluent_concentrations(F_basis, T, P, opt, tau);
+    % F_out = conc_to_flowrate(C, T, P, opt, tau);
 
     if any(imag(C) ~= 0)
         disp('ERROR : Complex valued concentrations');
@@ -20,11 +21,31 @@ function [F_in, F_out, R] = get_reactor_flows(F_basis, T, P, opt, tau)
 %         C
     else
         disp('Valid solution!!!!!!!!!!')
+        C
     end
     F_in = NaN; F_out = NaN; R = NaN;
 end
 
-function C_vector = get_conc_vector(F, T, P, opt, tau)
+function F = conc_to_flowrate(C, T, P, opt, tau)
+    q = get_volumetric_flowrates()
+    fieldNames = fieldnames(C);
+    for i = 1:length(fieldNames)
+        if strcmp(fieldNames{i},'units')
+            % rho.(fieldNames{i}) = 'mol / L';
+            continue
+        end
+
+        % mol / L              = (kg / m^3)              * (g / kg)
+        rho.(fieldNames{i}) = rho.(fieldNames{i}) * const.units.mass.g_per_kg * ... 
+        ...% (mol / g)                            * (m^3 / L) 
+        (1 / const.molar_mass.(fieldNames{i})) * const.units.volume.m3_per_l;
+
+        % 
+    end
+
+end
+
+function C_vector = get_concentration_vector(F, T, P, opt, tau)
     C = get_concentrations(F, T, P, opt, tau);
     C_vector(1) = C.ethylene_carbonate;
     C_vector(2) = C.ethylene_glycol;
@@ -42,9 +63,8 @@ end
 
 function C = get_reactor_effluent_concentrations(F, T, P, opt, tau)
     user = get_user_inputs();
-    % Ci0 = get_conc_vector(F, T, P, opt, tau);
     Ci0 = get_concentrations(F, T, P, opt, tau);
-    Ci_init = get_conc_vector(F, T, P, opt, tau);
+    Ci_init = get_concentration_vector(F, T, P, opt, tau);
     params.Ci0 = Ci0;
     params.tau = tau;
     params.T = T;
@@ -170,18 +190,30 @@ function q = get_volumetric_flowrates(F, T, P, opt)
     const = get_constants();
     rho = get_all_densities(T, P, opt);    
 
-    % Carbon dioxide 
-    % (L / s)        = (mol / s)            * (g / mol)                      
-    q.carbon_dioxide = F.carbon_dioxide.mol * const.molar_mass.carbon_dioxide * ... 
-        ...% (kg / g)        * (m^3 / kg)             * (L / m^3) 
-        const.units.mass.kg_per_g * (1/rho.carbon_dioxide) * const.units.volume.l_per_m3;
-    % Methanol
-    q.methanol = F.methanol.mol * const.molar_mass.methanol * ...
-        const.units.mass.kg_per_g * (1 / rho.methanol) * const.units.volume.l_per_m3;
-    % Ethylene Carbonate
-    q.ethylene_carbonate = F.ethylene_carbonate.mol * const.molar_mass.ethylene_carbonate *...
-         const.units.mass.kg_per_g * (1 / rho.ethylene_carbonate) * const.units.volume.l_per_m3;
+    % % Carbon dioxide 
+    % % (L / s)        = (mol / s)            * (g / mol)                      
+    % q.carbon_dioxide = F.carbon_dioxide.mol * const.molar_mass.carbon_dioxide * ... 
+    %     ...% (kg / g)        * (m^3 / kg)             * (L / m^3) 
+    %     const.units.mass.kg_per_g * (1/rho.carbon_dioxide) * const.units.volume.l_per_m3;
+    % % Methanol
+    % q.methanol = F.methanol.mol * const.molar_mass.methanol * ...
+    %     const.units.mass.kg_per_g * (1 / rho.methanol) * const.units.volume.l_per_m3;
+    % % Ethylene Carbonate
+    % q.ethylene_carbonate = F.ethylene_carbonate.mol * const.molar_mass.ethylene_carbonate *...
+    %      const.units.mass.kg_per_g * (1 / rho.ethylene_carbonate) * const.units.volume.l_per_m3;
 
+
+    fieldNames = fieldnames(F);
+    for i = 1:length(fieldNames)
+        if strcmp(fieldNames{i},'units')
+            % rho.(fieldNames{i}) = 'mol / L';
+            continue
+        end
+        % (L / s)        = (mol / s)            * (g / mol)                      
+        q.(fieldNames{i}) = F.(fieldNames{i}).mol * const.molar_mass.(fieldNames{i}) * ... 
+            ...% (kg / g)        * (m^3 / kg)             * (L / m^3) 
+            const.units.mass.kg_per_g * (1/rho.(fieldNames{i})) * const.units.volume.l_per_m3;
+    end
     q.units = 'L / s' ;
     
 end

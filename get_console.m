@@ -22,7 +22,10 @@ function void = console_subsection(section_name, indent)
 
     divider = "_________________________________________________________________________";
 
-    tabs = indent * "\t"
+    tabs = "";
+    for i = 1:indent
+        tabs = tabs + "\t";
+    end
     
-    fprintf("%s%s%s\n", tabs, section_name, divider);
+    fprintf(tabs + "%s%s\n",section_name, divider);
 end
