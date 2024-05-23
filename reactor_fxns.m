@@ -280,8 +280,8 @@ function rho = get_supercritical_c02_density(T, P, opt)
     %   P [=] bar
     %   T [=] celcius   
     % Assumptions:
-    %   Isobaric model is at 140 C
-    %   Isothermal model is at 150 bar
+    %   Isobaric model is at 150 bar
+    %   Isothermal model is at 140 C
     % Ranges of input
     %   P = [50 bar, 150 bar]
     %   T = [80 C, 140 C]

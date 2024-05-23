@@ -1,10 +1,16 @@
-clc; clear; close all; 
+                               clc; clear; close all; 
 
 % SCRIPT________________________________________________________________________
 
+level3();
 level3_isobaric();
 
 % FUNCTIONS_____________________________________________________________________
+
+function void = level3()
+    void = NaN;
+
+end
 
 function void = level3_isobaric()
 
