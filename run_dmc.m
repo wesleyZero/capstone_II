@@ -8,8 +8,8 @@ level3();
 % FUNCTIONS_____________________________________________________________________
 
 function void = level3()
-    level3_isothermal();
     level3_isobaric();
+    level3_isothermal();
     void = NaN;
 
 end
@@ -56,6 +56,8 @@ function void = level3_isobaric()
             % increment
             row = row + 1; 
         end
+
+        plt_fxns.plot_reactor_volume_conversion(isoBar_plt);
     end
     
     console.section("Level 3 " + opt + " calculations are complete")
@@ -103,6 +105,7 @@ function void = level3_isothermal()
             % increment
             row = row + 1; 
         end
+
     end
     
     console.section("Level 3 " + opt + " calculations are complete")

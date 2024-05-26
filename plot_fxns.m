@@ -6,7 +6,23 @@ function fxns = plot_fxns()
     fxns.get_empty_vector = @get_empty_vector;
     fxns.get_plot_struct = @get_plot_structure;
     fxns.set_plot_row = @set_plot_row;
+    fxns.plot_reactor_volume_conversion = @plot_reactor_volume_conversion;
 end
+
+function void = plot_reactor_volume_conversion(plot_struct)
+
+    x = plot_struct.data.conversion(:);
+    y = plot_struct.data.V_rxtr(:);
+
+    hold on
+    figure
+    plot(x, y);
+    title(sprintf('V_{rxtr} [L] vs \\chi %3.0f [C] %3.0f [Bar]', plot_struct.T, plot_struct.P), 'Interpreter', 'tex');
+
+    xlabel('\chi', 'Interpreter', 'tex');
+    ylabel('V_{rxtr} [L]', 'Interpreter', 'tex')
+    hold off
+end 
 
 function plot_struct = set_plot_row(plot_struct, plot_row)
 
