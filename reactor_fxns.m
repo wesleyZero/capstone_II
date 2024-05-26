@@ -2,6 +2,7 @@
 function fxns = reactor_fxns() 
     % fxns.get_reaction_rate = @get_reaction_rate;
     fxns.get_reactor_flows = @get_reactor_flows;
+    fxns.get_conversion = @get_conversion;
 end
 
 function [F_fresh, F_rxtr, F_out, R] = get_reactor_flows(F_in_basis, T, P, opt, tau)
@@ -30,8 +31,17 @@ function [F_fresh, F_rxtr, F_out, R] = get_reactor_flows(F_in_basis, T, P, opt, 
     [F_fresh, F_rxtr, F_out, R] = get_plant_flowrates(F_in_basis, F_out_basis);
     
     % Conversion 
+    % conversion = get_conversion(F_rxtr, F_out);
 
 end
+
+function chi = get_conversion(F_rxtr, F_out)
+    if ~isstruct(F_rxtr) || ~isstruct(F_out), chi = NaN;, return, end;
+    if ~isreal(F_rxtr.ethylene_carbonate.mol) || ~isreal(F_out.ethylene_carbonate.mol), chi = NaN;, end
+    chi = ( F_rxtr.ethylene_carbonate.mol - F_out.ethylene_carbonate.mol)  / ...
+            F_rxtr.ethylene_carbonate.mol;
+end
+
 
 function [F_fresh, F_rxtr, F_out, R] = get_plant_flowrates(F_in_basis, F_out_basis)
     scale_factor = get_scale_factor(F_out_basis);

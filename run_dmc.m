@@ -19,18 +19,27 @@ function void = level3_isobaric()
     const = get_constants(); 
     user = get_user_inputs();
     F_fxns = flowrate_fxns();
+    rxtr_fxns = reactor_fxns();
+    plt_fxns = plot_fxns();
     P = user.level3.isobaric_press.bar;
     opt = 'isobaric';
-    console.section("Starting Level 3 calculations")
+    console.section("Starting Level 3 isobaric calculations")
 
+    
+    
     for T = user.level3.temp_range
         console.subsection(sprintf("T = %3.2f", T), 1);
+        
         for tau = user.level3.tau_range
             [F_fresh, F_rxtr, F_out, R] = level3_flowrates(tau, T, P, opt); 
+            % Conversion 
+            conversion = rxtr_fxns.get_conversion(F_rxtr, F_out)
+
         end
     end
+
     
-    console.section("Level 3 calculations are complete")
+    console.section("Level 3 isobaric calculations are complete")
 end
 
 
@@ -40,7 +49,6 @@ function [F_fresh, F_rxtr, F_out, R] = level3_flowrates(tau, temp, P, opt)
     flow_fxns = flowrate_fxns();
     rxtr_fxns = reactor_fxns();
 
-    % Basis calculations 
     F_basis = flow_fxns.get_basis_feed_flowrates();
     [F_fresh, F_rxtr, F_out, R] = rxtr_fxns.get_reactor_flows(F_basis, temp, P, opt, tau);
     
