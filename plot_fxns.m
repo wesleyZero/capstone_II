@@ -8,7 +8,53 @@ function fxns = plot_fxns()
     fxns.set_plot_row = @set_plot_row;
     fxns.plot_reactor_volume_conversion = @plot_reactor_volume_conversion;
     fxns.plot_reactor_volume_conversion_allT = @plot_reactor_volume_conversion_allT;
+    fxns.plot_reactor_volume_conversion_allP = @plot_reactor_volume_conversion_allP;
 end
+
+function void = plot_reactor_volume_conversion_allP(all_pressure_data)
+    user = get_user_inputs();
+    figure 
+    hold on
+    for i = 1:length(all_pressure_data)
+        plot_struct = all_pressure_data(i);
+        x = plot_struct.data.conversion(:);
+        y = plot_struct.data.V_rxtr(:);
+
+        % figure
+        plot(x, y);
+        title(sprintf('V_{reactor} [ L ] [ %3.0f °C ]', plot_struct.T), 'Interpreter', 'tex');
+        xlabel('\chi', 'Interpreter', 'tex');
+        ylabel('V_{reactor} [L]', 'Interpreter', 'tex')
+        % Create the legend entry for this plot
+        legendEntries{i} = sprintf('%3.0f Bar', plot_struct.P);
+    end
+    % The design variable point
+    legendEntries{i + 1} = sprintf('\\chi = %0.2f, %3.0f L' , user.plot.isothermal.x_point, ...
+                                user.plot.isothermal.y_point);
+    xline(user.plot.isothermal.x_point, '--k', 'LineWidth', 0.5, 'HandleVisibility', 'off');
+    yline(user.plot.isothermal.y_point, '--k', 'LineWidth', 0.5, 'HandleVisibility', 'off');
+    plot(user.plot.isothermal.x_point, user.plot.isothermal.y_point, ...
+                'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'r', 'MarkerSize', 3);
+
+    % Add Legend
+    legend(legendEntries, 'Interpreter', 'tex', 'location', 'northwest');
+    hold off
+
+    if ispc
+        dir = [pwd  '\plots\' ];
+    elseif ismac
+        dir = [pwd  '/plots/' ];
+    else
+        dir = [pwd  '/plots/' ];
+    end
+
+    if ~exist(dir, 'dir')
+        mkdir(dir);
+    end
+
+    print(fullfile(dir, "isothermal_V_reactor"), '-dpng', user.plot.image_dpi) ;  % Save as PNG with 300 DPI
+
+end 
 
 
 function void = plot_reactor_volume_conversion_allT(all_temp_data)
@@ -22,10 +68,9 @@ function void = plot_reactor_volume_conversion_allT(all_temp_data)
 
         % figure
         plot(x, y);
-        % plt_title = sprintf('V_{rxtr} [L] %3.0f [Bar]', plot_struct.P);
-        title(sprintf('V_{reactor} [L] %3.0f [Bar]', plot_struct.P), 'Interpreter', 'tex');
+        title(sprintf('V_{reactor} [ L ] [ %3.0f Bar ]', plot_struct.P), 'Interpreter', 'tex');
         xlabel('\chi', 'Interpreter', 'tex');
-        ylabel('V_{reactor} [L]', 'Interpreter', 'tex')
+        ylabel('V_{reactor} [ L ]', 'Interpreter', 'tex')
         % Create the legend entry for this plot
         legendEntries{i} = sprintf('%3.0f°C', plot_struct.T);
     end

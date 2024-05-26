@@ -8,7 +8,7 @@ level3();
 % FUNCTIONS_____________________________________________________________________
 
 function void = level3()
-    level3_isobaric();
+    % level3_isobaric();
     level3_isothermal();
     void = NaN;
 
@@ -25,7 +25,6 @@ function void = level3_isobaric()
     plt_fxns = plot_fxns();
     P = user.level3.isobaric_press.bar;
     opt = 'isobaric';
-    % test1 = opt + "test q"
     console.section("Starting Level 3 " + opt + " calculations")
     
     i = 1;
@@ -78,13 +77,13 @@ function void = level3_isothermal()
     plt_fxns = plot_fxns();
     T = user.level3.isothermal_temp.C;
     opt = 'isothermal';
-    % test1 = opt + "test q"
     console.section("Starting Level 3 " + opt + " calculations")
     
+    i = 1;
     for P = user.level3.press_range
         console.subsection(sprintf("P = %3.2f", P), 1);
         row = 1;
-        isoBar_plt = plt_fxns.get_plot_struct(T, P, opt);
+        isoTherm_plt = plt_fxns.get_plot_struct(T, P, opt);
         
 
         for tau = user.level3.tau_range
@@ -105,13 +104,16 @@ function void = level3_isothermal()
             plot_row.row_number = row;
             plot_row.tau = tau;
             plot_row.V_rxtr = V_rxtr;
-            isoBar_plt = plt_fxns.set_plot_row(isoBar_plt, plot_row);
+            isoTherm_plt = plt_fxns.set_plot_row(isoTherm_plt, plot_row);
             % increment
             row = row + 1; 
         end
 
+        all_pressure_data(i) = isoTherm_plt;
+        i = i + 1;
     end
-    
+
+    plt_fxns.plot_reactor_volume_conversion_allP(all_pressure_data);
     console.section("Level 3 " + opt + " calculations are complete")
 end
 
