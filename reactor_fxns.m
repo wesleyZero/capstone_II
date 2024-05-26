@@ -5,7 +5,7 @@ function fxns = reactor_fxns()
     fxns.get_conversion = @get_conversion;
 end
 
-function [F_fresh, F_rxtr, F_out, R] = get_reactor_flows(F_in_basis, T, P, opt, tau)
+function [F_fresh, F_rxtr, F_out, R, V_rxtr] = get_reactor_flows(F_in_basis, T, P, opt, tau)
     F_fresh = NaN; F_rxtr = NaN; F_out = NaN; R = NaN;
 
     % basis calculations  
@@ -20,7 +20,7 @@ function [F_fresh, F_rxtr, F_out, R] = get_reactor_flows(F_in_basis, T, P, opt, 
         disp('ERROR : Negative valued concentrations');
         return
     else
-        disp('Valid solution!!!!!!!!!!')
+        % disp('Valid solution!!!!!!!!!!')
         C_out = get_concentration_struct(C_out);
     end
 
@@ -29,9 +29,10 @@ function [F_fresh, F_rxtr, F_out, R] = get_reactor_flows(F_in_basis, T, P, opt, 
 
     % Plant Scale Calculations 
     [F_fresh, F_rxtr, F_out, R] = get_plant_flowrates(F_in_basis, F_out_basis);
-    
-    % Conversion 
-    % conversion = get_conversion(F_rxtr, F_out);
+    scale_factor = get_scale_factor(F_out_basis);
+    V_rxtr.plant = V_rxtr.basis * scale_factor; 
+
+    V_rxtr = V_rxtr.plant;
 
 end
 
@@ -287,7 +288,7 @@ end
 
 function k = get_rate_constant(reaction, T, P, opt)
 	if strcmp(opt, 'isothermal')
-    	k = get_isothermal_rate_constant(reaction, P);
+    	k = get_isothermal_rate_constant(reaction, T, P);
 	elseif strcmp(opt, 'isobaric')
     	k = get_isobaric_rate_constant(reaction, T);
 	else
@@ -320,13 +321,13 @@ function k = get_isobaric_rate_constant(reaction, T)
     end
 end
 
-function k = get_isothermal_rate_constant(reaction, P)
+function k = get_isothermal_rate_constant(reaction, T, P)
     % input:
     %   P [ bar ]
-
+    rho = get_supercritical_c02_density(T, P, 'isothermal');
     switch reaction
         case '2f'
-            rho = get_supercritical_c02_density(P, 'isothermal');
+            
             if rho > 246.82 % [g / L]
                 k = 0.02486 - 4.943 * (10^(-5)) * rho;
             else

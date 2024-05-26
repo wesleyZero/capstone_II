@@ -1,13 +1,15 @@
-                               clc; clear; close all; 
+clc; clear; close all; 
 
 % SCRIPT________________________________________________________________________
 
 level3();
-level3_isobaric();
+
 
 % FUNCTIONS_____________________________________________________________________
 
 function void = level3()
+    level3_isothermal();
+    level3_isobaric();
     void = NaN;
 
 end
@@ -23,86 +25,99 @@ function void = level3_isobaric()
     plt_fxns = plot_fxns();
     P = user.level3.isobaric_press.bar;
     opt = 'isobaric';
-    console.section("Starting Level 3 isobaric calculations")
-
-    
+    % test1 = opt + "test q"
+    console.section("Starting Level 3 " + opt + " calculations")
     
     for T = user.level3.temp_range
         console.subsection(sprintf("T = %3.2f", T), 1);
+        row = 1;
+        isoBar_plt = plt_fxns.get_plot_struct(T, P, opt);
         
-        for tau = user.level3.tau_range
-            [F_fresh, F_rxtr, F_out, R] = level3_flowrates(tau, T, P, opt); 
-            % Conversion 
-            conversion = rxtr_fxns.get_conversion(F_rxtr, F_out)
 
+        for tau = user.level3.tau_range
+            console.subsection(sprintf("tau = %3.2f", tau), 2)
+            [F_fresh, F_rxtr, F_out, R, V_rxtr] = level3_flowrates(tau, T, P, opt); 
+            conversion = rxtr_fxns.get_conversion(F_rxtr, F_out);
+
+            if isnan(conversion)
+                disp("ERROR : COMPLEX CONC. BREAKING TO NEXT TEMP")
+                break;
+            end
+            % Store row data
+            plot_row.F_fresh = F_fresh;
+            plot_row.F_rxtr = F_rxtr;
+            plot_row.F_out = F_out;
+            plot_row.R = R;
+            plot_row.conversion = conversion;
+            plot_row.row_number = row;
+            plot_row.tau = tau;
+            plot_row.V_rxtr = V_rxtr;
+            isoBar_plt = plt_fxns.set_plot_row(isoBar_plt, plot_row);
+            % increment
+            row = row + 1; 
         end
     end
-
     
-    console.section("Level 3 isobaric calculations are complete")
+    console.section("Level 3 " + opt + " calculations are complete")
 end
 
+function void = level3_isothermal()
+    void = NaN;
 
-function [F_fresh, F_rxtr, F_out, R] = level3_flowrates(tau, temp, P, opt)
+    console = get_console();
+    const = get_constants(); 
+    user = get_user_inputs();
+    F_fxns = flowrate_fxns();
+    rxtr_fxns = reactor_fxns();
+    plt_fxns = plot_fxns();
+    T = user.level3.isothermal_temp.C;
+    opt = 'isothermal';
+    % test1 = opt + "test q"
+    console.section("Starting Level 3 " + opt + " calculations")
+    
+    for P = user.level3.press_range
+        console.subsection(sprintf("P = %3.2f", P), 1);
+        row = 1;
+        isoBar_plt = plt_fxns.get_plot_struct(T, P, opt);
+        
+
+        for tau = user.level3.tau_range
+            console.subsection(sprintf("tau = %3.2f", tau), 2)
+            [F_fresh, F_rxtr, F_out, R, V_rxtr] = level3_flowrates(tau, T, P, opt); 
+            conversion = rxtr_fxns.get_conversion(F_rxtr, F_out);
+
+            if isnan(conversion)
+                disp("ERROR : COMPLEX CONC. BREAKING TO NEXT TEMP")
+                break;
+            end
+            % Store row data
+            plot_row.F_fresh = F_fresh;
+            plot_row.F_rxtr = F_rxtr;
+            plot_row.F_out = F_out;
+            plot_row.R = R;
+            plot_row.conversion = conversion;
+            plot_row.row_number = row;
+            plot_row.tau = tau;
+            plot_row.V_rxtr = V_rxtr;
+            isoBar_plt = plt_fxns.set_plot_row(isoBar_plt, plot_row);
+            % increment
+            row = row + 1; 
+        end
+    end
+    
+    console.section("Level 3 " + opt + " calculations are complete")
+end
+
+function [F_fresh, F_rxtr, F_out, R, V_rxtr] = level3_flowrates(tau, temp, P, opt)
     F_fresh = NaN; F_rxtr = NaN; F_out = NaN; R = NaN;
     user = get_user_inputs(); 
     flow_fxns = flowrate_fxns();
     rxtr_fxns = reactor_fxns();
 
     F_basis = flow_fxns.get_basis_feed_flowrates();
-    [F_fresh, F_rxtr, F_out, R] = rxtr_fxns.get_reactor_flows(F_basis, temp, P, opt, tau);
+    [F_fresh, F_rxtr, F_out, R, V_rxtr] = rxtr_fxns.get_reactor_flows(F_basis, temp, P, opt, tau);
     
 
 end
 
 
-
-% function [F, F_rxtr, R] = level3_flowrates(F, s, chi)
-%     % I need to really check the F_fresh and P flows because I think I am messing them up
-%     user = get_user_inputs();
-
-%     % Specify Constraints in kta
-%     F.dimethyl_carbonate.kta = 100;
-
-%     % Update the flowstream  
-%     F = flowrate_fxns().set_F_kta(F);
-    
-%     % Calculate the molar flowrates as a result of reaction
-%     F.ethylene_glycol.mol = F.dimethyl_carbonate.mol;
-%     F.carbon_dioxide.mol = F.dimethyl_carbonate.mol;
-%     F.ethylene_oxide.mol = F.dimethyl_carbonate.mol / s;
-%     F.methoxy_ethanol.mol = F.dimethyl_carbonate.mol * ((1/s) - 1);
-%     F.methanol.mol = F.dimethyl_carbonate.mol * ( 1 + (1/s));
-%     F.ethylene_carbonate.mol = 0 ;
-%         % Ethylene carbonate is recycled to completion
-%         % ?? Level 3 tho ??? 
-%     F = flowrate_fxns().set_F_mol(F);
-%     % I SHOULD CALL THIS P
-
-%     R = get_recycle_flowrates(F, s, chi);
-
-%     F_rxtr = get_reactor_flowrates(F, R);
-% end
-
-% function F_rxtr = get_reactor_flowrates(F, R)
-%     % Depreciated I think 
-%     F_rxtr = flowrate_fxns().get_blank_flowstream();
-%     F_rxtr.ethylene_carbonate.mol = F.ethylene_carbonate.mol + R.ethylene_carbonate.mol;
-%     F_rxtr.ethylene_oxide.mol = F.ethylene_carbonate.mol + R.ethylene_carbonate.mol;
-%     F_rxtr.methanol.mol = F.methanol.mol + R.methanol.mol;
-%     F_rxtr.carbon_dioxide.mol = F.carbon_dioxide.mol + R.carbon_dioxide.mol;
-%     F_rxtr = flowrate_fxns().set_F_mol(F_rxtr);
-% end
-
-% function F = get_recycle_flowrates(F, s, chi)
-%     % Depreciated I think 
-%     user = get_user_inputs();
-
-%     R = flowrate_fxns().get_blank_flowstream(); 
-%     MR = user.level3.molar_ratio_methanol;
-%     R.methanol.mol = F.dimethyl_carbonate.mol * ((MR/s) - 1 - (1/s));
-%     MR = user.level3.molar_ratio_carbon_dioxide;
-%     R.carbon_dioxide.mol = F.dimethyl_carbonate.mol * (((MR + 1)/s) - 1);
-%     R.ethylene_carbonate.mol = (F.dimethyl_carbonate.mol / s) * ( (1-chi) / chi);
-%     R = flowrate_fxns().set_F_mol(R);
-% end
