@@ -13,28 +13,27 @@ end
 
 function void = plot_reactor_volume_conversion_allP(all_pressure_data)
     user = get_user_inputs();
-    const = get_constants();
     figure 
     hold on
     for i = 1:length(all_pressure_data)
         plot_struct = all_pressure_data(i);
         x = plot_struct.data.conversion(:);
-        y = plot_struct.data.V_rxtr(:) .* const.units.volume.m3_per_l;
+        y = plot_struct.data.V_rxtr(:);
 
         % figure
         plot(x, y);
-        title(sprintf('V_{reactor} [ m^3 ] at [ %3.0f °C ]', plot_struct.T), 'Interpreter', 'tex');
+        title(sprintf('V_{reactor} [ L ] [ %3.0f °C ]', plot_struct.T), 'Interpreter', 'tex');
         xlabel('\chi', 'Interpreter', 'tex');
-        ylabel('V_{reactor} [ m^3 ]', 'Interpreter', 'tex')
+        ylabel('V_{reactor} [L]', 'Interpreter', 'tex')
         % Create the legend entry for this plot
         legendEntries{i} = sprintf('%3.0f Bar', plot_struct.P);
     end
     % The design variable point
-    legendEntries{i + 1} = sprintf('\\chi = %0.2f, %3.1f m^3' , user.plot.isothermal.x_point, ...
-                                (user.plot.isothermal.y_point * const.units.volume.m3_per_l));
+    legendEntries{i + 1} = sprintf('\\chi = %0.2f, %3.0f L' , user.plot.isothermal.x_point, ...
+                                user.plot.isothermal.y_point);
     xline(user.plot.isothermal.x_point, '--k', 'LineWidth', 0.5, 'HandleVisibility', 'off');
-    yline(user.plot.isothermal.y_point * const.units.volume.m3_per_l, '--k', 'LineWidth', 0.5, 'HandleVisibility', 'off');
-    plot(user.plot.isothermal.x_point, user.plot.isothermal.y_point * const.units.volume.m3_per_l, ...
+    yline(user.plot.isothermal.y_point, '--k', 'LineWidth', 0.5, 'HandleVisibility', 'off');
+    plot(user.plot.isothermal.x_point, user.plot.isothermal.y_point, ...
                 'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'r', 'MarkerSize', 3);
 
     % Add Legend

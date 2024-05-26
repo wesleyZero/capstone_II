@@ -52,4 +52,19 @@ function user = get_user_inputs()
     user.level3.press_range = ...
         linspace(user.level3.press_min.bar, user.level3.press_max.bar, ...
                     user.level3.pressure_precision);
+
+    % NPV 
+    user.npv.enterprise_rate = 0.15;                % per year
+    user.npv.total_tax_rate = 0.27;                 % per year
+    user.npv.admin_and_general_services = 0.05;     % 5% of annual revenues 
+    user.npv.construction_period = 3;               % years
+    user.npv.period_plant_operation = 12;           % years
+    user.npv.project_life = ...
+        user.npv.construction_period + user.npv.period_plant_operation;
+                                                    % years (constr + op yrs)
+    user.depreciation_schedule = 10;                % years, linear deprec.
+    user.marshall_and_swift_index = 1800;           % M&S 
+    user.salvage_value = 0.05;                      % 5% of fixed capital investment
+
+    % user.npv.discount_rate = 
 end 

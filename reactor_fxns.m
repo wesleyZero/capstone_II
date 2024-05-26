@@ -279,7 +279,7 @@ function q = get_volumetric_flowrates(F, T, P, opt)
         end
         % (L / s)        = (mol / s)            * (g / mol)                      
         q.(fieldNames{i}) = F.(fieldNames{i}).mol * const.molar_mass.(fieldNames{i}) * ... 
-            ...% (kg / g)        * (m^3 / kg)             * (L / m^3) 
+            ...% (kg / g)             * (m^3 / kg)             * (L / m^3) 
             const.units.mass.kg_per_g * (1/rho.(fieldNames{i})) * const.units.volume.l_per_m3;
     end
     q.units = 'L / s' ;
@@ -324,14 +324,14 @@ end
 function k = get_isothermal_rate_constant(reaction, T, P)
     % input:
     %   P [ bar ]
+    % These functions are from the research paper
     rho = get_supercritical_c02_density(T, P, 'isothermal');
     switch reaction
         case '2f'
-            
             if rho > 246.82 % [g / L]
-                k = 0.02486 - 4.943 * (10^(-5)) * rho;
+                k = (2.486 * 10^(-2)) - (4.943 * (10^(-5)) * rho);
             else
-                k = 0.013;
+                k = (1.362 * 10^(-2)) - (1.569 * (10^(-6)) * rho);
             end
         case '2r'
             k = 0.01486 * rho^(-0.873);
@@ -342,6 +342,29 @@ function k = get_isothermal_rate_constant(reaction, T, P)
             disp("ERROR: get_isothermal_rate_constant(): invalid reaction option")
     end
 end
+
+% function k = get_isothermal_rate_constant(reaction, T, P)
+%     % input:
+%     %   P [ bar ]
+%     % These functions are from the design project statement 
+%     rho = get_supercritical_c02_density(T, P, 'isothermal');
+%     switch reaction
+%         case '2f'
+            
+%             if rho > 246.82 % [g / L]
+%                 k = 0.02486 - 4.943 * (10^(-5)) * rho;
+%             else
+%                 k = 0.013;
+%             end
+%         case '2r'
+%             k = 0.01486 * rho^(-0.873);
+%         case '3'
+%             k = 3.014 * (10^(-4)) * exp(-5.99 * (10^(-3)) * rho);
+%         otherwise
+%             k = NaN;
+%             disp("ERROR: get_isothermal_rate_constant(): invalid reaction option")
+%     end
+% end
 
 function rho = get_supercritical_c02_density(T, P, opt)
     % Input: condition = T or P. Depending on option
@@ -370,7 +393,7 @@ function rho = get_supercritical_c02_density(T, P, opt)
             end
         case 'isobaric'
             if withinTempRange(T)
-                if P < 125 % [C]
+                if P < 125 % [ Bar ]
                     rho = 356.08 * exp(-0.006 * T);
                         % NIST Data at 100 bar
                 else

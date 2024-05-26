@@ -4,9 +4,16 @@ clc; clear; close all ;
 % test_units()
 % test_constants()
 
-test_scripts() 
-disp("running main script")	
+% test_scripts() 
+% disp("running main script")	
 % run_dmc
+
+function void = find_V_reactor_bug()
+	void = NaN;
+	const = get_constants();
+
+	
+end
 
 function void = test_scripts()
 	void = NaN;
