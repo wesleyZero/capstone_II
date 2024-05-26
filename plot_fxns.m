@@ -23,7 +23,7 @@ function void = plot_reactor_volume_conversion_allT(all_temp_data)
         % figure
         plot(x, y);
         % plt_title = sprintf('V_{rxtr} [L] %3.0f [Bar]', plot_struct.P);
-        title(sprintf('V_{rxtr} [L] %3.0f [Bar]', plot_struct.P), 'Interpreter', 'tex');
+        title(sprintf('V_{reactor} [L] %3.0f [Bar]', plot_struct.P), 'Interpreter', 'tex');
         xlabel('\chi', 'Interpreter', 'tex');
         ylabel('V_{rxtr} [L]', 'Interpreter', 'tex')
         % Create the legend entry for this plot
@@ -32,7 +32,18 @@ function void = plot_reactor_volume_conversion_allT(all_temp_data)
     legend(legendEntries, 'Interpreter', 'tex', 'location', 'northwest');
     hold off
 
-    dir = [pwd  '/plots/' ];
+    if ispc
+        dir = [pwd  '\plots\' ];
+    elseif ismac
+        dir = [pwd  '/plots/' ];
+    else
+        dir = [pwd  '/plots/' ];
+    end
+
+    if ~exist(dir, 'dir')
+        mkdir(dir);
+    end
+
     print(fullfile(dir, "isobaric_V_reactor"), '-dpng', user.plot.image_dpi) ;  % Save as PNG with 300 DPI
 
 end 
