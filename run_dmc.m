@@ -13,6 +13,7 @@ function void = level3()
 end
 
 function void = level3_isobaric()
+    void = NaN;
 
     console = get_console();
     const = get_constants(); 

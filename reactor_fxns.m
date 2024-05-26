@@ -4,45 +4,94 @@ function fxns = reactor_fxns()
     fxns.get_reactor_flows = @get_reactor_flows;
 end
 
-function [F_in, F_out, R] = get_reactor_flows(F_basis, T, P, opt, tau)
-    % basis calculations  
-    q_tot = get_total_volumetric_flowrate(F_basis, T, P, opt);
-    V_rxtr.basis = q_tot * tau;
-    V_rxtr = get_reactor_volume(F_basis, T, P, opt, tau);
-    
-    C = get_reactor_effluent_concentrations(F_basis, T, P, opt, tau);
-    % F_out = conc_to_flowrate(C, T, P, opt, tau);
+function [F_in, F_out, R] = get_reactor_flows(F_in_basis, T, P, opt, tau)
+    F_in = NaN; F_out = NaN; R = NaN;
 
-    if any(imag(C) ~= 0)
+    % basis calculations  
+    q_tot.basis = get_total_volumetric_flowrate(F_in_basis, T, P, opt);
+    V_rxtr.basis = q_tot.basis * tau;
+    C_out = get_reactor_effluent_concentrations(F_in_basis, T, P, opt, tau);
+
+    if any(imag(C_out) ~= 0)
         disp('ERROR : Complex valued concentrations');
-%         C
-    elseif any(real(C) < 0)
+        return 
+    elseif any(real(C_out) < 0)
         disp('ERROR : Negative valued concentrations');
-%         C
+        return
     else
         disp('Valid solution!!!!!!!!!!')
-        C
+        C_out = get_concentration_struct(C_out);
     end
-    F_in = NaN; F_out = NaN; R = NaN;
+
+    F_out_basis = conc_to_flowrate(C_out, q_tot.basis);
+        % assumption : liquid flow has no change in vol in effluent 
+
+    % Plant Scale Calculations 
+    [F_in_fresh, F_in_rxtr, F_out, R] = get_plant_flowrates(F_in_basis, F_out_basis);
+    
+    % Conversion 
+
 end
 
-function F = conc_to_flowrate(C, T, P, opt, tau)
-    q = get_volumetric_flowrates()
-    fieldNames = fieldnames(C);
+function [F_in_fresh, F_rxtr, F_out, R] = get_plant_flowrates(F_in_basis, F_out_basis)
+    scale_factor = get_scale_factor(F_out_basis);
+    flow_fxns = flowrate_fxns();
+    % initialize 
+    F_in_fresh = flow_fxns.get_blank_flowstream();
+    F_rxtr = flow_fxns.get_blank_flowstream();
+    F_out = flow_fxns.get_blank_flowstream();
+    R = flow_fxns.get_blank_flowstream();
+
+    % scale in the in and out flows
+    fieldNames = fieldnames(F_in_basis);
     for i = 1:length(fieldNames)
-        if strcmp(fieldNames{i},'units')
-            % rho.(fieldNames{i}) = 'mol / L';
-            continue
-        end
-
-        % mol / L              = (kg / m^3)              * (g / kg)
-        rho.(fieldNames{i}) = rho.(fieldNames{i}) * const.units.mass.g_per_kg * ... 
-        ...% (mol / g)                            * (m^3 / L) 
-        (1 / const.molar_mass.(fieldNames{i})) * const.units.volume.m3_per_l;
-
-        % 
+        if strcmp(fieldNames{i},'units') , continue, end ;
+        F_out.(fieldNames{i}).mol = scale_factor * F_out_basis.(fieldNames{i}).mol;
+        F_rxtr.(fieldNames{i}).mol = scale_factor * F_in_basis.(fieldNames{i}).mol;
     end
 
+    F_out = flow_fx.set_F_mol(F_out); 
+    F_rxtr = flow_fx.set_F_mol(F_rxtr); 
+
+    [F_in_fresh, R] = get_recycle_and_fresh_flowrates(F_out);
+
+end
+
+function [F_in_fresh, R] = get_recycle_and_fresh_flowrates(F_out)
+    flow_fxns = flowrate_fxns();
+
+    R = flow_fxns.get_blank_flowstream();
+    R.ethylene_carbonate.mol = F_out.ethylene_carbonate.mol;
+    R.methoxy_ethanol.mol = F_out.methoxy_ethanol.mol;
+    R.carbon_dioxide.mol = F_out.methoxy_ethanol.mol;
+    R = flow_fxns.set_F_mol(R);
+
+    F_in_fresh = flow_fxns.get_blank_flowstream();
+
+
+end
+
+function scale_factor = get_scale_factor(F_out)
+    scale_factor = (get_user_inputs().dmc_production_rate) / F_out.dimethyl_carbonate.kta; 
+
+end
+
+function F = conc_to_flowrate(C, q_tot)
+    % ?? Assumption : densities don't change after reaction (which will change
+    % the T and P, thus densities should change) modify q_tot(T, P) to get a more
+    % accurate result
+    flow_fx = flowrate_fxns();
+    F = flow_fx.get_blank_flowstream();
+
+    fieldNames = fieldnames(C);
+    for i = 1:length(fieldNames)
+        if strcmp(fieldNames{i},'units') , continue, end ;
+
+        % mol / s         = ( L / s )         * (mol / L)
+        F.(fieldNames{i}).mol = q_tot * C.(fieldNames{i}); 
+    end
+
+    F = flow_fx.set_F_mol(F); 
 end
 
 function C_vector = get_concentration_vector(F, T, P, opt, tau)
@@ -140,10 +189,10 @@ function C = get_concentrations(F, T, P, opt, tau)
     end
 end
 
-function V = get_reactor_volume(F, T, P, opt, tau)
-    q_tot = get_total_volumetric_flowrate(F, T, P, opt);
-    V = q_tot * tau;
-end
+% function V = get_reactor_volume(F, T, P, opt, tau)
+%     q_tot = get_total_volumetric_flowrate(F, T, P, opt);
+%     V = q_tot * tau;
+% end
 
 function rho = get_all_molar_densities(T, P, opt)
     rho = get_all_densities(T, P, opt);

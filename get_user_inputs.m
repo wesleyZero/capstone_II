@@ -31,7 +31,7 @@ function user = get_user_inputs()
         'FunctionTolerance', 1e-6, ...                % Termination tolerance on the function value
         'PlotFcn', [], ...                            % Plot functions
         'OutputFcn', []);                             % Output functions
-    
+    user.dmc_production_rate = 100; % [kta]
 
     % Level 3 | Soft coded
     user.level3.tau_range = ...
