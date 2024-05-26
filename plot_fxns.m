@@ -25,7 +25,7 @@ function void = plot_reactor_volume_conversion_allT(all_temp_data)
         % plt_title = sprintf('V_{rxtr} [L] %3.0f [Bar]', plot_struct.P);
         title(sprintf('V_{reactor} [L] %3.0f [Bar]', plot_struct.P), 'Interpreter', 'tex');
         xlabel('\chi', 'Interpreter', 'tex');
-        ylabel('V_{rxtr} [L]', 'Interpreter', 'tex')
+        ylabel('V_{reactor} [L]', 'Interpreter', 'tex')
         % Create the legend entry for this plot
         legendEntries{i} = sprintf('%3.0f°C', plot_struct.T);
     end

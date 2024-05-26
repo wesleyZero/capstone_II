@@ -14,10 +14,10 @@ function [F_fresh, F_rxtr, F_out, R, V_rxtr] = get_reactor_flows(F_in_basis, T, 
     C_out = get_reactor_effluent_concentrations(F_in_basis, T, P, opt, tau);
 
     if any(imag(C_out) ~= 0)
-        disp('ERROR : Complex valued concentrations');
+        % disp('ERROR : Complex valued concentrations');
         return 
     elseif any(real(C_out) < 0)
-        disp('ERROR : Negative valued concentrations');
+        % disp('ERROR : Negative valued concentrations');
         return
     else
         % disp('Valid solution!!!!!!!!!!')
