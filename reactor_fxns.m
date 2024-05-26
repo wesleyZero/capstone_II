@@ -4,8 +4,8 @@ function fxns = reactor_fxns()
     fxns.get_reactor_flows = @get_reactor_flows;
 end
 
-function [F_in, F_out, R] = get_reactor_flows(F_in_basis, T, P, opt, tau)
-    F_in = NaN; F_out = NaN; R = NaN;
+function [F_fresh, F_rxtr, F_out, R] = get_reactor_flows(F_in_basis, T, P, opt, tau)
+    F_fresh = NaN; F_rxtr = NaN; F_out = NaN; R = NaN;
 
     % basis calculations  
     q_tot.basis = get_total_volumetric_flowrate(F_in_basis, T, P, opt);
@@ -27,17 +27,18 @@ function [F_in, F_out, R] = get_reactor_flows(F_in_basis, T, P, opt, tau)
         % assumption : liquid flow has no change in vol in effluent 
 
     % Plant Scale Calculations 
-    [F_in_fresh, F_in_rxtr, F_out, R] = get_plant_flowrates(F_in_basis, F_out_basis);
+    [F_fresh, F_rxtr, F_out, R] = get_plant_flowrates(F_in_basis, F_out_basis);
     
     % Conversion 
 
 end
 
-function [F_in_fresh, F_rxtr, F_out, R] = get_plant_flowrates(F_in_basis, F_out_basis)
+function [F_fresh, F_rxtr, F_out, R] = get_plant_flowrates(F_in_basis, F_out_basis)
     scale_factor = get_scale_factor(F_out_basis);
     flow_fxns = flowrate_fxns();
+
     % initialize 
-    F_in_fresh = flow_fxns.get_blank_flowstream();
+    F_fresh = flow_fxns.get_blank_flowstream();
     F_rxtr = flow_fxns.get_blank_flowstream();
     F_out = flow_fxns.get_blank_flowstream();
     R = flow_fxns.get_blank_flowstream();
@@ -50,24 +51,31 @@ function [F_in_fresh, F_rxtr, F_out, R] = get_plant_flowrates(F_in_basis, F_out_
         F_rxtr.(fieldNames{i}).mol = scale_factor * F_in_basis.(fieldNames{i}).mol;
     end
 
-    F_out = flow_fx.set_F_mol(F_out); 
-    F_rxtr = flow_fx.set_F_mol(F_rxtr); 
+    % set the in and out flows
+    F_out = flow_fxns.set_F_mol(F_out); 
+    F_rxtr = flow_fxns.set_F_mol(F_rxtr); 
 
-    [F_in_fresh, R] = get_recycle_and_fresh_flowrates(F_out);
+    % Get the fresh and recycle flows
+    [F_fresh, R] = get_recycle_and_fresh_flowrates(F_rxtr, F_out);
 
 end
 
-function [F_in_fresh, R] = get_recycle_and_fresh_flowrates(F_out)
+function [F_in_fresh, R] = get_recycle_and_fresh_flowrates(F_rxtr, F_out)
     flow_fxns = flowrate_fxns();
 
+    % Recycle flow
     R = flow_fxns.get_blank_flowstream();
     R.ethylene_carbonate.mol = F_out.ethylene_carbonate.mol;
     R.methoxy_ethanol.mol = F_out.methoxy_ethanol.mol;
-    R.carbon_dioxide.mol = F_out.methoxy_ethanol.mol;
+    R.carbon_dioxide.mol = F_out.carbon_dioxide.mol;
     R = flow_fxns.set_F_mol(R);
 
+    % Fresh feed flow 
     F_in_fresh = flow_fxns.get_blank_flowstream();
-
+    F_in_fresh.ethylene_carbonate.mol = F_rxtr.ethylene_carbonate.mol - R.ethylene_carbonate.mol;
+    F_in_fresh.methoxy_ethanol.mol = F_rxtr.methoxy_ethanol.mol - R.methoxy_ethanol.mol;
+    F_in_fresh.carbon_dioxide.mol = F_rxtr.carbon_dioxide.mol - R.carbon_dioxide.mol;
+    F_in_fresh = flow_fxns.set_F_mol(F_in_fresh);
 
 end
 
@@ -189,10 +197,10 @@ function C = get_concentrations(F, T, P, opt, tau)
     end
 end
 
-% function V = get_reactor_volume(F, T, P, opt, tau)
-%     q_tot = get_total_volumetric_flowrate(F, T, P, opt);
-%     V = q_tot * tau;
-% end
+function V = get_reactor_volume(F, T, P, opt, tau)
+    q_tot = get_total_volumetric_flowrate(F, T, P, opt);
+    V = q_tot * tau;
+end
 
 function rho = get_all_molar_densities(T, P, opt)
     rho = get_all_densities(T, P, opt);

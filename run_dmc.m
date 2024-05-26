@@ -26,7 +26,7 @@ function void = level3_isobaric()
     for T = user.level3.temp_range
         console.subsection(sprintf("T = %3.2f", T), 1);
         for tau = user.level3.tau_range
-            [F_in, F_out, R] = level3_flowrates(tau, T, P, opt); 
+            [F_fresh, F_rxtr, F_out, R] = level3_flowrates(tau, T, P, opt); 
         end
     end
     
@@ -34,14 +34,15 @@ function void = level3_isobaric()
 end
 
 
-function [F_in, F_out, R] = level3_flowrates(tau, temp, P, opt)
+function [F_fresh, F_rxtr, F_out, R] = level3_flowrates(tau, temp, P, opt)
+    F_fresh = NaN; F_rxtr = NaN; F_out = NaN; R = NaN;
     user = get_user_inputs(); 
     flow_fxns = flowrate_fxns();
     rxtr_fxns = reactor_fxns();
 
     % Basis calculations 
     F_basis = flow_fxns.get_basis_feed_flowrates();
-    [F_in, F_out, R] = rxtr_fxns.get_reactor_flows(F_basis, temp, P, opt, tau);
+    [F_fresh, F_rxtr, F_out, R] = rxtr_fxns.get_reactor_flows(F_basis, temp, P, opt, tau);
     
 
 end
