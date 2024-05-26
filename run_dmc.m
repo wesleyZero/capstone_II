@@ -28,6 +28,7 @@ function void = level3_isobaric()
     % test1 = opt + "test q"
     console.section("Starting Level 3 " + opt + " calculations")
     
+    i = 1;
     for T = user.level3.temp_range
         console.subsection(sprintf("T = %3.2f", T), 1);
         row = 1;
@@ -57,8 +58,12 @@ function void = level3_isobaric()
             row = row + 1; 
         end
 
-        plt_fxns.plot_reactor_volume_conversion(isoBar_plt);
+        all_temp_data(i) = isoBar_plt;
+        i = i + 1;
+        % plt_fxns.plot_reactor_volume_conversion(isoBar_plt);
     end
+
+    plt_fxns.plot_reactor_volume_conversion_allT(all_temp_data);
     
     console.section("Level 3 " + opt + " calculations are complete")
 end

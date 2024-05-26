@@ -36,6 +36,8 @@ function user = get_user_inputs()
         'OutputFcn', []);                             % Output functions
     user.dmc_production_rate = 100; % [kta]
 
+    user.plot.image_dpi = '-r600'; % [600 dpi]
+
     % Level 3 | Soft coded
     user.level3.tau_range = ...
                 linspace(1, user.level3.tau_max, user.level3.tau_precision);

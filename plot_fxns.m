@@ -7,7 +7,37 @@ function fxns = plot_fxns()
     fxns.get_plot_struct = @get_plot_structure;
     fxns.set_plot_row = @set_plot_row;
     fxns.plot_reactor_volume_conversion = @plot_reactor_volume_conversion;
+    fxns.plot_reactor_volume_conversion_allT = @plot_reactor_volume_conversion_allT;
 end
+
+
+function void = plot_reactor_volume_conversion_allT(all_temp_data)
+    user = get_user_inputs();
+    figure 
+    hold on
+    for i = 1:length(all_temp_data)
+        plot_struct = all_temp_data(i);
+        x = plot_struct.data.conversion(:);
+        y = plot_struct.data.V_rxtr(:);
+
+        % figure
+        plot(x, y);
+        % plt_title = sprintf('V_{rxtr} [L] %3.0f [Bar]', plot_struct.P);
+        title(sprintf('V_{rxtr} [L] %3.0f [Bar]', plot_struct.P), 'Interpreter', 'tex');
+        xlabel('\chi', 'Interpreter', 'tex');
+        ylabel('V_{rxtr} [L]', 'Interpreter', 'tex')
+        % Create the legend entry for this plot
+        legendEntries{i} = sprintf('%3.0f°C', plot_struct.T);
+    end
+    legend(legendEntries, 'Interpreter', 'tex', 'location', 'northwest');
+    hold off
+
+    dir = [pwd  '/plots/' ];
+    print(fullfile(dir, "isobaric_V_reactor"), '-dpng', user.plot.image_dpi) ;  % Save as PNG with 300 DPI
+
+end 
+
+
 
 function void = plot_reactor_volume_conversion(plot_struct)
 
