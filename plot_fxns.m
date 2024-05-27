@@ -60,18 +60,19 @@ end
 
 function void = plot_reactor_volume_conversion_allT(all_temp_data)
     user = get_user_inputs();
+    const = get_constants();
     figure 
     hold on
     for i = 1:length(all_temp_data)
         plot_struct = all_temp_data(i);
-        x = plot_struct.data.conversion(:);
-        y = plot_struct.data.V_rxtr(:);
+        x = plot_struct.data.conversion(:) ;
+        y = plot_struct.data.V_rxtr(:) * const.units.volume.m3_per_l;
 
         % figure
         plot(x, y);
-        title(sprintf('V_{reactor} [ L ] [ %3.0f Bar ]', plot_struct.P), 'Interpreter', 'tex');
+        title(sprintf('V_{reactor} [ m^3 ] [ %3.0f Bar ]', plot_struct.P), 'Interpreter', 'tex');
         xlabel('\chi', 'Interpreter', 'tex');
-        ylabel('V_{reactor} [ L ]', 'Interpreter', 'tex')
+        ylabel('V_{reactor} [ m^3 ]', 'Interpreter', 'tex')
         % Create the legend entry for this plot
         legendEntries{i} = sprintf('%3.0f°C', plot_struct.T);
     end
