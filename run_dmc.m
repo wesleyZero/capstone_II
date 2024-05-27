@@ -9,12 +9,12 @@ level3();
 
 function void = level3()
     void = NaN;
-    plt_fxns = plot_fxns();
-    plt_fxns.delete_old_plots();
-    level3_isobaric();
     P = 100; % bar
-    level3_isothermal(NaN);
+    plt_fxns = plot_fxns();
+    % plt_fxns.delete_old_plots();
     level3_isothermal(P);
+    level3_isobaric();
+    level3_isothermal(NaN);
 end
 
 
@@ -118,6 +118,8 @@ function void = level3_isothermal(P_specify)
         all_pressure_data(i) = isoTherm_plt;
         i = i + 1;
         % end
+        plt_fxns.plot_recycle_flowrates(isoTherm_plt);
+        plt_fxns.plot_fresh_feed_conversion(isoTherm_plt);
         plt_fxns.plot_molar_flowrates_conversion(isoTherm_plt);
     else
         i = 1;

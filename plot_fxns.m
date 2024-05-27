@@ -11,6 +11,78 @@ function fxns = plot_fxns()
     fxns.plot_reactor_volume_conversion_allP = @plot_reactor_volume_conversion_allP;
     fxns.delete_old_plots = @delete_old_plots;
     fxns.plot_molar_flowrates_conversion = @plot_molar_flowrates_conversion;
+    fxns.plot_fresh_feed_conversion = @plot_fresh_feed_conversion;
+    fxns.plot_recycle_flowrates = @plot_recycle_flowrates;
+end
+
+function void = plot_recycle_flowrates(plot_struct)
+    void = NaN;
+    user = get_user_inputs();
+    const = get_constants();
+    figure 
+    hold on
+    fieldNames = fieldnames(plot_struct.data.F_out);
+    for i = 1:length(fieldNames)
+        x = plot_struct.data.conversion(:);
+        y = plot_struct.data.R.(fieldNames{i}).mol(:);
+
+        % figure
+        plot(x, y);
+        title(sprintf('R [ mol / s ] at [ %3.0f Bar ] [ %3.0f °C ]',plot_struct.P, plot_struct.T), 'Interpreter', 'tex');
+        xlabel('\chi', 'Interpreter', 'tex');
+        ylabel('R [ mol / s ]', 'Interpreter', 'tex')
+        % Create the legend entry for this plot
+        legendEntries{i} = sprintf('%s', strrep(fieldNames{i}, '_', " "));
+    end
+    % The design variable point
+    legendEntries{i + 1} = sprintf('\\chi = %0.2f, %3.1f m^3' , user.plot.isothermal.x_point, ...
+                                (user.plot.isothermal.y_point * const.units.volume.m3_per_l));
+    xline(user.plot.isothermal.x_point, '--k', 'LineWidth', 0.5, 'HandleVisibility', 'off');
+    % yline(user.plot.isothermal.y_point * const.units.volume.m3_per_l, '--k', 'LineWidth', 0.5, 'HandleVisibility', 'off');
+    % plot(user.plot.isothermal.x_point, user.plot.isothermal.y_point * const.units.volume.m3_per_l, ...
+    %             'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'r', 'MarkerSize', 3);
+
+    % Add Legend
+    legend(legendEntries, 'Interpreter', 'tex', 'location', 'west');
+    hold off
+
+    fileName =  "Recycle_" + string(plot_struct.P) + "Bar";
+    save_plot(fileName);
+end
+
+function void = plot_fresh_feed_conversion(plot_struct)
+    void = NaN;
+    user = get_user_inputs();
+    const = get_constants();
+    figure 
+    hold on
+    fieldNames = fieldnames(plot_struct.data.F_out);
+    for i = 1:length(fieldNames)
+        x = plot_struct.data.conversion(:);
+        y = plot_struct.data.F_fresh.(fieldNames{i}).mol(:);
+
+        % figure
+        plot(x, y);
+        title(sprintf('F_{fresh feed} [ mol / s ] at [ %3.0f Bar ] [ %3.0f °C ]',plot_struct.P, plot_struct.T), 'Interpreter', 'tex');
+        xlabel('\chi', 'Interpreter', 'tex');
+        ylabel('F_{fresh feed} [ mol / s ]', 'Interpreter', 'tex')
+        % Create the legend entry for this plot
+        legendEntries{i} = sprintf('%s', strrep(fieldNames{i}, '_', " "));
+    end
+    % The design variable point
+    legendEntries{i + 1} = sprintf('\\chi = %0.2f, %3.1f m^3' , user.plot.isothermal.x_point, ...
+                                (user.plot.isothermal.y_point * const.units.volume.m3_per_l));
+    xline(user.plot.isothermal.x_point, '--k', 'LineWidth', 0.5, 'HandleVisibility', 'off');
+    % yline(user.plot.isothermal.y_point * const.units.volume.m3_per_l, '--k', 'LineWidth', 0.5, 'HandleVisibility', 'off');
+    % plot(user.plot.isothermal.x_point, user.plot.isothermal.y_point * const.units.volume.m3_per_l, ...
+    %             'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'r', 'MarkerSize', 3);
+
+    % Add Legend
+    legend(legendEntries, 'Interpreter', 'tex', 'location', 'west');
+    hold off
+
+    fileName =  "isothermal_F_fresh_feed_" + string(plot_struct.P) + "Bar";
+    save_plot(fileName);
 end
 
 function void = plot_molar_flowrates_conversion(plot_struct)
@@ -21,9 +93,7 @@ function void = plot_molar_flowrates_conversion(plot_struct)
     hold on
     fieldNames = fieldnames(plot_struct.data.F_out);
     for i = 1:length(fieldNames)
-        % plot_struct = all_pressure_data(i);
         x = plot_struct.data.conversion(:);
-        % y = plot_struct.data.V_rxtr(:) .* const.units.volume.m3_per_l;
         y = plot_struct.data.F_out.(fieldNames{i}).mol(:);
 
         % figure
@@ -46,6 +116,12 @@ function void = plot_molar_flowrates_conversion(plot_struct)
     legend(legendEntries, 'Interpreter', 'tex', 'location', 'west');
     hold off
 
+    fileName =  "isothermal_F_effluent_" + string(plot_struct.P) + "Bar";
+    save_plot(fileName);
+end
+
+function void = save_plot(fileName)
+    user = get_user_inputs();
     if ispc
         dir = [pwd  '\plots\' ];
     elseif ismac
@@ -58,10 +134,28 @@ function void = plot_molar_flowrates_conversion(plot_struct)
         mkdir(dir);
     end
 
-    print(fullfile(dir, "isothermal_F_effluent_P_" + string(plot_struct.P)), '-dpng', user.plot.image_dpi) ;  % Save as PNG with 300 DPI
-
+    delete_png_if_exists(fileName);
+    print(fullfile(dir, fileName), '-dpng', user.plot.image_dpi) ;  % Save as PNG with 300 DPI
 end
 
+function void = delete_png_if_exists(fileName)
+    % Check platform and set directory
+    if ispc
+        dirName = [pwd  '\plots\' ];
+    elseif ismac
+        dirName = [pwd  '/plots/' ];
+    else
+        dirName = [pwd  '/plots/' ];
+    end
+
+    % Construct the full file path
+    filePath = fullfile(dirName, fileName);
+
+    % Check if the file exists and delete if it does
+    if exist(filePath, 'file') == 2 % 2 indicates it is a file
+        delete(filePath);
+    end
+end
 
 function void = delete_old_plots()
     % disp("test ")
@@ -112,20 +206,8 @@ function void = plot_reactor_volume_conversion_allP(all_pressure_data)
     legend(legendEntries, 'Interpreter', 'tex', 'location', 'northwest');
     hold off
 
-    if ispc
-        dir = [pwd  '\plots\' ];
-    elseif ismac
-        dir = [pwd  '/plots/' ];
-    else
-        dir = [pwd  '/plots/' ];
-    end
-
-    if ~exist(dir, 'dir')
-        mkdir(dir);
-    end
-
-    print(fullfile(dir, "isothermal_V_reactor"), '-dpng', user.plot.image_dpi) ;  % Save as PNG with 300 DPI
-
+    fileName =  "isothermal_V_reactor";
+    save_plot(fileName);
 end 
 
 
@@ -150,20 +232,22 @@ function void = plot_reactor_volume_conversion_allT(all_temp_data)
     legend(legendEntries, 'Interpreter', 'tex', 'location', 'northwest');
     hold off
 
-    if ispc
-        dir = [pwd  '\plots\' ];
-    elseif ismac
-        dir = [pwd  '/plots/' ];
-    else
-        dir = [pwd  '/plots/' ];
-    end
+    % if ispc
+    %     dir = [pwd  '\plots\' ];
+    % elseif ismac
+    %     dir = [pwd  '/plots/' ];
+    % else
+    %     dir = [pwd  '/plots/' ];
+    % end
 
-    if ~exist(dir, 'dir')
-        mkdir(dir);
-    end
+    % if ~exist(dir, 'dir')
+    %     mkdir(dir);
+    % end
 
-    print(fullfile(dir, "isobaric_V_reactor"), '-dpng', user.plot.image_dpi) ;  % Save as PNG with 300 DPI
+    % print(fullfile(dir, "isobaric_V_reactor"), '-dpng', user.plot.image_dpi) ;  % Save as PNG with 300 DPI
 
+    fileName =   "isobaric_V_reactor";
+    save_plot(fileName);
 end 
 
 
