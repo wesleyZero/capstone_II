@@ -10,7 +10,58 @@ function fxns = plot_fxns()
     fxns.plot_reactor_volume_conversion_allT = @plot_reactor_volume_conversion_allT;
     fxns.plot_reactor_volume_conversion_allP = @plot_reactor_volume_conversion_allP;
     fxns.delete_old_plots = @delete_old_plots;
+    fxns.plot_molar_flowrates_conversion = @plot_molar_flowrates_conversion;
 end
+
+function void = plot_molar_flowrates_conversion(plot_struct)
+    void = NaN;
+    user = get_user_inputs();
+    const = get_constants();
+    figure 
+    hold on
+    fieldNames = fieldnames(plot_struct.data.F_out);
+    for i = 1:length(fieldNames)
+        % plot_struct = all_pressure_data(i);
+        x = plot_struct.data.conversion(:);
+        % y = plot_struct.data.V_rxtr(:) .* const.units.volume.m3_per_l;
+        y = plot_struct.data.F_out.(fieldNames{i}).mol(:);
+
+        % figure
+        plot(x, y);
+        title(sprintf('F_{effluent} [ mol / s ] at [ %3.0f Bar ] [ %3.0f °C ]',plot_struct.P, plot_struct.T), 'Interpreter', 'tex');
+        xlabel('\chi', 'Interpreter', 'tex');
+        ylabel('F_{effluent} [ mol / s ]', 'Interpreter', 'tex')
+        % Create the legend entry for this plot
+        legendEntries{i} = sprintf('%s', fieldNames{i});
+    end
+    % The design variable point
+    % legendEntries{i + 1} = sprintf('\\chi = %0.2f, %3.1f m^3' , user.plot.isothermal.x_point, ...
+    %                             (user.plot.isothermal.y_point * const.units.volume.m3_per_l));
+    % xline(user.plot.isothermal.x_point, '--k', 'LineWidth', 0.5, 'HandleVisibility', 'off');
+    % yline(user.plot.isothermal.y_point * const.units.volume.m3_per_l, '--k', 'LineWidth', 0.5, 'HandleVisibility', 'off');
+    % plot(user.plot.isothermal.x_point, user.plot.isothermal.y_point * const.units.volume.m3_per_l, ...
+    %             'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'r', 'MarkerSize', 3);
+
+    % Add Legend
+    legend(legendEntries, 'Interpreter', 'tex', 'location', 'northwest');
+    hold off
+
+    if ispc
+        dir = [pwd  '\plots\' ];
+    elseif ismac
+        dir = [pwd  '/plots/' ];
+    else
+        dir = [pwd  '/plots/' ];
+    end
+
+    if ~exist(dir, 'dir')
+        mkdir(dir);
+    end
+
+    print(fullfile(dir, "isothermal_F_effluent_P_" + string(plot_struct.P)), '-dpng', user.plot.image_dpi) ;  % Save as PNG with 300 DPI
+
+end
+
 
 function void = delete_old_plots()
     % disp("test ")

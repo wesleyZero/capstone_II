@@ -8,13 +8,16 @@ level3();
 % FUNCTIONS_____________________________________________________________________
 
 function void = level3()
+    void = NaN;
     plt_fxns = plot_fxns();
     plt_fxns.delete_old_plots();
-    level3_isobaric();
-    level3_isothermal();
-    void = NaN;
-
+    % level3_isobaric();
+    P = 100; % bar
+    % level3_isothermal(NaN);
+    level3_isothermal(P);
 end
+
+
 
 function void = level3_isobaric()
     void = NaN;
@@ -68,7 +71,7 @@ function void = level3_isobaric()
     console.section("Level 3 " + opt + " calculations are complete")
 end
 
-function void = level3_isothermal()
+function void = level3_isothermal(P_specify)
     void = NaN;
 
     console = get_console();
@@ -81,12 +84,13 @@ function void = level3_isothermal()
     opt = 'isothermal';
     console.section("Starting Level 3 " + opt + " calculations")
     
-    i = 1;
-    for P = user.level3.press_range
+    if ~isnan(P_specify)
+        i = 1;
+        P = P_specify;
+        % for P = user.level3.press_range
         console.subsection(sprintf("P = %3.2f", P), 1);
         row = 1;
         isoTherm_plt = plt_fxns.get_plot_struct(T, P, opt);
-        
 
         for tau = user.level3.tau_range
             console.subsection(sprintf("tau = %3.2f", tau), 2)
@@ -113,10 +117,44 @@ function void = level3_isothermal()
 
         all_pressure_data(i) = isoTherm_plt;
         i = i + 1;
-    end
+        % end
+        plt_fxns.plot_molar_flowrates_conversion(isoTherm_plt);
+    else
+        i = 1;
+        for P = user.level3.press_range
+            console.subsection(sprintf("P = %3.2f", P), 1);
+            row = 1;
+            isoTherm_plt = plt_fxns.get_plot_struct(T, P, opt);
+            
 
-    plt_fxns.plot_reactor_volume_conversion_allP(all_pressure_data);
-    % plt_fxns.plot_molar_flowrates_conversion(all_pressure_data);
+            for tau = user.level3.tau_range
+                console.subsection(sprintf("tau = %3.2f", tau), 2)
+                [F_fresh, F_rxtr, F_out, R, V_rxtr] = level3_flowrates(tau, T, P, opt); 
+                conversion = rxtr_fxns.get_conversion(F_rxtr, F_out);
+
+                if isnan(conversion)
+                    disp("ERROR : COMPLEX CONC. BREAKING TO NEXT TEMP")
+                    break;
+                end
+                % Store row data
+                plot_row.F_fresh = F_fresh;
+                plot_row.F_rxtr = F_rxtr;
+                plot_row.F_out = F_out;
+                plot_row.R = R;
+                plot_row.conversion = conversion;
+                plot_row.row_number = row;
+                plot_row.tau = tau;
+                plot_row.V_rxtr = V_rxtr;
+                isoTherm_plt = plt_fxns.set_plot_row(isoTherm_plt, plot_row);
+                % increment
+                row = row + 1; 
+            end
+
+            all_pressure_data(i) = isoTherm_plt;
+            i = i + 1;
+        end
+        plt_fxns.plot_reactor_volume_conversion_allP(all_pressure_data);
+    end
     console.section("Level 3 " + opt + " calculations are complete")
 end
 
