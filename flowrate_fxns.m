@@ -4,6 +4,7 @@ function fxns = flowrate_fxns()
     fxns.set_F_mol = @set_F_mol;
     fxns.get_blank_flowstream = @get_blank_flowstream;
     fxns.get_basis_feed_flowrates = @get_basis_feed_flowrates;
+    fxns.set_mol_fractions = @set_mol_fractions;
 end
 
 function F = get_basis_feed_flowrates()

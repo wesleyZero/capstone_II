@@ -13,6 +13,44 @@ function fxns = plot_fxns()
     fxns.plot_molar_flowrates_conversion = @plot_molar_flowrates_conversion;
     fxns.plot_fresh_feed_conversion = @plot_fresh_feed_conversion;
     fxns.plot_recycle_flowrates = @plot_recycle_flowrates;
+    fxns.plot_effluent_composition = @plot_effluent_composition;
+end
+
+function void = plot_effluent_composition(plot_struct)
+    void = NaN;
+    user = get_user_inputs();
+    const = get_constants();
+    flow_fxns = flowrate_fxns();
+    figure 
+    hold on
+    fieldNames = fieldnames(plot_struct.data.F_out);
+    % plot_struct.data.F_out = flow_fxns.set_mol_fractions(plot_struct.data.F_out);
+    for i = 1:length(fieldNames)
+        x = plot_struct.data.conversion(:);
+        y = plot_struct.data.F_out.(fieldNames{i}).x(:);
+
+        % figure
+        plot(x, y);
+        title(sprintf('X_i [ mol / mol ] at [ %3.0f Bar ] [ %3.0f °C ]',plot_struct.P, plot_struct.T), 'Interpreter', 'tex');
+        xlabel('\chi', 'Interpreter', 'tex');
+        ylabel('X_i [ mol / mol ]', 'Interpreter', 'tex')
+        % Create the legend entry for this plot
+        legendEntries{i} = sprintf('%s', strrep(fieldNames{i}, '_', " "));
+    end
+    % The design variable point
+    legendEntries{i + 1} = sprintf('\\chi = %0.2f, %3.1f m^3' , user.plot.isothermal.x_point, ...
+                                (user.plot.isothermal.y_point * const.units.volume.m3_per_l));
+    xline(user.plot.isothermal.x_point, '--k', 'LineWidth', 0.5, 'HandleVisibility', 'off');
+    % yline(user.plot.isothermal.y_point * const.units.volume.m3_per_l, '--k', 'LineWidth', 0.5, 'HandleVisibility', 'off');
+    % plot(user.plot.isothermal.x_point, user.plot.isothermal.y_point * const.units.volume.m3_per_l, ...
+    %             'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'r', 'MarkerSize', 3);
+
+    % Add Legend
+    legend(legendEntries, 'Interpreter', 'tex', 'location', 'west');
+    hold off
+
+    fileName =  "isothermal_effluent_composition_" + string(plot_struct.P) + "Bar";
+    save_plot(fileName);
 end
 
 function void = plot_recycle_flowrates(plot_struct)
@@ -46,7 +84,7 @@ function void = plot_recycle_flowrates(plot_struct)
     legend(legendEntries, 'Interpreter', 'tex', 'location', 'west');
     hold off
 
-    fileName =  "Recycle_" + string(plot_struct.P) + "Bar";
+    fileName =  "isothermal_recycle_" + string(plot_struct.P) + "Bar";
     save_plot(fileName);
 end
 
