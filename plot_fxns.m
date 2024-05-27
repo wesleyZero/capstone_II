@@ -32,7 +32,7 @@ function void = plot_molar_flowrates_conversion(plot_struct)
         xlabel('\chi', 'Interpreter', 'tex');
         ylabel('F_{effluent} [ mol / s ]', 'Interpreter', 'tex')
         % Create the legend entry for this plot
-        legendEntries{i} = sprintf('%s', fieldNames{i});
+        legendEntries{i} = sprintf('%s', strrep(fieldNames{i}, '_', " "));
     end
     % The design variable point
     % legendEntries{i + 1} = sprintf('\\chi = %0.2f, %3.1f m^3' , user.plot.isothermal.x_point, ...
@@ -43,7 +43,7 @@ function void = plot_molar_flowrates_conversion(plot_struct)
     %             'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'r', 'MarkerSize', 3);
 
     % Add Legend
-    legend(legendEntries, 'Interpreter', 'tex', 'location', 'northwest');
+    legend(legendEntries, 'Interpreter', 'tex', 'location', 'west');
     hold off
 
     if ispc

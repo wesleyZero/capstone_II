@@ -5,8 +5,9 @@ function user = get_user_inputs()
     user.level3.molar_ratio_methanol_EO = 15;
     user.level3.molar_ratio_carbon_dioxide_EO = 12; 
         % one mol equiv is consumed in the virtual reactor
-    user.level3.tau_precision = 1000;
-    user.level3.tau_max = 2000; 
+    user.level3.tau_precision = 500;
+    user.level3.tau.min = 50;
+    user.level3.tau_max = 500; 
 
     user.level3.temp_precision = 10;
     user.level3.temp_min.C = 80;
@@ -43,7 +44,7 @@ function user = get_user_inputs()
 
     % Level 3 | Soft coded
     user.level3.tau_range = ...
-                linspace(1, user.level3.tau_max, user.level3.tau_precision);
+                linspace(user.level3.tau.min, user.level3.tau_max, user.level3.tau_precision);
     % user.level3.conversion_range = ...
     %             linspace(1/user.level3.precision, 1, user.level3.precision);
     user.level3.temp_range = ...
