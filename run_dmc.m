@@ -119,6 +119,7 @@ function void = level3_isothermal(P_specify)
         i = i + 1;
         % end
         % plt_fxns.plot_effluent_composition(isoTherm_plt);
+        plt_fxns.plot_total_separation_feed(isoTherm_plt);
         plt_fxns.plot_total_reactor_feed(isoTherm_plt);
         plt_fxns.plot_recycle_flowrates(isoTherm_plt);
         plt_fxns.plot_fresh_feed_conversion(isoTherm_plt);
