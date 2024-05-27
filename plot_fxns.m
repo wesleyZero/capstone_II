@@ -35,9 +35,9 @@ function void = plot_molar_flowrates_conversion(plot_struct)
         legendEntries{i} = sprintf('%s', strrep(fieldNames{i}, '_', " "));
     end
     % The design variable point
-    % legendEntries{i + 1} = sprintf('\\chi = %0.2f, %3.1f m^3' , user.plot.isothermal.x_point, ...
-    %                             (user.plot.isothermal.y_point * const.units.volume.m3_per_l));
-    % xline(user.plot.isothermal.x_point, '--k', 'LineWidth', 0.5, 'HandleVisibility', 'off');
+    legendEntries{i + 1} = sprintf('\\chi = %0.2f, %3.1f m^3' , user.plot.isothermal.x_point, ...
+                                (user.plot.isothermal.y_point * const.units.volume.m3_per_l));
+    xline(user.plot.isothermal.x_point, '--k', 'LineWidth', 0.5, 'HandleVisibility', 'off');
     % yline(user.plot.isothermal.y_point * const.units.volume.m3_per_l, '--k', 'LineWidth', 0.5, 'HandleVisibility', 'off');
     % plot(user.plot.isothermal.x_point, user.plot.isothermal.y_point * const.units.volume.m3_per_l, ...
     %             'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'r', 'MarkerSize', 3);
