@@ -5,7 +5,32 @@ function fxns = flowrate_fxns()
     fxns.get_blank_flowstream = @get_blank_flowstream;
     fxns.get_basis_feed_flowrates = @get_basis_feed_flowrates;
     fxns.set_mol_fractions = @set_mol_fractions;
+    fxns.get_total_flowrate = @get_total_flowrate;
 end
+
+function F_total = get_total_flowrate(F, opt)
+
+    if strcmp('mol', opt)
+        fieldNames = fieldnames(F);
+        F_total = 0;
+        for i = 1:length(fieldNames)
+            species = fieldNames{i};
+            F_total = F_total + F.(species).mol;
+        end
+    elseif strcmp('kta', opt)
+        % Find total molar flow rate
+        fieldNames = fieldnames(F);
+        F_total = 0;
+        for i = 1:length(fieldNames)
+            species = fieldNames{i};
+            F_total = F_total + F.(species).kta;
+        end
+    else
+        disp("ERROR : get_total_flowrate : invalid option")
+        F_total = NaN;
+    end
+end
+
 
 function F = get_basis_feed_flowrates()
     user = get_user_inputs();
