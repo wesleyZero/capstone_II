@@ -11,9 +11,9 @@ function void = level3()
     void = NaN;
     plt_fxns = plot_fxns();
     plt_fxns.delete_old_plots();
-    % level3_isobaric();
+    level3_isobaric();
     P = 100; % bar
-    % level3_isothermal(NaN);
+    level3_isothermal(NaN);
     level3_isothermal(P);
 end
 
@@ -39,7 +39,7 @@ function void = level3_isobaric()
         isoBar_plt = plt_fxns.get_plot_struct(T, P, opt);
         
 
-        for tau = user.level3.tau_range
+        for tau =  user.level3.tau_range.isobaric 
             console.subsection(sprintf("tau = %3.2f", tau), 2)
             [F_fresh, F_rxtr, F_out, R, V_rxtr] = level3_flowrates(tau, T, P, opt); 
             conversion = rxtr_fxns.get_conversion(F_rxtr, F_out);
@@ -92,7 +92,7 @@ function void = level3_isothermal(P_specify)
         row = 1;
         isoTherm_plt = plt_fxns.get_plot_struct(T, P, opt);
 
-        for tau = user.level3.tau_range
+        for tau = user.level3.tau_range.P_specify.isothermal
             console.subsection(sprintf("tau = %3.2f", tau), 2)
             [F_fresh, F_rxtr, F_out, R, V_rxtr] = level3_flowrates(tau, T, P, opt); 
             conversion = rxtr_fxns.get_conversion(F_rxtr, F_out);
@@ -127,7 +127,7 @@ function void = level3_isothermal(P_specify)
             isoTherm_plt = plt_fxns.get_plot_struct(T, P, opt);
             
 
-            for tau = user.level3.tau_range
+            for tau = user.level3.tau_range.isothermal
                 console.subsection(sprintf("tau = %3.2f", tau), 2)
                 [F_fresh, F_rxtr, F_out, R, V_rxtr] = level3_flowrates(tau, T, P, opt); 
                 conversion = rxtr_fxns.get_conversion(F_rxtr, F_out);

@@ -6,8 +6,17 @@ function user = get_user_inputs()
     user.level3.molar_ratio_carbon_dioxide_EO = 12; 
         % one mol equiv is consumed in the virtual reactor
     user.level3.tau_precision = 500;
-    user.level3.tau_min = 50;
-    user.level3.tau_max = 500; 
+    % user.level3.tau_min = 50;
+    % user.level3.tau_max = 500; 
+
+    % isothermal tau ranges
+    user.level3.isothermal.tau_min = 1;
+    user.level3.isothermal.tau_max = 500;
+    user.level3.isothermal.P_specify.tau_min = 50;
+    user.level3.isothermal.P_specify.tau_max = 500;
+    user.level3.isobaric.tau_min = 1;
+    user.level3.isobaric.tau_max = 2000;
+
 
     user.level3.temp_precision = 10;
     user.level3.temp_min.C = 80;
@@ -43,10 +52,21 @@ function user = get_user_inputs()
     user.plot.isothermal.y_point = 2 * 10^4;
 
     % Level 3 | Soft coded
-    user.level3.tau_range = ...
-                linspace(user.level3.tau_min, user.level3.tau_max, user.level3.tau_precision);
+    % user.level3.tau_range = ...
+                % linspace(user.level3.isobaric.tau_min, user.level3.isobaric.tau_max, user.level3.tau_precision);
 
-    
+    user.level3.tau_range.isobaric = ...
+                linspace(user.level3.isobaric.tau_min, user.level3.isobaric.tau_max, user.level3.tau_precision);
+
+    user.level3.tau_range.isothermal = ...
+                linspace(user.level3.isothermal.tau_min, user.level3.isothermal.tau_max, user.level3.tau_precision);
+
+    user.level3.tau_range.P_specify.isothermal = ...
+        linspace(user.level3.isothermal.P_specify.tau_min, user.level3.isothermal.P_specify.tau_max, user.level3.tau_precision);
+
+
+
+
 
 
 
