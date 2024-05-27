@@ -9,6 +9,26 @@ function fxns = plot_fxns()
     fxns.plot_reactor_volume_conversion = @plot_reactor_volume_conversion;
     fxns.plot_reactor_volume_conversion_allT = @plot_reactor_volume_conversion_allT;
     fxns.plot_reactor_volume_conversion_allP = @plot_reactor_volume_conversion_allP;
+    fxns.delete_old_plots = @delete_old_plots;
+end
+
+function void = delete_old_plots()
+    % disp("test ")
+    if ispc
+        dirName = [pwd  '\plots\' ];
+    elseif ismac
+        dirName = [pwd  '/plots/' ];
+    else
+        dirName = [pwd  '/plots/' ];
+    end
+
+    pngFiles = dir(fullfile(dirName, '*.png'));
+
+    for k = 1:length(pngFiles)
+        filePath = fullfile(pngFiles(k).folder, pngFiles(k).name);
+        delete(filePath);
+    end
+
 end
 
 function void = plot_reactor_volume_conversion_allP(all_pressure_data)

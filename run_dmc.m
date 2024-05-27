@@ -8,6 +8,8 @@ level3();
 % FUNCTIONS_____________________________________________________________________
 
 function void = level3()
+    plt_fxns = plot_fxns();
+    plt_fxns.delete_old_plots();
     level3_isobaric();
     level3_isothermal();
     void = NaN;
