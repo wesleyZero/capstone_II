@@ -392,7 +392,7 @@ function plot_struct = set_plot_row(plot_struct, plot_row)
     end
 
     fields = {'carbon_dioxide', 'ethylene_oxide', 'methanol', 'ethylene_carbonate', 'ethylene_glycol', 'methoxy_ethanol', 'dimethyl_carbonate'};
-    subfields = {'mol', 'kta'};
+    subfields = {'mol', 'kta', 'x'};
 
     % Iterate over F_fresh
     for i = 1:length(fields)
