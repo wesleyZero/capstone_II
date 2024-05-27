@@ -8,7 +8,7 @@ level3();
 % FUNCTIONS_____________________________________________________________________
 
 function void = level3()
-    % level3_isobaric();
+    level3_isobaric();
     level3_isothermal();
     void = NaN;
 
@@ -114,6 +114,7 @@ function void = level3_isothermal()
     end
 
     plt_fxns.plot_reactor_volume_conversion_allP(all_pressure_data);
+    % plt_fxns.plot_molar_flowrates_conversion(all_pressure_data);
     console.section("Level 3 " + opt + " calculations are complete")
 end
 
