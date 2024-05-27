@@ -118,7 +118,7 @@ function void = level3_isothermal(P_specify)
         all_pressure_data(i) = isoTherm_plt;
         i = i + 1;
         % end
-
+        plt_fxns.plot_selectivity(isoTherm_plt);
         plt_fxns.plot_effluent_composition(isoTherm_plt);
         plt_fxns.plot_total_separation_feed(isoTherm_plt);
         plt_fxns.plot_total_reactor_feed(isoTherm_plt);

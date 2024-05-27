@@ -16,6 +16,46 @@ function fxns = plot_fxns()
     fxns.plot_effluent_composition = @plot_effluent_composition;
     fxns.plot_total_reactor_feed = @plot_total_reactor_feed;
     fxns.plot_total_separation_feed = @plot_total_separation_feed;
+    fxns.plot_selectivity = @plot_selectivity;
+
+end
+
+function void = plot_selectivity(plot_struct)
+    void = NaN;
+    user = get_user_inputs();
+    const = get_constants();
+    flow_fxns = flowrate_fxns();
+    figure 
+    hold on
+    % F_total = flow_fxns.get_total_flowrate(plot_struct.data.F_out, 'mol');
+    S = plot_struct.data.F_out.dimethyl_carbonate.mol(:) ./ plot_struct.data.F_fresh.ethylene_oxide.mol(:);
+        x = plot_struct.data.conversion(:);
+        % y = plot_struct.data.F_out.(fieldNames{i}).x(:);
+        y = S(:);
+
+        % figure
+        plot(x, y);
+        title(sprintf('Selectivity at [ %3.0f Bar ] [ %3.0f °C ]',plot_struct.P, plot_struct.T), 'Interpreter', 'tex');
+        xlabel('\chi', 'Interpreter', 'tex');
+        ylabel('Selectivity', 'Interpreter', 'tex');
+        % Create the legend entry for this plot
+        % legendEntries{i} = sprintf('%s', strrep(fieldNames{i}, '_', " "));
+    % end
+    % The design variable point
+    % legendEntries{i + 1} = sprintf('\\chi = %0.2f, %3.1f m^3' , user.plot.isothermal.x_point, ...
+                                % (user.plot.isothermal.y_point * const.units.volume.m3_per_l));
+    xline(user.plot.isothermal.x_point, '--k', 'LineWidth', 0.5, 'HandleVisibility', 'off');
+    % yline(user.plot.isothermal.y_point * const.units.volume.m3_per_l, '--k', 'LineWidth', 0.5, 'HandleVisibility', 'off');
+    % plot(user.plot.isothermal.x_point, user.plot.isothermal.y_point * const.units.volume.m3_per_l, ...
+    %             'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'r', 'MarkerSize', 3);
+
+    % Add Legend
+    % legend(legendEntries, 'Interpreter', 'tex', 'location', 'west');
+    hold off
+
+    fileName =  "isothermal_selectivity" + string(plot_struct.P) + "Bar";
+    save_plot(fileName);
+
 
 end
 
