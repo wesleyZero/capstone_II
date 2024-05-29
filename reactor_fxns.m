@@ -44,54 +44,54 @@ function chi = get_conversion(F_rxtr, F_out)
 end
 
 
-function [F_fresh, F_rxtr, F_out, R] = get_plant_flowrates(F_in_basis, F_out_basis)
-    scale_factor = get_scale_factor(F_out_basis);
+function [F_fresh, F_rxtr, F_effluent, R] = get_plant_flowrates(F_rxtr_in_basis, F_effluent_basis)
+    scale_factor = get_scale_factor(F_effluent_basis);
     flow_fxns = flowrate_fxns();
 
     % initialize 
     F_fresh = flow_fxns.get_blank_flowstream();
     F_rxtr = flow_fxns.get_blank_flowstream();
-    F_out = flow_fxns.get_blank_flowstream();
+    F_effluent = flow_fxns.get_blank_flowstream();
     R = flow_fxns.get_blank_flowstream();
 
-    % scale in the in and out flows
-    fieldNames = fieldnames(F_in_basis);
+    % scale the flows in & out of the reactor
+    fieldNames = fieldnames(F_rxtr_in_basis);
     for i = 1:length(fieldNames)
         if strcmp(fieldNames{i},'units') , continue, end ;
-        F_out.(fieldNames{i}).mol = scale_factor * F_out_basis.(fieldNames{i}).mol;
-        F_rxtr.(fieldNames{i}).mol = scale_factor * F_in_basis.(fieldNames{i}).mol;
-    end
-
-    % set the in and out flows
-    F_out = flow_fxns.set_F_mol(F_out); 
+        F_effluent.(fieldNames{i}).mol = scale_factor * F_effluent_basis.(fieldNames{i}).mol;
+        F_rxtr.(fieldNames{i}).mol = scale_factor * F_rxtr_in_basis.(fieldNames{i}).mol;
+	end
+    F_effluent = flow_fxns.set_F_mol(F_effluent); 
     F_rxtr = flow_fxns.set_F_mol(F_rxtr); 
 
     % Get the fresh and recycle flows
-    [F_fresh, R] = get_recycle_and_fresh_flowrates(F_rxtr, F_out);
+    [F_fresh, R] = get_recycle_and_fresh_flowrates(F_rxtr, F_effluent);
 
 end
 
-function [F_in_fresh, R] = get_recycle_and_fresh_flowrates(F_rxtr, F_out)
+function [F_fresh, R] = get_recycle_and_fresh_flowrates(F_rxtr, F_effluent)
     flow_fxns = flowrate_fxns();
 
     % Recycle flow
     R = flow_fxns.get_blank_flowstream();
-    R.ethylene_carbonate.mol = F_out.ethylene_carbonate.mol;
-    R.methoxy_ethanol.mol = F_out.methoxy_ethanol.mol;
-    R.carbon_dioxide.mol = F_out.carbon_dioxide.mol;
+    R.ethylene_carbonate.mol = F_effluent.ethylene_carbonate.mol;
+    R.methanol.mol = F_effluent.methanol.mol;
+    R.carbon_dioxide.mol = F_effluent.carbon_dioxide.mol;
     R = flow_fxns.set_F_mol(R);
 
     % Fresh feed flow 
-    F_in_fresh = flow_fxns.get_blank_flowstream();
-    F_in_fresh.ethylene_carbonate.mol = F_rxtr.ethylene_carbonate.mol - R.ethylene_carbonate.mol;
-    F_in_fresh.methoxy_ethanol.mol = F_rxtr.methoxy_ethanol.mol - R.methoxy_ethanol.mol;
-    F_in_fresh.carbon_dioxide.mol = F_rxtr.carbon_dioxide.mol - R.carbon_dioxide.mol;
+    F_fresh = flow_fxns.get_blank_flowstream();
+    F_fresh.ethylene_carbonate.mol = F_rxtr.ethylene_carbonate.mol - R.ethylene_carbonate.mol;
+    F_fresh.methanol.mol = F_rxtr.methanol.mol - R.methanol.mol;
+    F_fresh.carbon_dioxide.mol = F_rxtr.carbon_dioxide.mol - R.carbon_dioxide.mol;
 
-    F_in_fresh.ethylene_oxide.mol = F_in_fresh.ethylene_carbonate.mol;
-    F_in_fresh.ethylene_carbonate.mol = 0;
+    F_fresh.ethylene_oxide.mol = F_fresh.ethylene_carbonate.mol;
+    F_fresh.ethylene_carbonate.mol = 0;
+		% EC should be turned back into EO because we need the feed into the virtual reactor
+		% ?? Look into more detail of the EO / EC and recycle stream because the
+		% VR really complicates things
+    F_fresh = flow_fxns.set_F_mol(F_fresh);
 
-    F_in_fresh = flow_fxns.set_F_mol(F_in_fresh);
-    % EC should be turned back into EO because we need the feed into the virtual reactor
 
 end
 
