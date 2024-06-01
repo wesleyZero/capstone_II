@@ -3,6 +3,7 @@ function user = get_user_inputs()
  
     % Level 3 | hard coded
     user.level3.molar_ratio_methanol_EO = 15;
+    user.level3.molar_ratio_methanol_EC = 15;
     user.level3.molar_ratio_carbon_dioxide_EO = 13; 
     user.level3.molar_ratio_carbon_dioxide_EC = 12; 
         % one mol equiv is consumed in the virtual reactor

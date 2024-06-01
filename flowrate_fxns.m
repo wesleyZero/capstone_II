@@ -37,9 +37,9 @@ function F = get_basis_feed_flowrates()
 
     F = get_blank_flowstream();
 
-    % Define the basis ratios
+    % Define the basis ratios for the REAL reactor input flows
     F.ethylene_carbonate.mol = 1; 
-    F.methanol.mol = F.ethylene_carbonate.mol * user.level3.molar_ratio_methanol_EO;
+    F.methanol.mol = F.ethylene_carbonate.mol * user.level3.molar_ratio_methanol_EC;
     F.carbon_dioxide.mol = F.ethylene_carbonate.mol * user.level3.molar_ratio_carbon_dioxide_EC;
 
     % set the flowrates

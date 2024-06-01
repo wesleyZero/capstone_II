@@ -47,41 +47,64 @@ end
 
 function [F_fresh, F_rxtr, F_effluent, R] = get_plant_flowrates(F_rxtr_in_basis, F_effluent_basis)
     scale_factor = get_scale_factor(F_effluent_basis);
-    flow_fxns = flowrate_fxns();
+    % flow_fxns = flowrate_fxns();
 
     % initialize 
-    F_fresh = flow_fxns.get_blank_flowstream();
-    F_rxtr = flow_fxns.get_blank_flowstream();
-    F_effluent = flow_fxns.get_blank_flowstream();
-    R = flow_fxns.get_blank_flowstream();
+    % F_fresh = flow_fxns.get_blank_flowstream();
+    % F_rxtr = flow_fxns.get_blank_flowstream();
+    % F_effluent = flow_fxns.get_blank_flowstream();
+    % R = flow_fxns.get_blank_flowstream();
 
-    % scale the flows in & out of the reactor
-    fieldNames = fieldnames(F_rxtr_in_basis);
-    for i = 1:length(fieldNames)
-        if strcmp(fieldNames{i},'units') , continue, end ;
-        F_effluent.(fieldNames{i}).kta = scale_factor * F_effluent_basis.(fieldNames{i}).mol;
-        F_rxtr.(fieldNames{i}).kta = scale_factor * F_rxtr_in_basis.(fieldNames{i}).mol;
-	end
-    F_effluent = flow_fxns.set_F_kta(F_effluent); 
-    F_rxtr = flow_fxns.set_F_kta(F_rxtr); 
+    F_effluent = get_scaled_flowrate(F_effluent_basis, scale_factor);
+    F_rxtr = get_scaled_flowrate(F_rxtr_in_basis, scale_factor);
+
+    F_in_virt = get_virtual_reactor_input(F_rxtr);
 
     % Get the fresh and recycle flows
     [F_fresh, R] = get_recycle_and_fresh_flowrates(F_rxtr, F_effluent);
 
 end
 
-function [F_fresh, R] = get_recycle_and_fresh_flowrates(F_rxtr, F_effluent)
+function F_scaled  = get_scaled_flowrate(F_basis, scale_factor)
+    % Conserves mass by scaling the mass flowrates 
+
+    flow_fxns = flowrate_fxns();
+    F_scaled - flow_fxns.get_blank_flowstream();
+    fieldNames = fieldnames(F_basis);
+    for i = 1:length(fieldNames)
+        if strcmp(fieldNames{i},'units') , continue, end ;
+        F_scaled.(fieldNames{i}).kta = scale_factor * F_basis.(fieldNames{i}).kta;
+	end
+    F_scaled = flow_fxns.set_F_kta(F_effluent); 
+end
+
+function F_in_virt = get_virtual_reactor_input(F_rxtr)
+    flow_fxns = flowrate_fxns();
+    F_in_virt = flow_fxns.get_blank_flowstream();
+
+    % Assume that C02 is in excess
+    % Get the flow into the virtual reactor
+    F_in_virt.ethylene_oxide.mol = F_rxtr.ethylene_carbonate.mol;
+        % Assume that EO -> EC Complete conversion in virtual reactor
+    F_in_virt.methanol.mol = F_in_virt.ethylene_oxide.mol * user.molar_ratio_methanol_EO;
+    F_in_virt.carbon_dioxide.mol = F_in_virt.carbon_dioxide.mol * user.molar_ratio_carbon_dioxide_EO;
+    F_in_virt = flow_fxns.set_F_mol(F_in_virt);
+end
+
+function [F_fresh, R] = get_recycle_and_fresh_flowrates(F_in_virt, F_effluent)
     flow_fxns = flowrate_fxns();
 
-    % Recycle flow
+    % Initialize 
     R = flow_fxns.get_blank_flowstream();
+    F_fresh = flow_fxns.get_blank_flowstream();
+
+    % Recycle flow
     R.ethylene_carbonate.mol = F_effluent.ethylene_carbonate.mol;
     R.methanol.mol = F_effluent.methanol.mol;
     R.carbon_dioxide.mol = F_effluent.carbon_dioxide.mol;
     R = flow_fxns.set_F_mol(R);
 
     % Fresh feed flow 
-    F_fresh = flow_fxns.get_blank_flowstream();
     F_fresh.ethylene_carbonate.mol = F_rxtr.ethylene_carbonate.mol - R.ethylene_carbonate.mol;
     F_fresh.methanol.mol = F_rxtr.methanol.mol - R.methanol.mol;
     % F_fresh.carbon_dioxide.mol = F_rxtr.carbon_dioxide.mol - R.carbon_dioxide.mol;
@@ -96,6 +119,33 @@ function [F_fresh, R] = get_recycle_and_fresh_flowrates(F_rxtr, F_effluent)
 
 
 end
+
+% function [F_fresh, R] = get_recycle_and_fresh_flowrates(F_rxtr, F_effluent)
+%     flow_fxns = flowrate_fxns();
+
+%     % Recycle flow
+%     R = flow_fxns.get_blank_flowstream();
+%     R.ethylene_carbonate.mol = F_effluent.ethylene_carbonate.mol;
+%     R.methanol.mol = F_effluent.methanol.mol;
+%     R.carbon_dioxide.mol = F_effluent.carbon_dioxide.mol;
+%     R = flow_fxns.set_F_mol(R);
+
+%     % Fresh feed flow 
+%     F_fresh = flow_fxns.get_blank_flowstream();
+%     F_fresh.ethylene_carbonate.mol = F_rxtr.ethylene_carbonate.mol - R.ethylene_carbonate.mol;
+%     F_fresh.methanol.mol = F_rxtr.methanol.mol - R.methanol.mol;
+%     % F_fresh.carbon_dioxide.mol = F_rxtr.carbon_dioxide.mol - R.carbon_dioxide.mol;
+%     F_fresh.carbon_dioxide.mol = F
+
+%     F_fresh.ethylene_oxide.mol = F_fresh.ethylene_carbonate.mol;
+%     F_fresh.ethylene_carbonate.mol = 0;
+% 		% EC should be turned back into EO because we need the feed into the virtual reactor
+% 		% ?? Look into more detail of the EO / EC and recycle stream because the
+% 		% VR really complicates things
+%     F_fresh = flow_fxns.set_F_mol(F_fresh);
+
+
+% end
 
 function scale_factor = get_scale_factor(F_out)
     scale_factor = (get_user_inputs().dmc_production_rate) / F_out.dimethyl_carbonate.kta; 
