@@ -61,16 +61,17 @@ function F_scaled  = get_scaled_flowrate(F_basis, scale_factor)
     % Conserves mass by scaling the mass flowrates 
 
     flow_fxns = flowrate_fxns();
-    F_scaled - flow_fxns.get_blank_flowstream();
+    F_scaled = flow_fxns.get_blank_flowstream();
     fieldNames = fieldnames(F_basis);
     for i = 1:length(fieldNames)
         if strcmp(fieldNames{i},'units') , continue, end ;
         F_scaled.(fieldNames{i}).kta = scale_factor * F_basis.(fieldNames{i}).kta;
 	end
-    F_scaled = flow_fxns.set_F_kta(F_effluent); 
+    F_scaled = flow_fxns.set_F_kta(F_scaled); 
 end
 
 function F_in_virt = get_virtual_reactor_input(F_rxtr)
+    user = get_user_inputs();
     flow_fxns = flowrate_fxns();
     F_in_virt = flow_fxns.get_blank_flowstream();
 
@@ -78,8 +79,8 @@ function F_in_virt = get_virtual_reactor_input(F_rxtr)
     % Get the flow into the virtual reactor
     F_in_virt.ethylene_oxide.mol = F_rxtr.ethylene_carbonate.mol;
         % Assume that EO -> EC Complete conversion in virtual reactor
-    F_in_virt.methanol.mol = F_in_virt.ethylene_oxide.mol * user.molar_ratio_methanol_EO;
-    F_in_virt.carbon_dioxide.mol = F_in_virt.carbon_dioxide.mol * user.molar_ratio_carbon_dioxide_EO;
+    F_in_virt.methanol.mol = F_in_virt.ethylene_oxide.mol * user.level3.molar_ratio_methanol_EO;
+    F_in_virt.carbon_dioxide.mol = F_in_virt.carbon_dioxide.mol * user.level3.molar_ratio_carbon_dioxide_EO;
     F_in_virt = flow_fxns.set_F_mol(F_in_virt);
 end
 
@@ -97,10 +98,10 @@ function [F_fresh, R] = get_recycle_and_fresh_flowrates(F_in_virt, F_effluent)
     R = flow_fxns.set_F_mol(R);
 
     % Fresh feed flow 
-    F_fresh.ethylene_carbonate.mol = F_rxtr.ethylene_carbonate.mol - R.ethylene_carbonate.mol;
-    F_fresh.methanol.mol = F_rxtr.methanol.mol - R.methanol.mol;
-    % F_fresh.carbon_dioxide.mol = F_rxtr.carbon_dioxide.mol - R.carbon_dioxide.mol;
-    F_fresh.carbon_dioxide.mol = F
+    F_fresh.ethylene_carbonate.mol = F_in_virt.ethylene_carbonate.mol - R.ethylene_carbonate.mol;
+    F_fresh.methanol.mol = F_in_virt.methanol.mol - R.methanol.mol;
+    % F_fresh.carbon_dioxide.mol = .carbon_dioxide.mol - R.carbon_dioxide.mol;
+    F_fresh.carbon_dioxide.mol = F_in_virt.carbon_dioxide.mol;
 
     F_fresh.ethylene_oxide.mol = F_fresh.ethylene_carbonate.mol;
     F_fresh.ethylene_carbonate.mol = 0;
