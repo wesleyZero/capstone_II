@@ -1,3 +1,4 @@
+% Reactor Simulation Functions 
 
 function fxns = reactor_fxns() 
     % fxns.get_reaction_rate = @get_reaction_rate;
@@ -58,11 +59,11 @@ function [F_fresh, F_rxtr, F_effluent, R] = get_plant_flowrates(F_rxtr_in_basis,
     fieldNames = fieldnames(F_rxtr_in_basis);
     for i = 1:length(fieldNames)
         if strcmp(fieldNames{i},'units') , continue, end ;
-        F_effluent.(fieldNames{i}).mol = scale_factor * F_effluent_basis.(fieldNames{i}).mol;
-        F_rxtr.(fieldNames{i}).mol = scale_factor * F_rxtr_in_basis.(fieldNames{i}).mol;
+        F_effluent.(fieldNames{i}).kta = scale_factor * F_effluent_basis.(fieldNames{i}).mol;
+        F_rxtr.(fieldNames{i}).kta = scale_factor * F_rxtr_in_basis.(fieldNames{i}).mol;
 	end
-    F_effluent = flow_fxns.set_F_mol(F_effluent); 
-    F_rxtr = flow_fxns.set_F_mol(F_rxtr); 
+    F_effluent = flow_fxns.set_F_kta(F_effluent); 
+    F_rxtr = flow_fxns.set_F_kta(F_rxtr); 
 
     % Get the fresh and recycle flows
     [F_fresh, R] = get_recycle_and_fresh_flowrates(F_rxtr, F_effluent);
@@ -83,7 +84,8 @@ function [F_fresh, R] = get_recycle_and_fresh_flowrates(F_rxtr, F_effluent)
     F_fresh = flow_fxns.get_blank_flowstream();
     F_fresh.ethylene_carbonate.mol = F_rxtr.ethylene_carbonate.mol - R.ethylene_carbonate.mol;
     F_fresh.methanol.mol = F_rxtr.methanol.mol - R.methanol.mol;
-    F_fresh.carbon_dioxide.mol = F_rxtr.carbon_dioxide.mol - R.carbon_dioxide.mol;
+    % F_fresh.carbon_dioxide.mol = F_rxtr.carbon_dioxide.mol - R.carbon_dioxide.mol;
+    F_fresh.carbon_dioxide.mol = F
 
     F_fresh.ethylene_oxide.mol = F_fresh.ethylene_carbonate.mol;
     F_fresh.ethylene_carbonate.mol = 0;
@@ -347,29 +349,6 @@ function k = get_isothermal_rate_constant(reaction, T, P)
             disp("ERROR: get_isothermal_rate_constant(): invalid reaction option")
     end
 end
-
-% function k = get_isothermal_rate_constant(reaction, T, P)
-%     % input:
-%     %   P [ bar ]
-%     % These functions are from the design project statement 
-%     rho = get_supercritical_c02_density(T, P, 'isothermal');
-%     switch reaction
-%         case '2f'
-            
-%             if rho > 246.82 % [g / L]
-%                 k = 0.02486 - 4.943 * (10^(-5)) * rho;
-%             else
-%                 k = 0.013;
-%             end
-%         case '2r'
-%             k = 0.01486 * rho^(-0.873);
-%         case '3'
-%             k = 3.014 * (10^(-4)) * exp(-5.99 * (10^(-3)) * rho);
-%         otherwise
-%             k = NaN;
-%             disp("ERROR: get_isothermal_rate_constant(): invalid reaction option")
-%     end
-% end
 
 function rho = get_supercritical_c02_density(T, P, opt)
     % Input: condition = T or P. Depending on option

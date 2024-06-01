@@ -40,7 +40,7 @@ function F = get_basis_feed_flowrates()
     % Define the basis ratios
     F.ethylene_carbonate.mol = 1; 
     F.methanol.mol = F.ethylene_carbonate.mol * user.level3.molar_ratio_methanol_EO;
-    F.carbon_dioxide.mol = F.ethylene_carbonate.mol * user.level3.molar_ratio_carbon_dioxide_EO;
+    F.carbon_dioxide.mol = F.ethylene_carbonate.mol * user.level3.molar_ratio_carbon_dioxide_EC;
 
     % set the flowrates
     F = set_F_mol(F);

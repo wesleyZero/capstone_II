@@ -3,7 +3,8 @@ function user = get_user_inputs()
  
     % Level 3 | hard coded
     user.level3.molar_ratio_methanol_EO = 15;
-    user.level3.molar_ratio_carbon_dioxide_EO = 12; 
+    user.level3.molar_ratio_carbon_dioxide_EO = 13; 
+    user.level3.molar_ratio_carbon_dioxide_EC = 12; 
         % one mol equiv is consumed in the virtual reactor
     user.level3.tau_precision = 500;
     % user.level3.tau_min = 50;
@@ -50,6 +51,7 @@ function user = get_user_inputs()
     user.plot.image_dpi = '-r600'; % [600 dpi]
     user.plot.isothermal.x_point = 0.65;
     user.plot.isothermal.y_point = 2 * 10^4;
+    user.plot.supercritical_c02_pressure = 73.8;    %  Bar
 
     % Level 3 | Soft coded
     % user.level3.tau_range = ...
