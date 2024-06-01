@@ -9,7 +9,7 @@ end
 function [F_fresh, F_rxtr, F_out, R, V_rxtr] = get_reactor_flows(F_in_basis, T, P, opt, tau)
     F_fresh = NaN; F_rxtr = NaN; F_out = NaN; R = NaN;
 
-    % basis calculations  
+    % basis calculations for the real reactor 
     q_tot.basis = get_total_volumetric_flowrate(F_in_basis, T, P, opt);
     V_rxtr.basis = q_tot.basis * tau;
     C_out = get_reactor_effluent_concentrations(F_in_basis, T, P, opt, tau);
@@ -47,20 +47,12 @@ end
 
 function [F_fresh, F_rxtr, F_effluent, R] = get_plant_flowrates(F_rxtr_in_basis, F_effluent_basis)
     scale_factor = get_scale_factor(F_effluent_basis);
-    % flow_fxns = flowrate_fxns();
-
-    % initialize 
-    % F_fresh = flow_fxns.get_blank_flowstream();
-    % F_rxtr = flow_fxns.get_blank_flowstream();
-    % F_effluent = flow_fxns.get_blank_flowstream();
-    % R = flow_fxns.get_blank_flowstream();
 
     F_effluent = get_scaled_flowrate(F_effluent_basis, scale_factor);
     F_rxtr = get_scaled_flowrate(F_rxtr_in_basis, scale_factor);
 
     F_in_virt = get_virtual_reactor_input(F_rxtr);
 
-    % Get the fresh and recycle flows
     [F_fresh, R] = get_recycle_and_fresh_flowrates(F_rxtr, F_effluent);
 
 end
