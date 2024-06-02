@@ -39,9 +39,8 @@ function user = get_user_inputs()
         'MaxFunctionEvaluations', 1000, ...           % Maximum number of function evaluations allowed
         'MaxIterations', 500, ...                     % Maximum number of iterations allowed
         'OptimalityTolerance', 1e-8, ...              % Termination tolerance on the first-order optimality
-        'UseParallel', false, ...                     % Use parallel computing
         'CheckGradients', true, ...                  % Check gradients numerically
-        'FiniteDifferenceStepSize', 1e-3, ...         % Step size for finite differences
+        'FiniteDifferenceStepSize', 1e-6, ...         % Step size for finite differences
         'FiniteDifferenceType', 'central', ...        % Finite difference type ('forward' or 'central')
         'FunctionTolerance', 1e-6, ...                % Termination tolerance on the function value
         'PlotFcn', [], ...                            % Plot functions

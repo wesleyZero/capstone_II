@@ -51,9 +51,8 @@ function [F_fresh, F_rxtr, F_effluent, R] = get_plant_flowrates(F_rxtr_in_basis,
     F_effluent = get_scaled_flowrate(F_effluent_basis, scale_factor);
     F_rxtr = get_scaled_flowrate(F_rxtr_in_basis, scale_factor);
 
-    F_in_virt = get_virtual_reactor_input(F_rxtr);
-
-    [F_fresh, R] = get_recycle_and_fresh_flowrates(F_rxtr, F_effluent);
+    F_in_virt = get_virtual_reactor_feed(F_rxtr);
+    [F_fresh, R] = get_recycle_and_fresh_flowrates(F_in_virt, F_effluent);
 
 end
 
@@ -70,14 +69,14 @@ function F_scaled  = get_scaled_flowrate(F_basis, scale_factor)
     F_scaled = flow_fxns.set_F_kta(F_scaled); 
 end
 
-function F_in_virt = get_virtual_reactor_input(F_rxtr)
+function F_in_virt = get_virtual_reactor_feed(F_virtual_effluent)
     user = get_user_inputs();
     flow_fxns = flowrate_fxns();
     F_in_virt = flow_fxns.get_blank_flowstream();
 
     % Assume that C02 is in excess
     % Get the flow into the virtual reactor
-    F_in_virt.ethylene_oxide.mol = F_rxtr.ethylene_carbonate.mol;
+    F_in_virt.ethylene_oxide.mol = F_virtual_effluent.ethylene_carbonate.mol;
         % Assume that EO -> EC Complete conversion in virtual reactor
     F_in_virt.methanol.mol = F_in_virt.ethylene_oxide.mol * user.level3.molar_ratio_methanol_EO;
     F_in_virt.carbon_dioxide.mol = F_in_virt.carbon_dioxide.mol * user.level3.molar_ratio_carbon_dioxide_EO;
