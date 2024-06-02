@@ -7,7 +7,7 @@ function user = get_user_inputs()
     user.level3.molar_ratio_carbon_dioxide_EO = 13; 
     user.level3.molar_ratio_carbon_dioxide_EC = 12; 
         % one mol equiv is consumed in the virtual reactor
-    user.level3.tau_precision = 500;
+    user.level3.tau_precision = 5000;
     % user.level3.tau_min = 50;
     % user.level3.tau_max = 500; 
 
@@ -30,21 +30,21 @@ function user = get_user_inputs()
 
     user.level3.isothermal_temp.C = 140;
     user.level3.isobaric_press.bar = 150;
-    % user.level3.fsolveOpt = optimoptions('fsolve', 'Display', 'off'); 
-    user.level3.fsolveOpt = optimoptions('fsolve', ...
-        'Algorithm', 'trust-region-dogleg', ...       % Choose the algorithm
-        'Display', 'off', ...                         % Control display level
-        'FunctionTolerance', 1e-8, ...                % Termination tolerance on the function value
-        'StepTolerance', 1e-8, ...                    % Termination tolerance on the step size
-        'MaxFunctionEvaluations', 1000, ...           % Maximum number of function evaluations allowed
-        'MaxIterations', 500, ...                     % Maximum number of iterations allowed
-        'OptimalityTolerance', 1e-8, ...              % Termination tolerance on the first-order optimality
-        'CheckGradients', true, ...                  % Check gradients numerically
-        'FiniteDifferenceStepSize', 1e-6, ...         % Step size for finite differences
-        'FiniteDifferenceType', 'central', ...        % Finite difference type ('forward' or 'central')
-        'FunctionTolerance', 1e-6, ...                % Termination tolerance on the function value
-        'PlotFcn', [], ...                            % Plot functions
-        'OutputFcn', []);                             % Output functions
+    user.level3.fsolveOpt = optimoptions('fsolve', 'Display', 'off'); 
+    % user.level3.fsolveOpt = optimoptions('fsolve', ...
+    %     'Algorithm', 'trust-region-dogleg', ...       % Choose the algorithm
+    %     'Display', 'off', ...                         % Control display level
+    %     'FunctionTolerance', 1e-3, ...                % Termination tolerance on the function value
+    %     'StepTolerance', 1e-3, ...                    % Termination tolerance on the step size
+    %     'MaxFunctionEvaluations', 10^4, ...           % Maximum number of function evaluations allowed
+    %     'MaxIterations', 10^3, ...                     % Maximum number of iterations allowed
+    %     'OptimalityTolerance', 1e-8, ...              % Termination tolerance on the first-order optimality
+    %     'CheckGradients', true, ...                  % Check gradients numerically
+    %     'FiniteDifferenceStepSize', 1e-8, ...         % Step size for finite differences
+    %     'FiniteDifferenceType', 'forward', ...        % Finite difference type ('forward' or 'central')
+    %     'FunctionTolerance', 1e-3, ...                % Termination tolerance on the function value
+    %     'PlotFcn', [], ...                            % Plot functions
+    %     'OutputFcn', []);                             % Output functions
     user.dmc_production_rate = 100; % [kta]
 
     % Plotting 
