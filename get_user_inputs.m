@@ -25,7 +25,7 @@ function user = get_user_inputs()
     user.level3.temp_max.C = 140;
 
     user.level3.pressure_precision = 10;
-    user.level3.press_min.bar = 80;
+    user.level3.press_min.bar = 50;
     user.level3.press_max.bar = 150;
 
     user.level3.isothermal_temp.C = 140;
