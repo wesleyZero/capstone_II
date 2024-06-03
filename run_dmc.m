@@ -106,7 +106,7 @@ function void = level3_isothermal(P_specify)
             end
 
 
-            npv = econ_fxns.get_work_min_npv(F_out, T);
+            npv = econ_fxns.get_work_min_npv(F_out, T, conversion);
 
             % Store row data
             plot_row.F_fresh = F_fresh;

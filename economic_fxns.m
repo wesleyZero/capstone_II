@@ -5,15 +5,30 @@ function fxns = get_economic_functions()
 
 end
 
-function lifetime_npv = get_work_min_npv(F, T)
+function energy = get_energy_plant()
+
+	energy = 0;
+end
+
+function cost = get_cost_reactor()
+
+
+	cost = 0;
+end
+
+
+
+function lifetime_npv = get_work_min_npv(F, T, conversion)
 	sep_fxns = separation_fxns();
-	w_min = sep_fxns.get_work_min(F, T)
+	w_min = sep_fxns.get_work_min(F, T);
 
 	npv_params.mainProductRevenue = get_main_product_revenue(F);
 	npv_params.byProductRevenue = get_byproduct_revenue(F);
 	npv_params.rawMaterialsCost = get_raw_material_cost(F);
 	energy = get_energy_plant();
 	npv_params.utilitiesCost = get_utilities_cost(energy);
+	npv_params.conversion = conversion;
+	npv_params.isbl = get_cost_reactor();
 
 	lifetime_npv = -2;
 	% USER_INPUTS | All inputs are in units of $MM
@@ -29,19 +44,20 @@ end
 
 function value = chemical_value(F, species)
 
-	switch species
-	case strcmp(species, 'dimethyl_carbonate')
-		value = 1100 * 10^3 * F.dimethyl_carbonate.kta;
-	case strcmp(species, 'ethylene_glycol')
-		value = 500 * 10^3 * F.ethylene_glycol.kta;
-	case strcmp(species, 'methanol')
-		value = 600 * 10^3 * F.methanol.kta;
-	case strcmp(species, 'ethylene_oxide')
-		value = 1250 * 10^3 * F.ethylene_glycol.kta; 
-	case strcmp(species, 'carbon_dioxide')
-		value = 45 * 10^3 * F.carbon_dioxide.kta;
-	otherwise
-		disp("ERROR | chemical_value | invalid case");
+	switch true
+		case strcmp(species, 'dimethyl_carbonate')
+			value = 1100 * 10^3 * F.dimethyl_carbonate.kta;
+		case strcmp(species, 'ethylene_glycol')
+			value = 500 * 10^3 * F.ethylene_glycol.kta;
+		case strcmp(species, 'methanol')
+			value = 600 * 10^3 * F.methanol.kta;
+		case strcmp(species, 'ethylene_oxide')
+			value = 1250 * 10^3 * F.ethylene_glycol.kta; 
+		case strcmp(species, 'carbon_dioxide')
+			value = 45 * 10^3 * F.carbon_dioxide.kta;
+		otherwise
+			value = NaN;
+			fprintf("ERROR | chemical_value | invalid case | %s\n", species);
 	end
 end
 
@@ -50,7 +66,7 @@ function value = get_main_product_revenue(F)
 	value = chemical_value(F, 'dimethyl_carbonate');
 end
 
-function value = get_byproduct_revenue()
+function value = get_byproduct_revenue(F)
 	% byproducts are EG
 	value = chemical_value(F, 'ethylene_glycol');
 
