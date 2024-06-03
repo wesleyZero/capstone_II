@@ -13,10 +13,9 @@ function lifetime_npv = get_work_min_npv(F, T)
 
 end
 
-% function w_min = get
+
 
 function lifetime_npv = get_npv(npv)
-	global YEARS_IN_OPERATION
 	% USER_INPUTS | All inputs are in units of $MM
 		% npv.mainProductRevenue = value_ethylene(P_ethylene);
 		% npv.byProductRevenue = value_h2_chem(P_hydrogen - combusted_hydrogen); 
@@ -25,12 +24,25 @@ function lifetime_npv = get_npv(npv)
 		% npv.CO2sustainabilityCharge = tax_C02(combusted_fuel_flow_rates, F_natural_gas); 
 		% npv.conversion = conversion(i);
 		% npv.isbl = cost_rxt_vec + cost_separation_system(P_flowrates, F_steam, R_ethane);
-	
+
+	const = get_user_inputs();
+
+	YEARS_IN_OPERATION = const.user.npv.period_plant_operation;
+
+	% % Economic Assumptions 
+	% npv.discountRate = 0.15;		% [ % in decimal ]
+	% npv.taxRate = 0.27;				% [ % in decimal ]
+	% npv.salvageValue = 0.05;		% [ % in decimal ]	
+
+	npv.discountRate = const.user.npv.enterprise_rate;	% [ % in decimal ]
+	npv.taxRate = const.user.npv.total_tax_rate;		% [ % in decimal ]
+	npv.salvageValue = const.user.salvage_value;		% [ % in decimal ]	
+
 	WORKING_CAP_PERCENT_OF_FCI = 0.15; 		% [ % in decimal ]
 	STARTUP_COST_PERCENT_OF_FCI = 0.10;		% [ % in decimal ]
 	LENGTH_CONSTRUCTION_TABLE = 6;
 	LAST_ROW_CONSTRUCTION = LENGTH_CONSTRUCTION_TABLE; 
-	YEARS_OF_CONSTUCTION = 3;
+	YEARS_OF_CONSTUCTION = const.user.npv.construction_period;
 
 	% Revenues & Production Costs	
 	npv.consummablesCost = 0;
@@ -61,10 +73,7 @@ function lifetime_npv = get_npv(npv)
 									npv.workingCapital + ...
 									npv.startupCost + ...
 									npv.land;
-	% Economic Assumptions 
-	npv.discountRate = 0.15;		% [ % in decimal ]
-	npv.taxRate = 0.27;				% [ % in decimal ]
-	npv.salvageValue = 0.05;		% [ % in decimal ]	
+
 
 	% CONSTRUCTION SCHEDULE INDICIES 
 	YEAR = 1;
