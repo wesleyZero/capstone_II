@@ -1,10 +1,18 @@
 
 function fxns = get_economic_functions()
     fxns.get_npv = @get_npv;
+	fxns.get_work_min_npv = @get_work_min_npv;
 
 end
 
+function npv = get_work_min_npv(F)
+	sep_fxns = separation_fxns();
+	w_min = sep_fxns.get_work_min(F);
+	
 
+end
+
+% function w_min = get
 
 function cf = get_npv(npv)
 	global YEARS_IN_OPERATION

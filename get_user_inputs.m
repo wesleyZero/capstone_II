@@ -7,7 +7,7 @@ function user = get_user_inputs()
     user.level3.molar_ratio_carbon_dioxide_EO = 13; 
     user.level3.molar_ratio_carbon_dioxide_EC = 12; 
         % one mol equiv is consumed in the virtual reactor
-    user.level3.tau_precision = 5000;
+    user.level3.tau_precision = 500;
     % user.level3.tau_min = 50;
     % user.level3.tau_max = 500; 
 

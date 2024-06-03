@@ -1,8 +1,30 @@
 
 function fxns = separation_fxns()
-
+	fxns.work_min = @get_work_min
 
 end
+
+function w_min = get_work_min(F)
+	% Assumes that all separation products streams are pure
+	% w_min has units of watts (J / s)
+	const = get_constants();
+	R = const.thermo.R;
+	T = const.temp.c_to_k(F.T);
+
+	w_min = 0;	
+	fieldNames = fieldnames(F);
+	for i = 1:length(fieldNames)
+		species = fieldNames{i};
+		x = 1; % assumes that each separated flowstream is pure
+		z = F.(species).x;
+		F_i = F.(species).mol;
+		w_min = w_min + (F_i * R * T * x * log(x/z));
+		
+	end
+
+end
+
+
 
 function [sep_top1, sep_btm1] = flash_v100(sep)
 

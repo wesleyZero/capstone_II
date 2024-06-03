@@ -28,6 +28,8 @@ function void = level3_isobaric()
     F_fxns = flowrate_fxns();
     rxtr_fxns = reactor_fxns();
     plt_fxns = plot_fxns();
+    econ_fxns = economic_fxns();
+
     P = user.level3.isobaric_press.bar;
     opt = 'isobaric';
     console.section("Starting Level 3 " + opt + " calculations")
@@ -43,6 +45,8 @@ function void = level3_isobaric()
             console.subsection(sprintf("tau = %3.2f", tau), 2)
             [F_fresh, F_rxtr, F_out, R, V_rxtr] = level3_flowrates(tau, T, P, opt); 
             conversion = rxtr_fxns.get_conversion(F_rxtr, F_out);
+
+            npv = econ_fxns.get_work_min_npv(F_out);
 
             if isnan(conversion)
                 disp("ERROR : COMPLEX CONC. BREAKING TO NEXT TEMP")
