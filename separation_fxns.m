@@ -23,9 +23,6 @@ function w_min = get_work_min(F, T)
 		w_min = w_min + (F_i * R * T * x * log(x/z));
 		
 	end
-
-% 	w_min = -3;
-
 end
 
 

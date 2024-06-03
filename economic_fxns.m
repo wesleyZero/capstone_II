@@ -9,32 +9,69 @@ function lifetime_npv = get_work_min_npv(F, T)
 	sep_fxns = separation_fxns();
 	w_min = sep_fxns.get_work_min(F, T)
 
+	npv_params.mainProductRevenue = get_main_product_revenue(F);
+	npv_params.byProductRevenue = get_byproduct_revenue(F);
+	npv_params.rawMaterialsCost = get_raw_material_cost(F);
+	energy = get_energy_plant();
+	npv_params.utilitiesCost = get_utilities_cost(energy);
+
 	lifetime_npv = -2;
+	% USER_INPUTS | All inputs are in units of $MM
+		% npv.mainProductRevenue = value_ethylene(P_ethylene);
+		% npv.byProductRevenue = value_h2_chem(P_hydrogen - combusted_hydrogen); 
+		% npv.rawMaterialsCost = value_ethane(F_fresh_ethane);
+		% npv.utilitiesCost = cost_steam(F_steam, COST_RATES_STEAM(STEAM_CHOICE, STEAM_COST_COL)); 
+		% npv.CO2sustainabilityCharge = tax_C02(combusted_fuel_flow_rates, F_natural_gas); 
+		% npv.conversion = conversion(i);
+		% npv.isbl = cost_rxt_vec + cost_separation_system(P_flowrates, F_steam, R_ethane);
 
 end
 
-function value = get_main_product_revenue()
+function value = chemical_value(F, species)
+
+	switch species
+	case strcmp(species, 'dimethyl_carbonate')
+		value = 1100 * 10^3 * F.dimethyl_carbonate.kta;
+	case strcmp(species, 'ethylene_glycol')
+		value = 500 * 10^3 * F.ethylene_glycol.kta;
+	case strcmp(species, 'methanol')
+		value = 600 * 10^3 * F.methanol.kta;
+	case strcmp(species, 'ethylene_oxide')
+		value = 1250 * 10^3 * F.ethylene_glycol.kta; 
+	case strcmp(species, 'carbon_dioxide')
+		value = 45 * 10^3 * F.carbon_dioxide.kta;
+	otherwise
+		disp("ERROR | chemical_value | invalid case");
+	end
+end
+
+function value = get_main_product_revenue(F)
 	% Products are the value of DMC
-	value = 0;
+	value = chemical_value(F, 'dimethyl_carbonate');
 end
 
-function value = get_biproduct_revenue()
+function value = get_byproduct_revenue()
 	% byproducts are EG
-	value = 0;
+	value = chemical_value(F, 'ethylene_glycol');
 
 end
 
-function cost = get_raw_material_cost()
+function cost = get_raw_material_cost(F)
 	% raw material costs are EO, MeOH, C02, water
 	% ask TJ how to cost the water for the sep unit
 
-	cost = 0;
+	cost = 0; 
+	cost = cost + chemical_value(F, 'ethylene_oxide');
+	cost = cost + chemical_value(F, 'methanol');
+	cost = cost + chemical_value(F, 'carbon_dioxide');
+	% cost = cost + 
+		% water ??
 end
 
-function cost = get_utilities_cost() 
+function cost = get_utilities_cost(energy)
 	% utilities are electricity, fuel??
-
-	cost = 0;
+	rate.dollar_per_GJ = 3;
+	cost = rate.dollar_per_GJ * energy;
 end
 
 function value = get_CO2_sustainability_value()
