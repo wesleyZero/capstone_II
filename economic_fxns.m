@@ -5,16 +5,17 @@ function fxns = get_economic_functions()
 
 end
 
-function npv = get_work_min_npv(F)
+function lifetime_npv = get_work_min_npv(F, T)
 	sep_fxns = separation_fxns();
-	w_min = sep_fxns.get_work_min(F);
-	
+	w_min = sep_fxns.get_work_min(F, T)
+
+	lifetime_npv = -2;
 
 end
 
 % function w_min = get
 
-function cf = get_npv(npv)
+function lifetime_npv = get_npv(npv)
 	global YEARS_IN_OPERATION
 	% USER_INPUTS | All inputs are in units of $MM
 		% npv.mainProductRevenue = value_ethylene(P_ethylene);
@@ -190,4 +191,6 @@ function cf = get_npv(npv)
 	% RETURN 
 	cf.matrix = cash_flow_matrix;
 	cf.lifetime_npv = cash_flow_matrix(LAST_ROW_CASHFLOW, NPV);
+	
+	lifetime_npv = -1;
 end

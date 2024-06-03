@@ -1,15 +1,16 @@
 
 function fxns = separation_fxns()
-	fxns.work_min = @get_work_min
+	fxns.get_work_min = @get_work_min;
 
 end
 
-function w_min = get_work_min(F)
+function w_min = get_work_min(F, T)
 	% Assumes that all separation products streams are pure
 	% w_min has units of watts (J / s)
+	% input T is in Celcius
 	const = get_constants();
 	R = const.thermo.R;
-	T = const.temp.c_to_k(F.T);
+	T = const.units.temperature.c_to_k(T);
 
 	w_min = 0;	
 	fieldNames = fieldnames(F);
@@ -21,6 +22,8 @@ function w_min = get_work_min(F)
 		w_min = w_min + (F_i * R * T * x * log(x/z));
 		
 	end
+
+	w_min = -3;
 
 end
 

@@ -46,8 +46,6 @@ function void = level3_isobaric()
             [F_fresh, F_rxtr, F_out, R, V_rxtr] = level3_flowrates(tau, T, P, opt); 
             conversion = rxtr_fxns.get_conversion(F_rxtr, F_out);
 
-            npv = econ_fxns.get_work_min_npv(F_out);
-
             if isnan(conversion)
                 disp("ERROR : COMPLEX CONC. BREAKING TO NEXT TEMP")
                 break;
@@ -84,6 +82,7 @@ function void = level3_isothermal(P_specify)
     F_fxns = flowrate_fxns();
     rxtr_fxns = reactor_fxns();
     plt_fxns = plot_fxns();
+    econ_fxns = economic_fxns();
     T = user.level3.isothermal_temp.C;
     opt = 'isothermal';
     console.section("Starting Level 3 " + opt + " calculations")
@@ -105,6 +104,10 @@ function void = level3_isothermal(P_specify)
                 disp("ERROR : COMPLEX CONC. BREAKING TO NEXT TEMP")
                 break;
             end
+
+
+            npv = econ_fxns.get_work_min_npv(F_out, T);
+
             % Store row data
             plot_row.F_fresh = F_fresh;
             plot_row.F_rxtr = F_rxtr;
