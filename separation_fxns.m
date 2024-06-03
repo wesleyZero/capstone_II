@@ -16,6 +16,7 @@ function w_min = get_work_min(F, T)
 	fieldNames = fieldnames(F);
 	for i = 1:length(fieldNames)
 		species = fieldNames{i};
+		if strcmp(species, 'ethylene_oxide'), continue, end
 		x = 1; % assumes that each separated flowstream is pure
 		z = F.(species).x;
 		F_i = F.(species).mol;
@@ -23,7 +24,7 @@ function w_min = get_work_min(F, T)
 		
 	end
 
-	w_min = -3;
+% 	w_min = -3;
 
 end
 
