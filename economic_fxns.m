@@ -16,7 +16,14 @@ function cost = get_cost_reactor()
 	cost = 0;
 end
 
+function charge = get_CO2_sustainability_charge();
+	charge = 0;
+end
 
+function cost = get_separation_system_cost();
+
+	cost = 0;
+end
 
 function lifetime_npv = get_work_min_npv(F, T, conversion)
 	sep_fxns = separation_fxns();
@@ -28,9 +35,10 @@ function lifetime_npv = get_work_min_npv(F, T, conversion)
 	energy = get_energy_plant();
 	npv_params.utilitiesCost = get_utilities_cost(energy);
 	npv_params.conversion = conversion;
-	npv_params.isbl = get_cost_reactor();
+	npv_params.ISBLcapitalCost = get_cost_reactor();
+	npv_params.CO2sustainabilityCharge = get_CO2_sustainability_charge();
 
-	lifetime_npv = -2;
+	lifetime_npv = get_npv(npv_params)
 	% USER_INPUTS | All inputs are in units of $MM
 		% npv.mainProductRevenue = value_ethylene(P_ethylene);
 		% npv.byProductRevenue = value_h2_chem(P_hydrogen - combusted_hydrogen); 
@@ -148,24 +156,24 @@ function lifetime_npv = get_npv(npv)
 		% npv.isbl = cost_rxt_vec + cost_separation_system(P_flowrates, F_steam, R_ethane);
 
 		% look at photos screenshot, cost of electricity, some shit 
-	const = get_user_inputs();
+	user = get_user_inputs();
 
-	YEARS_IN_OPERATION = const.user.npv.period_plant_operation;
+	YEARS_IN_OPERATION = user.npv.period_plant_operation;
 
 	% % Economic Assumptions 
 	% npv.discountRate = 0.15;		% [ % in decimal ]
 	% npv.taxRate = 0.27;				% [ % in decimal ]
 	% npv.salvageValue = 0.05;		% [ % in decimal ]	
 
-	npv.discountRate = const.user.npv.enterprise_rate;	% [ % in decimal ]
-	npv.taxRate = const.user.npv.total_tax_rate;		% [ % in decimal ]
-	npv.salvageValue = const.user.salvage_value;		% [ % in decimal ]	
+	npv.discountRate = user.npv.enterprise_rate;	% [ % in decimal ]
+	npv.taxRate = user.npv.total_tax_rate;		% [ % in decimal ]
+	npv.salvageValue = user.salvage_value;		% [ % in decimal ]	
 
 	WORKING_CAP_PERCENT_OF_FCI = 0.15; 		% [ % in decimal ]
 	STARTUP_COST_PERCENT_OF_FCI = 0.10;		% [ % in decimal ]
 	LENGTH_CONSTRUCTION_TABLE = 6;
 	LAST_ROW_CONSTRUCTION = LENGTH_CONSTRUCTION_TABLE; 
-	YEARS_OF_CONSTUCTION = const.user.npv.construction_period;
+	YEARS_OF_CONSTUCTION = user.npv.construction_period;
 
 	% Revenues & Production Costs	
 	npv.consummablesCost = 0;
@@ -175,11 +183,11 @@ function lifetime_npv = get_npv(npv)
 	npv.salaryAndOverhead = 0;
 	npv.maintenenace = 0;
 	% npv.interest = 15;
-	npv.interest = const.user.enterprise_rate;
+	npv.interest = user.npv.enterprise_rate;
 
 	% npv.AGS = (npv.mainProductRevenue + npv.byProductRevenue)*0.05;		% ~5% revenue
 	npv.AGS = (npv.mainProductRevenue + npv.byProductRevenue) * ...
-		const.user.admin_and_general_services;	
+		user.npv.admin_and_general_services;	
 
 	npv.FCOP = npv.salaryAndOverhead + npv.maintenenace +...
 						 npv.AGS + npv.interest;
@@ -330,5 +338,5 @@ function lifetime_npv = get_npv(npv)
 	cf.matrix = cash_flow_matrix;
 	cf.lifetime_npv = cash_flow_matrix(LAST_ROW_CASHFLOW, NPV);
 	
-	lifetime_npv = -1;
+	lifetime_npv = cf.lifetime_npv;
 end
