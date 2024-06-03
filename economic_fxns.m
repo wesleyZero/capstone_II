@@ -13,6 +13,36 @@ function lifetime_npv = get_work_min_npv(F, T)
 
 end
 
+function value = get_main_product_revenue()
+	% Products are the value of DMC
+	value = 0;
+end
+
+function value = get_biproduct_revenue()
+	% byproducts are EG
+	value = 0;
+
+end
+
+function cost = get_raw_material_cost()
+	% raw material costs are EO, MeOH, C02, water
+	% ask TJ how to cost the water for the sep unit
+
+	cost = 0;
+end
+
+function cost = get_utilities_cost() 
+	% utilities are electricity, fuel??
+
+	cost = 0;
+end
+
+function value = get_CO2_sustainability_value()
+	% 45 / MT, confirm with TJ
+
+	value = 0;
+
+end
 
 
 function lifetime_npv = get_npv(npv)
