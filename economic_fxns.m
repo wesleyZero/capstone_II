@@ -44,6 +44,45 @@ function value = get_CO2_sustainability_value()
 
 end
 
+function cost = cost_reactor(V_plant_input)
+	global FT_PER_METER STEAM_TO_FEED_RATIO
+	FT_PER_METER = 3.28084;
+	% ??? WHAT ARE THE UNITS OF TIME
+	
+	pi = 3.14159;
+	D = 0.05;								% [m]
+	V_plant_max = pi * (0.025)^2 * 20; 		%[m^3]
+	
+	% Reactors have a max length, so calculate the number of full size reactors
+	% and add it to the cost of the one non-max length reactor
+
+	cost = 0;
+
+	% Find the Cost of the max-sized reactors
+	num_of_additional_reactors = int64(V_plant_input / V_plant_max);	
+	num_of_additional_reactors = double(num_of_additional_reactors);
+	
+	V_plant = V_plant_max;
+	factor_1 = 4.18;
+	factor_2 = (V_plant / (pi * (D/2)^2) * FT_PER_METER)^0.82;
+	factor_3 = (101.9 * D * FT_PER_METER)^1.066;
+	factor_4 = (1800 / 280);
+	cost_max_reactor = factor_1 * factor_2 * factor_3 * factor_4; 
+	cost = cost + num_of_additional_reactors * cost_max_reactor;
+	
+	% Find the cost of the non-max size reactor 
+	V_plant = V_plant_input - V_plant_max * num_of_additional_reactors;
+	if V_plant < 0
+		V_plant = 0;
+	end
+	factor_1 = 4.18;
+	factor_2 = (V_plant / (pi * (D/2)^2) * FT_PER_METER)^0.82;
+	factor_3 = (101.9 * D * FT_PER_METER)^1.066;
+	factor_4 = (1800 / 280);
+	cost = cost + factor_1 * factor_2 * factor_3 * factor_4;
+
+end
+
 
 function lifetime_npv = get_npv(npv)
 	% USER_INPUTS | All inputs are in units of $MM
@@ -55,6 +94,7 @@ function lifetime_npv = get_npv(npv)
 		% npv.conversion = conversion(i);
 		% npv.isbl = cost_rxt_vec + cost_separation_system(P_flowrates, F_steam, R_ethane);
 
+		% look at photos screenshot, cost of electricity, some shit 
 	const = get_user_inputs();
 
 	YEARS_IN_OPERATION = const.user.npv.period_plant_operation;
@@ -81,13 +121,19 @@ function lifetime_npv = get_npv(npv)
 														npv.byProductRevenue;
 	npv.salaryAndOverhead = 0;
 	npv.maintenenace = 0;
-	npv.interest = 15;
-	npv.AGS = (npv.mainProductRevenue + npv.byProductRevenue)*0.05;		% ~5% revenue
+	% npv.interest = 15;
+	npv.interest = const.user.enterprise_rate;
+
+	% npv.AGS = (npv.mainProductRevenue + npv.byProductRevenue)*0.05;		% ~5% revenue
+	npv.AGS = (npv.mainProductRevenue + npv.byProductRevenue) * ...
+		const.user.admin_and_general_services;	
+
 	npv.FCOP = npv.salaryAndOverhead + npv.maintenenace +...
 						 npv.AGS + npv.interest;
 
 	% Capital Costs 
 	npv.OSBLcapitalCost = npv.ISBLcapitalCost * 0.40;
+		% ??  npv.ISBLcapitalCost, npv.OSBLcapitalCost)
 	npv.contingency = (npv.ISBLcapitalCost + npv.OSBLcapitalCost) * 0.25;
 	npv.indirectCost = (npv.ISBLcapitalCost + npv.OSBLcapitalCost + ...
 													npv.contingency) * 0.30;
