@@ -12,12 +12,12 @@ function user = get_user_inputs()
     % user.level3.tau_max = 500; 
 
     % isothermal tau ranges
-    user.level3.isothermal.tau_min = 1;
-    user.level3.isothermal.tau_max = 500;
-    user.level3.isothermal.P_specify.tau_min = 50;
-    user.level3.isothermal.P_specify.tau_max = 500;
-    user.level3.isobaric.tau_min = 1;
-    user.level3.isobaric.tau_max = 2000;
+    user.level3.isothermal.tau_min = 100;
+    user.level3.isothermal.tau_max = 10^4;
+    user.level3.isothermal.P_specify.tau_min = 100;
+    user.level3.isothermal.P_specify.tau_max = 10^4;
+    user.level3.isobaric.tau_min = 100;
+    user.level3.isobaric.tau_max = 10^5;
 
 
     user.level3.temp_precision = 10;

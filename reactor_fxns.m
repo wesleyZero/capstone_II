@@ -8,7 +8,6 @@ end
 
 function [F_fresh, F_real_feed, F_real_eff, R, V_rxtr] = get_reactor_flows(F_real_feed_basis, T, P, opt, tau)
     F_fresh = NaN; F_real_feed = NaN; F_real_eff = NaN; R = NaN;
-
     % basis calculations for the real reactor 
     q_tot.basis = get_total_volumetric_flowrate(F_real_feed_basis, T, P, opt);
     V_rxtr.basis = q_tot.basis * tau;
@@ -31,7 +30,7 @@ function [F_fresh, F_real_feed, F_real_eff, R, V_rxtr] = get_reactor_flows(F_rea
     % Plant Scale Calculations 
     [F_fresh, F_real_feed, F_real_eff, R] = get_plant_flowrates(F_real_feed_basis, F_real_eff_basis);
     scale_factor = get_scale_factor(F_real_eff_basis);
-    V_rxtr.plant = V_rxtr.basis * scale_factor; 
+    V_rxtr.plant = V_rxtr.basis * scale_factor ; 
 
     V_rxtr = V_rxtr.plant;
 
@@ -152,6 +151,7 @@ function k = get_all_rate_constants(T, P, opt)
 end
 
 function C = get_reactor_effluent_concentrations(F, T, P, opt, tau)
+    tau = tau / 10;
     user = get_user_inputs();
     Ci0 = get_concentrations(F, T, P, opt, tau);
     Ci_init = get_concentration_vector(F, T, P, opt, tau);

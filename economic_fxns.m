@@ -40,6 +40,8 @@ function installed_cost = get_cost_reactor(V, P)
 	D.ft = D.m * const.units.length.ft_per_m;
 	H.ft = H.m * const.units.length.ft_per_m; 
 	installed_cost = coeff * (D.ft)^1.066 * H.ft^0.82 * (2.18 + F_c);
+	installed_cost = installed_cost * 10;
+
 
 end
 
@@ -65,7 +67,7 @@ function lifetime_npv = get_work_min_npv(F, T, P, V_rxtr, conversion)
 	npv_params.ISBLcapitalCost = get_cost_reactor(V_rxtr, P);
 	npv_params.CO2sustainabilityCharge = get_CO2_sustainability_charge();
 
-	lifetime_npv = get_npv(npv_params)
+	lifetime_npv = get_npv(npv_params) / 10^6 ;
 end
 
 function value = chemical_value(F, species)

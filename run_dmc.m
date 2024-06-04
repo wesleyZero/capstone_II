@@ -9,7 +9,7 @@ level3();
 
 function void = level3()
     void = NaN;
-    P = 100; % bar
+    P = 74; % bar
     plt_fxns = plot_fxns();
     % plt_fxns.delete_old_plots();
     level3_isothermal(P);
@@ -50,6 +50,10 @@ function void = level3_isobaric()
                 disp("ERROR : COMPLEX CONC. BREAKING TO NEXT TEMP")
                 break;
             end
+
+
+            npv = econ_fxns.get_work_min_npv(F_out, T, P, V_rxtr, conversion);
+
             % Store row data
             plot_row.F_fresh = F_fresh;
             plot_row.F_rxtr = F_rxtr;
@@ -58,7 +62,8 @@ function void = level3_isobaric()
             plot_row.conversion = conversion;
             plot_row.row_number = row;
             plot_row.tau = tau;
-            plot_row.V_rxtr = V_rxtr;
+            plot_row.V_rxtr = V_rxtr / 3;
+            plot_row.npv = npv;
             isoBar_plt = plt_fxns.set_plot_row(isoBar_plt, plot_row);
             % increment
             row = row + 1; 
@@ -116,7 +121,8 @@ function void = level3_isothermal(P_specify)
             plot_row.conversion = conversion;
             plot_row.row_number = row;
             plot_row.tau = tau;
-            plot_row.V_rxtr = V_rxtr;
+            plot_row.V_rxtr = V_rxtr / 3;
+            plot_row.npv = npv;
             isoTherm_plt = plt_fxns.set_plot_row(isoTherm_plt, plot_row);
             % increment
             row = row + 1; 
@@ -132,6 +138,7 @@ function void = level3_isothermal(P_specify)
         plt_fxns.plot_recycle_flowrates(isoTherm_plt);
         plt_fxns.plot_fresh_feed_conversion(isoTherm_plt);
         plt_fxns.plot_molar_flowrates_conversion(isoTherm_plt);
+        plt_fxns.plot_npv(isoTherm_plt);
     else
         i = 1;
         for P = user.level3.press_range
@@ -149,6 +156,8 @@ function void = level3_isothermal(P_specify)
                     disp("ERROR : COMPLEX CONC. BREAKING TO NEXT TEMP")
                     break;
                 end
+                npv = econ_fxns.get_work_min_npv(F_out, T, P, V_rxtr, conversion);
+
                 % Store row data
                 plot_row.F_fresh = F_fresh;
                 plot_row.F_rxtr = F_rxtr;
@@ -157,7 +166,8 @@ function void = level3_isothermal(P_specify)
                 plot_row.conversion = conversion;
                 plot_row.row_number = row;
                 plot_row.tau = tau;
-                plot_row.V_rxtr = V_rxtr;
+                plot_row.V_rxtr = V_rxtr / 3;
+                plot_row.npv = npv;
                 isoTherm_plt = plt_fxns.set_plot_row(isoTherm_plt, plot_row);
                 % increment
                 row = row + 1; 
