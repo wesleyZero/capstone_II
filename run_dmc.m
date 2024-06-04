@@ -51,8 +51,8 @@ function void = level3_isobaric()
                 break;
             end
 
-			
-            npv = econ_fxns.get_work_min_npv(F_out, T, P, V_rxtr, conversion, opt);
+            npv_opt = 'aspen';
+            npv = econ_fxns.get_work_min_npv(F_out, T, P, V_rxtr, conversion, npv_opt);
 
             % Store row data
             plot_row.F_fresh = F_fresh;
@@ -110,8 +110,9 @@ function void = level3_isothermal(P_specify)
                 break;
             end
 
-
-            npv = econ_fxns.get_work_min_npv(F_out, T, P, V_rxtr, conversion);
+            npv_opt = 'aspen';
+            npv_opt = 'matlab';
+            npv = econ_fxns.get_work_min_npv(F_out, T, P, V_rxtr, conversion, npv_opt);
 
             % Store row data
             plot_row.F_fresh = F_fresh;
@@ -156,8 +157,9 @@ function void = level3_isothermal(P_specify)
                     disp("ERROR : COMPLEX CONC. BREAKING TO NEXT TEMP")
                     break;
                 end
-                npv = econ_fxns.get_work_min_npv(F_out, T, P, V_rxtr, conversion);
-
+                npv_opt = 'aspen';
+                npv = econ_fxns.get_work_min_npv(F_out, T, P, V_rxtr, conversion, npv_opt);
+    
                 % Store row data
                 plot_row.F_fresh = F_fresh;
                 plot_row.F_rxtr = F_rxtr;
