@@ -17,7 +17,7 @@ function fxns = plot_fxns()
     fxns.plot_total_reactor_feed = @plot_total_reactor_feed;
     fxns.plot_total_separation_feed = @plot_total_separation_feed;
     fxns.plot_selectivity = @plot_selectivity;
-    fxns.plot_npv = @plot_npv
+    fxns.plot_npv = @plot_npv;
 
 end
 

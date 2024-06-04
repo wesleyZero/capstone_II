@@ -40,21 +40,35 @@ function installed_cost = get_cost_reactor(V, P)
 	D.ft = D.m * const.units.length.ft_per_m;
 	H.ft = H.m * const.units.length.ft_per_m; 
 	installed_cost = coeff * (D.ft)^1.066 * H.ft^0.82 * (2.18 + F_c);
-	installed_cost = installed_cost * 1.5;
-
+	installed_cost = installed_cost * 1.5
+	V
 
 end
 
-function charge = get_CO2_sustainability_charge();
+% function cost = get_ISBL_aspen_data(V_rxtr, P, opt)
+% 	if strcmp(opt, 'aspen')
+% 		npv_params.ISBLcapitalCost = get_cost_reactor(V_rxtr, P);
+% 		disp("aspen")
+% 	else if strcmp(opt, 'matlab')
+% 		npv_params.ISBLcapitalCost = get_cost_reactor(V_rxtr, P);	
+% 		disp("matlab")
+% 	else
+% 		disp("ERROR | get_ISBL_aspen_data | opt not valid");
+% 	end
+
+		
+% end
+
+function charge = get_CO2_sustainability_charge()
 	charge = 0;
 end
 
-function cost = get_separation_system_cost();
+function cost = get_separation_system_cost()
 
 	cost = 0;
 end
 
-function lifetime_npv = get_work_min_npv(F, T, P, V_rxtr, conversion)
+function lifetime_npv = get_work_min_npv(F, T, P, V_rxtr, conversion, opt)
 	sep_fxns = separation_fxns();
 	w_min = sep_fxns.get_work_min(F, T);
 
@@ -65,6 +79,7 @@ function lifetime_npv = get_work_min_npv(F, T, P, V_rxtr, conversion)
 	npv_params.utilitiesCost = get_utilities_cost(energy);
 	npv_params.conversion = conversion;
 	npv_params.ISBLcapitalCost = get_cost_reactor(V_rxtr, P);
+	% npv_params.ISBLcapitalCost = get_ISBL_aspen_data(V_rxtr, P, opt);
 	npv_params.CO2sustainabilityCharge = get_CO2_sustainability_charge();
 
 	lifetime_npv = get_npv(npv_params) / 10^6 ;

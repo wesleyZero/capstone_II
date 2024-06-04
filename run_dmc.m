@@ -51,8 +51,8 @@ function void = level3_isobaric()
                 break;
             end
 
-
-            npv = econ_fxns.get_work_min_npv(F_out, T, P, V_rxtr, conversion);
+			
+            npv = econ_fxns.get_work_min_npv(F_out, T, P, V_rxtr, conversion, opt);
 
             % Store row data
             plot_row.F_fresh = F_fresh;
@@ -62,7 +62,7 @@ function void = level3_isobaric()
             plot_row.conversion = conversion;
             plot_row.row_number = row;
             plot_row.tau = tau;
-            plot_row.V_rxtr = V_rxtr / 3;
+            plot_row.V_rxtr = V_rxtr;
             plot_row.npv = npv;
             isoBar_plt = plt_fxns.set_plot_row(isoBar_plt, plot_row);
             % increment
@@ -121,7 +121,7 @@ function void = level3_isothermal(P_specify)
             plot_row.conversion = conversion;
             plot_row.row_number = row;
             plot_row.tau = tau;
-            plot_row.V_rxtr = V_rxtr / 3;
+            plot_row.V_rxtr = V_rxtr ;
             plot_row.npv = npv;
             isoTherm_plt = plt_fxns.set_plot_row(isoTherm_plt, plot_row);
             % increment
@@ -166,7 +166,7 @@ function void = level3_isothermal(P_specify)
                 plot_row.conversion = conversion;
                 plot_row.row_number = row;
                 plot_row.tau = tau;
-                plot_row.V_rxtr = V_rxtr / 3;
+                plot_row.V_rxtr = V_rxtr ;
                 plot_row.npv = npv;
                 isoTherm_plt = plt_fxns.set_plot_row(isoTherm_plt, plot_row);
                 % increment
