@@ -6,14 +6,41 @@ function fxns = get_economic_functions()
 end
 
 function energy = get_energy_plant()
-
+	
 	energy = 0;
 end
 
-function cost = get_cost_reactor()
+function Fp = get_closest_Fp(P)
+    % Define the table values
+    pressures = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
+    Fp_values = [1.00, 1.05, 1.15, 1.20, 1.35, 1.45, 1.60, 1.80, 1.90, 2.30, 2.50];
+    
+    % Find the closest pressure in the table
+    [~, idx] = min(abs(pressures - P));
+    
+    % Get the corresponding Fp value
+    Fp = Fp_values(idx);
+end
 
 
-	cost = 0;
+function installed_cost = get_cost_reactor(V, P)
+	% V = volume of reactor in m^3
+	% P = bar
+	user = get_user_inputs();
+	const = get_constants();
+	coeff = (user.marshall_and_swift_index / 280) * 101.9;
+	F_m = 1.0;
+		% Assumption : Carbon Steel is the material ??
+	P = P * const.units.pressure.psia_per_bar;
+	F_p = get_closest_Fp(P );
+	F_c = F_m * F_p;
+	k = 2.942 / 4.413; % D / H ratio is assumed constant 
+	D.m = (4 * k * V / const.pi)^(1/3);
+	H.m = D.m / k;
+	D.ft = D.m * const.units.length.ft_per_m;
+	H.ft = H.m * const.units.length.ft_per_m; 
+	installed_cost = coeff * (D.ft)^1.066 * H.ft^0.82 * (2.18 + F_c);
+
 end
 
 function charge = get_CO2_sustainability_charge();
@@ -25,7 +52,7 @@ function cost = get_separation_system_cost();
 	cost = 0;
 end
 
-function lifetime_npv = get_work_min_npv(F, T, conversion)
+function lifetime_npv = get_work_min_npv(F, T, P, V_rxtr, conversion)
 	sep_fxns = separation_fxns();
 	w_min = sep_fxns.get_work_min(F, T);
 
@@ -35,19 +62,10 @@ function lifetime_npv = get_work_min_npv(F, T, conversion)
 	energy = get_energy_plant();
 	npv_params.utilitiesCost = get_utilities_cost(energy);
 	npv_params.conversion = conversion;
-	npv_params.ISBLcapitalCost = get_cost_reactor();
+	npv_params.ISBLcapitalCost = get_cost_reactor(V_rxtr, P);
 	npv_params.CO2sustainabilityCharge = get_CO2_sustainability_charge();
 
 	lifetime_npv = get_npv(npv_params)
-	% USER_INPUTS | All inputs are in units of $MM
-		% npv.mainProductRevenue = value_ethylene(P_ethylene);
-		% npv.byProductRevenue = value_h2_chem(P_hydrogen - combusted_hydrogen); 
-		% npv.rawMaterialsCost = value_ethane(F_fresh_ethane);
-		% npv.utilitiesCost = cost_steam(F_steam, COST_RATES_STEAM(STEAM_CHOICE, STEAM_COST_COL)); 
-		% npv.CO2sustainabilityCharge = tax_C02(combusted_fuel_flow_rates, F_natural_gas); 
-		% npv.conversion = conversion(i);
-		% npv.isbl = cost_rxt_vec + cost_separation_system(P_flowrates, F_steam, R_ethane);
-
 end
 
 function value = chemical_value(F, species)
@@ -105,44 +123,44 @@ function value = get_CO2_sustainability_value()
 
 end
 
-function cost = cost_reactor(V_plant_input)
-	global FT_PER_METER STEAM_TO_FEED_RATIO
-	FT_PER_METER = 3.28084;
-	% ??? WHAT ARE THE UNITS OF TIME
+% function cost = cost_reactor(V_plant_input)
+% 	global FT_PER_METER STEAM_TO_FEED_RATIO
+% 	FT_PER_METER = 3.28084;
+% 	% ??? WHAT ARE THE UNITS OF TIME
 	
-	pi = 3.14159;
-	D = 0.05;								% [m]
-	V_plant_max = pi * (0.025)^2 * 20; 		%[m^3]
+% 	pi = 3.14159;
+% 	D = 0.05;								% [m]
+% 	V_plant_max = pi * (0.025)^2 * 20; 		%[m^3]
 	
-	% Reactors have a max length, so calculate the number of full size reactors
-	% and add it to the cost of the one non-max length reactor
+% 	% Reactors have a max length, so calculate the number of full size reactors
+% 	% and add it to the cost of the one non-max length reactor
 
-	cost = 0;
+% 	cost = 0;
 
-	% Find the Cost of the max-sized reactors
-	num_of_additional_reactors = int64(V_plant_input / V_plant_max);	
-	num_of_additional_reactors = double(num_of_additional_reactors);
+% 	% Find the Cost of the max-sized reactors
+% 	num_of_additional_reactors = int64(V_plant_input / V_plant_max);	
+% 	num_of_additional_reactors = double(num_of_additional_reactors);
 	
-	V_plant = V_plant_max;
-	factor_1 = 4.18;
-	factor_2 = (V_plant / (pi * (D/2)^2) * FT_PER_METER)^0.82;
-	factor_3 = (101.9 * D * FT_PER_METER)^1.066;
-	factor_4 = (1800 / 280);
-	cost_max_reactor = factor_1 * factor_2 * factor_3 * factor_4; 
-	cost = cost + num_of_additional_reactors * cost_max_reactor;
+% 	V_plant = V_plant_max;
+% 	factor_1 = 4.18;
+% 	factor_2 = (V_plant / (pi * (D/2)^2) * FT_PER_METER)^0.82;
+% 	factor_3 = (101.9 * D * FT_PER_METER)^1.066;
+% 	factor_4 = (1800 / 280);
+% 	cost_max_reactor = factor_1 * factor_2 * factor_3 * factor_4; 
+% 	cost = cost + num_of_additional_reactors * cost_max_reactor;
 	
-	% Find the cost of the non-max size reactor 
-	V_plant = V_plant_input - V_plant_max * num_of_additional_reactors;
-	if V_plant < 0
-		V_plant = 0;
-	end
-	factor_1 = 4.18;
-	factor_2 = (V_plant / (pi * (D/2)^2) * FT_PER_METER)^0.82;
-	factor_3 = (101.9 * D * FT_PER_METER)^1.066;
-	factor_4 = (1800 / 280);
-	cost = cost + factor_1 * factor_2 * factor_3 * factor_4;
+% 	% Find the cost of the non-max size reactor 
+% 	V_plant = V_plant_input - V_plant_max * num_of_additional_reactors;
+% 	if V_plant < 0
+% 		V_plant = 0;
+% 	end
+% 	factor_1 = 4.18;
+% 	factor_2 = (V_plant / (pi * (D/2)^2) * FT_PER_METER)^0.82;
+% 	factor_3 = (101.9 * D * FT_PER_METER)^1.066;
+% 	factor_4 = (1800 / 280);
+% 	cost = cost + factor_1 * factor_2 * factor_3 * factor_4;
 
-end
+% end
 
 
 function lifetime_npv = get_npv(npv)

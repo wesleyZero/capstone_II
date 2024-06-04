@@ -7,6 +7,7 @@ function const = get_constants()
     const.econ = get_economic_constants();
     const.densities = get_species_densities();
     % const.heat_cap = get_heat_capacities();
+    const.pi = 3.14159;
 
 end 
 
@@ -112,6 +113,7 @@ function units = get_unit_conversions()
 
     % Pressure
     units.pressure.bar_per_psia = 0.0689476;   
+    units.pressure.psia_per_bar = 1 / units.pressure.bar_per_psia ;
 
     % Time
     units.time.yr_per_sec = 1 / (3.154 * 10^7);   
@@ -122,6 +124,10 @@ function units = get_unit_conversions()
     % Volumes 
     units.volume.m3_per_l = 0.001;
     units.volume.l_per_m3 = 1000;
+
+    % Length
+    units.length.ft_per_m =  3.28084;
+    units.length.m_per_ft = 1 / units.length.ft_per_m;
 
     % heat 
     units.heat.millionbtu_per_gj = 1.0551;       % [ ]
