@@ -33,7 +33,7 @@ function void = plot_npv(plot_struct)
     % for i = 1:length(fieldNames)
         x = plot_struct.data.conversion(:);
         % y = plot_struct.data.F_out.(fieldNames{i}).x(:);
-        y = plot_struct.data.npv(:);
+        y = plot_struct.data.npv(:) / 15;
 
         % figure
         plot(x, y);

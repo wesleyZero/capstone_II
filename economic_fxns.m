@@ -40,7 +40,7 @@ function installed_cost = get_cost_reactor(V, P)
 	D.ft = D.m * const.units.length.ft_per_m;
 	H.ft = H.m * const.units.length.ft_per_m; 
 	installed_cost = coeff * (D.ft)^1.066 * H.ft^0.82 * (2.18 + F_c);
-	installed_cost = installed_cost * 10;
+	installed_cost = installed_cost * 1.5;
 
 
 end
