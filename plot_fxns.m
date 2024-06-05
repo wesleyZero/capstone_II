@@ -436,7 +436,7 @@ function void = plot_npv_all_pressures(all_pressure_data)
         plot(x, y);
         title(sprintf(' NPV [ %3.0f °C ]', plot_struct.T), 'Interpreter', 'tex');
         xlabel('\chi', 'Interpreter', 'tex');
-        ylabel('V_{reactor} [ m^3 ]', 'Interpreter', 'tex')
+        ylabel(' NPV ', 'Interpreter', 'tex')
         % Create the legend entry for this plot
         legendEntries{i} = sprintf('%3.0f Bar', plot_struct.P);
     end

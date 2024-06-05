@@ -188,7 +188,7 @@ function void = level3_isothermal(P_specify)
             all_pressure_data(i) = isoTherm_plt;
             i = i + 1;
 		end
-		plt_fxns.plot_npv_all_pressures(isoTherm_plt);
+		plt_fxns.plot_npv_all_pressures(all_pressure_data);
         plt_fxns.plot_reactor_volume_conversion_allP(all_pressure_data);
         
     end
