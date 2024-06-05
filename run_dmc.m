@@ -1,15 +1,15 @@
 clc; clear; close all; 
 
 % SCRIPT________________________________________________________________________
-level3() 
+level3();
 
 % FUNCTIONS_____________________________________________________________________
 
 function void = level3()
     void = NaN;
     P = 74; % bar
-    plt_fxns = plot_fxns();
-    level3_isothermal_aspen_compare(P);
+%     plt_fxns = plot_fxns();
+    % level3_isothermal_aspen_compare(P);
     level3_isothermal(P);
     level3_isobaric();
     level3_isothermal(NaN);
@@ -184,6 +184,7 @@ function void = level3_isothermal(P_specify)
         plt_fxns.plot_fresh_feed_conversion(isoTherm_plt);
         plt_fxns.plot_molar_flowrates_conversion(isoTherm_plt);
         plt_fxns.plot_npv(isoTherm_plt);
+        plt_fxns.plot_npv_with_aspen_data(isoTherm_plt);
     else
         i = 1;
         for P = user.level3.press_range
@@ -224,7 +225,7 @@ function void = level3_isothermal(P_specify)
         end
         plt_fxns.plot_reactor_volume_conversion_allP(all_pressure_data);
     end
-    console.section("Level 3 " + opt + " calculations are complete")
+    console.section("Level 3 " + opt + " calculations are complete");
 end
 
 function [F_fresh, F_rxtr, F_out, R, V_rxtr] = level3_flowrates(tau, temp, P, opt)
@@ -273,7 +274,7 @@ function void = level3_isobaric()
                 break;
             end
 
-            npv_opt = 'aspen';
+            npv_opt = 'matlab';
             npv = econ_fxns.get_work_min_npv(F_out, T, P, V_rxtr, conversion, npv_opt);
 
             % Store row data

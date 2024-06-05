@@ -3,6 +3,8 @@
 function fxns = get_economic_functions()
     fxns.get_npv = @get_npv;
 	fxns.get_work_min_npv = @get_work_min_npv;
+	fxns.get_osbl = @get_osbl;
+	fxns.get_isbl = @get_isbl;
 
 end
 
@@ -21,6 +23,75 @@ function Fp = get_closest_Fp(P)
     
     % Get the corresponding Fp value
     Fp = Fp_values(idx);
+end
+
+% function plot_data = get_aspen_Vrxtr_data()
+% 	user = get_user_inputs();
+% 	data.x = user.aspen.conversion;
+% 	data.y = 
+% 	data.V = user.aspen.reactor_volumes;
+
+% 	% Values to be stored
+% 	values = [72.1761, 3.2673, 0.0000, 112.1209, 644.8418, 509.2977, 2.0989, 0.5246, 0.0000];
+
+% 	% Names of the species
+% 	species_names = {'ethylene_glycol', 'ethylene_carbonate', 'ethylene_oxide', ...
+% 					'dimethyl_carbonate', 'carbon_dioxide', 'methanol', ...
+% 					'methoxy_ethanol', 'aniline', 'water'};
+
+% 	% Initialize the structure
+% 	species_data = flowrate_fxns().get_blank_flowstream;
+
+% 	% Store the values in the structure
+% 	for i = 1:length(species_names)
+% 		F.(species_names{i}).kta = values(i);
+% 	end
+
+% 	F = flowrate_fxns().set_F_kta(F);
+
+% end
+
+function chi = get_aspen_dataset_conversion(V)
+	conversion = get_user_inputs().aspen.conversions;
+	switch V
+		case 30
+			chi = conversion(1);
+		case 120
+			chi = conversion(2);
+		case 210
+			chi = conversion(3);
+		case 300
+			chi = conversion(4); 
+		otherwise 
+			disp("ERROR | aspen_dataset_conversion ")
+	end
+end
+
+
+function void = aspen_datapoints()
+	F = get_aspen_Vrxtr_data();
+
+
+
+
+	% function lifetime_npv = get_npv(npv)
+		% USER_INPUTS | All inputs are in units of $MM
+			% npv.mainProductRevenue = value_ethylene(P_ethylene);
+			% npv.byProductRevenue = value_h2_chem(P_hydrogen - combusted_hydrogen); 
+			% npv.rawMaterialsCost = value_ethane(F_fresh_ethane);
+			% npv.utilitiesCost = cost_steam(F_steam, COST_RATES_STEAM(STEAM_CHOICE, STEAM_COST_COL)); 
+			% npv.CO2sustainabilityCharge = tax_C02(combusted_fuel_flow_rates, F_natural_gas); 
+			% npv.conversion = conversion(i);
+			% npv.isbl = cost_rxt_vec + cost_separation_system(P_flowrates, F_steam, R_ethane);
+			% npv.isbl = cost_rxt_vec + cost_separation_system(P_flowrates, F_steam, R_ethane);
+	% lifetime_npv = get_npv_aspen(npv, osbl)
+	% lifetime_npv = get_npv_aspen(npv, osbl)
+	npv_params = get_main_product_revenue(F);
+	npv_params = get_byproduct_revenue(F);
+	npv_params = get_raw_material_cost(F);
+	npv_params = get_utilities_cost(F);
+	npv_params = get_aspen_dataset_conversion(V);
+		
 end
 
 
@@ -48,18 +119,17 @@ end
 function data = get_aspen_isbl_osbl(V_rxtr)
 
 	if V_rxtr == 30
-		operating_costs.heater_cooler  = 10.110 * 10^6';
-		capital_costs.heater_cooler   = 29.141 * 10^6;
-
+		operating_costs = 37.401 * 10^6;
+		capital_costs  = 19.575 * 10^6;
 	elseif V_rxtr == 120
-		operating_costs.A = 100;
-		capital_costs.A = 100;
-	elseif V_rxtr == 200
-		operating_costs.A = 1000;
-		capital_costs.A = 1000;
+		operating_costs = 37.554 * 10^6;
+		capital_costs = 19.342 * 10^6;
+	elseif V_rxtr == 210
+		operating_costs = 37.237 * 10^6;
+		capital_costs = 19.897 * 10^6;
 	elseif V_rxtr == 300
-		operating_costs.heater_cooler = 9.171 * 10^6;
-		capital_costs.heater_cooler = 15.581 * 10^6;	
+		operating_costs = 37.197 * 10^6; 
+		capital_costs = 20.325 * 10^6;
 	else
 		disp("ERROR | get_aspen_isbl_osbl | invalid V_rxtr choice")
 		data = NaN; 
@@ -68,7 +138,7 @@ function data = get_aspen_isbl_osbl(V_rxtr)
 
 	% capital costs summation
 	isbl = 0;
-	nameFields = namefields(capital_costs)
+	nameFields = fieldnames(capital_costs);
 	for i = 1:length(nameFields)
 		name = nameFields{i};
 		isbl = isbl + capital_costs.(name);
@@ -76,7 +146,7 @@ function data = get_aspen_isbl_osbl(V_rxtr)
 
 	% operating costs summation
 	osbl = 0;
-	nameFields = namefields(operating_costs)
+	nameFields = fieldnames(operating_costs);
 	for i = 1:length(nameFields)
 		name = nameFields{i};
 		osbl = osbl + operating_costs.(name);
@@ -86,7 +156,7 @@ function data = get_aspen_isbl_osbl(V_rxtr)
 	data.osbl = isbl;
 end                                               
 
-function isbl_capital_cost = get_ISBL(V_rxtr, P, opt)
+function isbl_capital_cost = get_isbl(V_rxtr, P, opt)
 	if strcmp(opt, 'aspen')
 		isbl_capital_cost = get_cost_reactor(V_rxtr, P);
 		data = get_aspen_isbl_osbl(V_rxtr);
@@ -100,7 +170,7 @@ function isbl_capital_cost = get_ISBL(V_rxtr, P, opt)
 	end
 end
 
-function osbl_capital_cost = get_OSBL(V_rxtr, P, opt)
+function osbl_capital_cost = get_osbl(V_rxtr, P, opt)
 	if strcmp(opt, 'aspen')
 		osbl_capital_cost = get_cost_reactor(V_rxtr, P);
 		data = get_aspen_isbl_osbl(V_rxtr);
@@ -114,15 +184,13 @@ function osbl_capital_cost = get_OSBL(V_rxtr, P, opt)
 	end
 end
 
-
+ 
 
 function charge = get_CO2_sustainability_charge()
 	charge = 0;
 end
 
 function cost = get_separation_system_cost()
-
-	cost = 0;
 end
 
 function lifetime_npv = get_work_min_npv(F, T, P, V_rxtr, conversion, opt)
@@ -134,9 +202,13 @@ function lifetime_npv = get_work_min_npv(F, T, P, V_rxtr, conversion, opt)
 	npv_params.rawMaterialsCost = get_raw_material_cost(F);
 	energy = get_energy_plant();
 	npv_params.utilitiesCost = get_utilities_cost(energy);
-	npv_params.conversion = conversion;
+	npv_params.conversion = conversion; 
 	% npv_params.ISBLcapitalCost = get_cost_reactor(V_rxtr, P);
-	npv_params.ISBLcapitalCost = get_ISBL(V_rxtr, P, opt);
+	if strcmp(opt,'aspen')
+		npv_params.ISBLcapitalCost = get_isbl(V_rxtr, P, opt);
+	else 
+		npv_params.ISBLcapitalCost = get_cost_reactor(V_rxtr, P);
+	end
 
 	npv_params.CO2sustainabilityCharge = get_CO2_sustainability_charge();
 
