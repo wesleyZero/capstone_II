@@ -150,6 +150,9 @@ function molar_mass = get_molar_masses()
         % source: https://webbook.nist.gov/cgi/cbook.cgi?ID=107-21-1 
     molar_mass.methoxy_ethanol = 76.10;              % [ g / mol ]
         % source: https://webbook.nist.gov/cgi/cbook.cgi?ID=109-86-4
+
+    molar_mass.aniline = 93.13;
+    molar_mass.water = 18;
 end
 
 

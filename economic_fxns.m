@@ -7,6 +7,7 @@ function fxns = get_economic_functions()
 	fxns.get_work_min_npv = @get_work_min_npv;
 	fxns.get_osbl = @get_osbl;
 	fxns.get_isbl = @get_isbl;
+	fxns.get_aspen_datapoints = @get_aspen_datapoints;
 
 end
 
@@ -27,7 +28,7 @@ function Fp = get_closest_Fp(P)
     Fp = Fp_values(idx);
 end
 
-function plot_data = get_aspen_Vrxtr_data()
+function F = get_aspen_Vrxtr_data()
 	user = get_user_inputs();
 
 	% Values to be stored
@@ -67,7 +68,7 @@ function chi = get_aspen_dataset_conversion(V)
 end
 
 
-function void = aspen_datapoints()
+function aspen_data = get_aspen_datapoints()
 	user = get_user_inputs();
 
 
@@ -89,14 +90,17 @@ function void = aspen_datapoints()
 		npv_params.mainProductRevenue = get_main_product_revenue(F);
 		npv_params.byProductRevenue = get_byproduct_revenue(F);
 		npv_params.rawMaterialsCost = get_raw_material_cost(F);
-		npv_params.utilitiesCost = get_utilities_cost(F);
+		npv_params.utilitiesCost = get_utilities_cost(0);
 		npv_params.CO2sustainabilityCharge = get_CO2_sustainability_charge(); 
 		npv_params.conversion = get_aspen_dataset_conversion(V);
-		npv_params.isbl = get_aspen_isbl_osbl().isbl;
-		npv_params.osbl  = get_aspen_isbl_osbl().osbl;
-		y_npv(i) = get_npv_aspen(npv_params,npv_params.osbl )
+		isbl = get_aspen_isbl_osbl(V).isbl;
+% 		npv_params.  = get_aspen_isbl_osbl(V).osbl;
+		y_npv(i) = get_npv_aspen(npv_params, isbl, get_aspen_isbl_osbl(V).osbl);
 	end
 
+
+	aspen_data.x = get_constants().npv.aspen.converions;
+	aspen_data.y = y_npv;
 
 
 end
@@ -127,10 +131,10 @@ function installed_cost = get_cost_reactor(V, P)
 	V;
 end
 
-function data = get_aspen_isbl_osbl(V_rxtr)
+function data = g\\\Uet_aspen_isbl_osbl(V_rxtr)
 
 	if V_rxtr == 30
-		operating_costs = 37.401 * 10^6;
+		void = 37.401 * 10^6;
 		capital_costs  = 19.575 * 10^6;
 	elseif V_rxtr == 120
 		operating_costs = 37.554 * 10^6;
@@ -209,7 +213,8 @@ function lifetime_npv = get_work_min_npv(F, T, P, V_rxtr, conversion, opt)
 	npv_params.CO2sustainabilityCharge = get_CO2_sustainability_charge();
 
 	if strcmp(opt, 'aspen')
-		lifetime_npv = get_npv_aspen(npv_params, get_osbl(V_rxtr, P, opt));
+		lifetime_npv = get_npv_aspen(npv_params, npv_params.ISBLcapitalCost, ...
+												 get_osbl(V_rxtr, P, opt));
 	else
 		lifetime_npv = get_npv(npv_params) / 10^6 ;
 	end
@@ -270,7 +275,7 @@ function value = get_CO2_sustainability_value()
 
 end
 
-function lifetime_npv = get_npv_aspen(npv, osbl)
+function lifetime_npv = get_npv_aspen(npv, isbl, osbl)
 	% USER_INPUTS | All inputs are in units of $MM
 		% npv.mainProductRevenue = value_ethylene(P_ethylene);
 		% npv.byProductRevenue = value_h2_chem(P_hydrogen - combusted_hydrogen); 
@@ -318,7 +323,7 @@ function lifetime_npv = get_npv_aspen(npv, osbl)
 						 npv.AGS + npv.interest;
 
 	% Capital Costs 
-	% npv.OSBLcapitalCost = npv.ISBLcapitalCost * 0.40;
+	npv.ISBLcapitalCost = isbl;
 		% modification 
 	npv.OSBLcapitalCost = osbl;
 		% ??  npv.ISBLcapitalCost, npv.OSBLcapitalCost)

@@ -27,6 +27,9 @@ function void = plot_npv_with_aspen_data(plot_struct)
     user = get_user_inputs();
     const = get_constants();
     flow_fxns = flowrate_fxns();
+
+    aspen_data = economic_fxns().get_aspen_datapoints();
+
     figure 
     hold on
     % F_total = flow_fxns.get_total_flowrate(plot_struct.data.F_out, 'mol');
@@ -38,7 +41,7 @@ function void = plot_npv_with_aspen_data(plot_struct)
 
         % figure
         plot(x, y);
-        title(sprintf('Nominal Present Value at [ %3.0f Bar ] [ %3.0f °C ]',plot_struct.P, plot_struct.T), 'Interpreter', 'tex');
+        title(sprintf('Nominal Present Value (with HYSYS data) [ %3.0f Bar ] [ %3.0f °C ]',plot_struct.P, plot_struct.T), 'Interpreter', 'tex');
         xlabel('\chi', 'Interpreter', 'tex');
         ylabel('NPV [ $MM ]', 'Interpreter', 'tex');
         % Create the legend entry for this plot

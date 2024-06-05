@@ -9,7 +9,7 @@ function void = level3()
     void = NaN;
     P = 74; % bar
 %     plt_fxns = plot_fxns();
-    % level3_isothermal_aspen_compare(P);
+    level3_isothermal_aspen_compare(P);
     level3_isothermal(P);
     level3_isobaric();
     level3_isothermal(NaN);
@@ -18,8 +18,8 @@ end
 
 
 
-function void = level3_isothermal_aspen_compare(P_specify)
-    void = NaN;
+function puppy = level3_isothermal_aspen_compare(P_specify)
+    pupptxk
 
     console = get_console();
     const = get_constants(); 
