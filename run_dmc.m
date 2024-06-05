@@ -1,7 +1,7 @@
 clc; clear; close all; 
 
 % SCRIPT________________________________________________________________________
-level3();
+level3()
 
 % FUNCTIONS_____________________________________________________________________
 
@@ -66,7 +66,7 @@ function void = level3_isothermal_aspen_compare(P_specify)
             plot_row.npv = npv;
             isoTherm_plt = plt_fxns.set_plot_row(isoTherm_plt, plot_row);
             % increment
-            row = row + 1; 
+            row = row + 1;
         end
 
         % all_pressure_data(i) = isoTherm_plt;
@@ -80,43 +80,7 @@ function void = level3_isothermal_aspen_compare(P_specify)
         % plt_fxns.plot_molar_flowrates_conversion(isoTherm_plt);
         % plt_fxns.plot_npv(isoTherm_plt);
         plt_fxns.plot_npv_with_aspen_data(isoTherm_plt);
-    % else
-    %     i = 1;
-    %     for P = user.level3.press_range
-    %         console.subsection(sprintf("P = %3.2f", P), 1);
-    %         row = 1;
-    %         isoTherm_plt = plt_fxns.get_plot_struct(T, P, opt);
-            
-    %             console.subsection(sprintf("tau = %3.2f", tau), 2)
-    %             [F_fresh, F_rxtr, F_out, R, V_rxtr] = level3_flowrates(tau, T, P, opt); 
-    %             conversion = rxtr_fxns.get_conversion(F_rxtr, F_out);
 
-    %             if isnan(conversion)
-    %                 disp("ERROR : COMPLEX CONC. BREAKING TO NEXT TEMP")
-    %                 break;
-    %             end
-    %             npv_opt = 'aspen';
-    %             npv = econ_fxns.get_work_min_npv(F_out, T, P, V_rxtr, conversion, npv_opt);
-    
-    %             % Store row data
-    %             plot_row.F_fresh = F_fresh;
-    %             plot_row.F_rxtr = F_rxtr;
-    %             plot_row.F_out = F_out;
-    %             plot_row.R = R;
-    %             plot_row.conversion = conversion;
-    %             plot_row.row_number = row;
-    %             plot_row.tau = tau;
-    %             plot_row.V_rxtr = V_rxtr ;
-    %             plot_row.npv = npv;
-    %             isoTherm_plt = plt_fxns.set_plot_row(isoTherm_plt, plot_row);
-    %             % increment
-    %             row = row + 1; 
-    %         end
-
-    %         all_pressure_data(i) = isoTherm_plt;
-    %         i = i + 1;
-    %     end
-    %     plt_fxns.plot_reactor_volume_conversion_allP(all_pressure_data);
     end
     console.section("Level 3 " + opt + " calculations are complete")
 end

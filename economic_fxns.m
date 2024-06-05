@@ -1,5 +1,7 @@
 %% MASTER FUNCTION
 
+% aspen_datapoints();
+
 function fxns = get_economic_functions()
     fxns.get_npv = @get_npv;
 	fxns.get_work_min_npv = @get_work_min_npv;
@@ -25,29 +27,28 @@ function Fp = get_closest_Fp(P)
     Fp = Fp_values(idx);
 end
 
-% function plot_data = get_aspen_Vrxtr_data()
-% 	user = get_user_inputs();
-% 	data.x = user.aspen.conversion;
-% 	data.y = 
-% 	data.V = user.aspen.reactor_volumes;
+function plot_data = get_aspen_Vrxtr_data()
+	user = get_user_inputs();
 
-% 	% Values to be stored
-% 	values = [72.1761, 3.2673, 0.0000, 112.1209, 644.8418, 509.2977, 2.0989, 0.5246, 0.0000];
+	% Values to be stored
+	values = [72.1761, 3.2673, 0.0000, 112.1209, 644.8418, 509.2977, 2.0989, 0.5246, 0.0000];
 
-% 	% Names of the species
-% 	species_names = {'ethylene_glycol', 'ethylene_carbonate', 'ethylene_oxide', ...
-% 					'dimethyl_carbonate', 'carbon_dioxide', 'methanol', ...
-% 					'methoxy_ethanol', 'aniline', 'water'};
+	% Names of the species
+	species_names = {'ethylene_glycol', 'ethylene_carbonate', 'ethylene_oxide', ...
+					'dimethyl_carbonate', 'carbon_dioxide', 'methanol', ...
+					'methoxy_ethanol', 'aniline', 'water'};
 
-% 	% Initialize the structure
-% 	species_data = flowrate_fxns().get_blank_flowstream;
+	% Initialize the structure
+	species_data = flowrate_fxns().get_blank_flowstream;
 
-% 	% Store the values in the structure
-% 	for i = 1:length(species_names)
-% 		F.(species_names{i}).kta = values(i);
-% 	F = flowrate_fxns().set_F_kta(F);
+	% Store the values in the structure
+	for i = 1:length(species_names)
+		F.(species_names{i}).kta = values(i);
+	end
+	F = flowrate_fxns().set_F_kta(F);
 
-% end
+
+end
 
 function chi = get_aspen_dataset_conversion(V)
 	conversion = get_user_inputs().aspen.conversions;
@@ -93,8 +94,11 @@ function void = aspen_datapoints()
 		npv_params.conversion = get_aspen_dataset_conversion(V);
 		npv_params.isbl = get_aspen_isbl_osbl().isbl;
 		npv_params.osbl  = get_aspen_isbl_osbl().osbl;
-
+		y_npv(i) = get_npv_aspen(npv_params,npv_params.osbl )
 	end
+
+
+
 end
 
 
@@ -182,6 +186,7 @@ function charge = get_CO2_sustainability_charge()
 end
 
 function cost = get_separation_system_cost()
+	cost = 0;
 end
 
 function lifetime_npv = get_work_min_npv(F, T, P, V_rxtr, conversion, opt)
