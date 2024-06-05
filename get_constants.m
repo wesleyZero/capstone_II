@@ -102,6 +102,7 @@ function units = get_unit_conversions()
     % Energy
     units.energy.gj_per_kj = 10^-6;       
     units.energy.kj_per_gj = 10^6;      
+    units.energy.gj_per_j = 10^-9;
 
     % Temperature      
 	units.temperature.c_to_k = @(T_C) T_C + 273.15;       

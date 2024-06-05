@@ -430,7 +430,7 @@ function void = plot_npv_all_pressures(all_pressure_data)
         plot_struct = all_pressure_data(i);
         x = plot_struct.data.conversion(:);
         % y = plot_struct.data.V_rxtr(:) .* const.units.volume.m3_per_l;
-        y = plot_struct.data.npv(:);
+        y = plot_struct.data.npv(:) / 10^-3;
 
         % figure
         plot(x, y);

@@ -84,13 +84,14 @@ function aspen_data = get_aspen_datapoints()
 			% npv.isbl = cost_rxt_vec + cost_separation_system(P_flowrates, F_steam, R_ethane);
 	% lifetime_npv = get_npv_aspen(npv, osbl)
 	% lifetime_npv = get_npv_aspen(npv, osbl)
+	P_f = 1;
 	for i = 1:length(user.aspen.reactor_volumes) 
 		V = user.aspen.reactor_volumes(i);
 		F = get_aspen_Vrxtr_data();
 		npv_params.mainProductRevenue = get_main_product_revenue(F);
 		npv_params.byProductRevenue = get_byproduct_revenue(F);
 		npv_params.rawMaterialsCost = get_raw_material_cost(F);
-		npv_params.utilitiesCost = get_utilities_cost(0);
+		npv_params.utilitiesCost = get_utilities_cost(F, T, P, P_f);
 		npv_params.CO2sustainabilityCharge = get_CO2_sustainability_charge(); 
 		npv_params.conversion = get_aspen_dataset_conversion(V);
 		isbl = get_aspen_isbl_osbl(V).isbl;
@@ -194,6 +195,7 @@ function cost = get_separation_system_cost()
 end
 
 function lifetime_npv = get_work_min_npv(F, T, P, V_rxtr, conversion, opt)
+	P_f = 1;
 	sep_fxns = separation_fxns();
 	w_min = sep_fxns.get_work_min(F, T);
 
@@ -201,7 +203,7 @@ function lifetime_npv = get_work_min_npv(F, T, P, V_rxtr, conversion, opt)
 	npv_params.byProductRevenue = get_byproduct_revenue(F);
 	npv_params.rawMaterialsCost = get_raw_material_cost(F);
 	energy = get_energy_plant();
-	npv_params.utilitiesCost = get_utilities_cost(energy);
+	npv_params.utilitiesCost = get_utilities_cost(F, T, P, P_f);
 	npv_params.conversion = conversion; 
 	% npv_params.ISBLcapitalCost = get_cost_reactor(V_rxtr, P);
 	if strcmp(opt,'aspen')
@@ -262,10 +264,24 @@ function cost = get_raw_material_cost(F)
 		% water ??
 end
 
-function cost = get_utilities_cost(energy)
+function cost = get_utilities_cost(F,T, P, P_f)
 	% utilities are electricity, fuel??
 	rate.dollar_per_GJ = 3;
-	cost = rate.dollar_per_GJ * energy;
+
+	R = get_constants().thermo.R;
+
+
+	F_tot = flowrate_fxns().get_total_flowrate(F, 'mol');
+	
+%  W = compressor_work_TJ(sep, P_f)
+	% R = 8.314;		% [ J / mol K]
+	% n = total_molar_flowrate(sep.F);
+	% T = sep.T;
+	% P_0 = sep.P;
+
+	W = - F_tot * R * T * log10(P_f / P);	% ?? I think that it's base 10
+	W = get_constants().units.energy.gj_per_j;
+	cost = rate.dollar_per_GJ * W;
 end
 
 function value = get_CO2_sustainability_value()
