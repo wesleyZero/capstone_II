@@ -131,10 +131,10 @@ function installed_cost = get_cost_reactor(V, P)
 	V;
 end
 
-function data = g\\\Uet_aspen_isbl_osbl(V_rxtr)
+function data = get_aspen_isbl_osbl(V_rxtr)
 
 	if V_rxtr == 30
-		void = 37.401 * 10^6;
+		operating_costs = 37.401 * 10^6;
 		capital_costs  = 19.575 * 10^6;
 	elseif V_rxtr == 120
 		operating_costs = 37.554 * 10^6;

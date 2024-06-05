@@ -19,6 +19,7 @@ function fxns = plot_fxns()
     fxns.plot_selectivity = @plot_selectivity;
     fxns.plot_npv = @plot_npv;
     fxns.plot_npv_with_aspen_data = @plot_npv_with_aspen_data;
+    fxns.plot_npv_all_pressures = @plot_npv_all_pressures;
 
 end
 
@@ -415,6 +416,45 @@ function void = delete_old_plots()
         filePath = fullfile(pngFiles(k).folder, pngFiles(k).name);
         delete(filePath);
     end
+
+end
+
+
+function void = plot_npv_all_pressures(all_pressure_data)
+
+    user = get_user_inputs();
+    const = get_constants();
+    figure 
+    hold on
+    for i = 1:length(all_pressure_data)
+        plot_struct = all_pressure_data(i);
+        x = plot_struct.data.conversion(:);
+        % y = plot_struct.data.V_rxtr(:) .* const.units.volume.m3_per_l;
+        y = plot_struct.data.npv(:);
+
+        % figure
+        plot(x, y);
+        title(sprintf(' NPV [ %3.0f °C ]', plot_struct.T), 'Interpreter', 'tex');
+        xlabel('\chi', 'Interpreter', 'tex');
+        ylabel('V_{reactor} [ m^3 ]', 'Interpreter', 'tex')
+        % Create the legend entry for this plot
+        legendEntries{i} = sprintf('%3.0f Bar', plot_struct.P);
+    end
+    % The design variable point
+    legendEntries{i + 1} = sprintf('\\chi = %0.2f, %3.1f m^3' , user.plot.isothermal.x_point, ...
+                                (user.plot.isothermal.y_point * const.units.volume.m3_per_l));
+    xline(user.plot.isothermal.x_point, '--k', 'LineWidth', 0.5, 'HandleVisibility', 'off');
+    yline(user.plot.isothermal.y_point * const.units.volume.m3_per_l, '--k', 'LineWidth', 0.5, 'HandleVisibility', 'off');
+    plot(user.plot.isothermal.x_point, user.plot.isothermal.y_point * const.units.volume.m3_per_l, ...
+                'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'r', 'MarkerSize', 3);
+
+    % Add Legend
+    legend(legendEntries, 'Interpreter', 'tex', 'location', 'northwest');
+    hold off
+
+    fileName =  "isothermal_NPV_all_pressures";
+    save_plot(fileName);
+
 
 end
 

@@ -9,7 +9,8 @@ function void = level3()
     void = NaN;
     P = 74; % bar
 %     plt_fxns = plot_fxns();
-    level3_isothermal_aspen_compare(P);
+%     level3_isothermal_aspen_compare(P);
+    level3_isothermal(NaN);
     level3_isothermal(P);
     level3_isobaric();
     level3_isothermal(NaN);
@@ -19,7 +20,7 @@ end
 
 
 function puppy = level3_isothermal_aspen_compare(P_specify)
-    pupptxk
+
 
     console = get_console();
     const = get_constants(); 
@@ -186,8 +187,10 @@ function void = level3_isothermal(P_specify)
 
             all_pressure_data(i) = isoTherm_plt;
             i = i + 1;
-        end
+		end
+		plt_fxns.plot_npv_all_pressures(isoTherm_plt);
         plt_fxns.plot_reactor_volume_conversion_allP(all_pressure_data);
+        
     end
     console.section("Level 3 " + opt + " calculations are complete");
 end
