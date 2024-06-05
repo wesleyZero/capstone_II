@@ -12,7 +12,7 @@ function user = get_user_inputs()
     % user.level3.tau_max = 500; 
 
     % isothermal tau ranges
-    user.level3.isothermal.tau_min = 100;
+    user.level3.isothermal.tau_min = 500;
     user.level3.isothermal.tau_max = 10^4;
     user.level3.isothermal.P_specify.tau_min = 100;
     user.level3.isothermal.P_specify.tau_max = 10^4;
@@ -67,6 +67,9 @@ function user = get_user_inputs()
         linspace(user.level3.isothermal.P_specify.tau_min, user.level3.isothermal.P_specify.tau_max, user.level3.tau_precision);
 
 
+
+        % user.level3.tau_range.isothermal.plot_npv_all_pressures = ...
+        % linspace(500, user.level3.isothermal.tau_max, user.level3.tau_precision);
 
 
 
