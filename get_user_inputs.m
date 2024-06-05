@@ -93,4 +93,9 @@ function user = get_user_inputs()
     user.salvage_value = 0.05;                      % 5% of fixed capital investment
 
     % user.npv.discount_rate = 
+
+
+    % Aspen 
+    user.aspen.reactor_volumes = [ 30, 120, 210, 300];
+    user.aspen.conversions = [ 0.55, 0.65, 0.85, 0.95];
 end 

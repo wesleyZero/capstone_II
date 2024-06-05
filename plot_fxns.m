@@ -18,7 +18,59 @@ function fxns = plot_fxns()
     fxns.plot_total_separation_feed = @plot_total_separation_feed;
     fxns.plot_selectivity = @plot_selectivity;
     fxns.plot_npv = @plot_npv;
+    fxns.plot_npv_with_aspen_data = @plot_npv_with_aspen_data;
 
+end
+
+function void = plot_npv_with_aspen_data(plot_struct)
+    void = NaN;
+    user = get_user_inputs();
+    const = get_constants();
+    flow_fxns = flowrate_fxns();
+
+    y_aspen = [];
+    x_aspen = user.aspen.conversions;
+    npv_opt = 'aspen';
+    for i = 1:length(user.aspen.reactor_volumes)
+        y_aspen(i) = get_work_min_npv(plot_struct.F_out, plot_struct.T, ...
+            plot_struct.P, user.aspen.reactor_volumes(i), user.aspen.conversions(i), ...
+            npv_opt);
+    end % I need to modify this with the flowrates from aspen instead of the sim
+        
+    figure 
+    hold on
+    % F_total = flow_fxns.get_total_flowrate(plot_struct.data.F_out, 'mol');
+    % fieldNames = fieldnames(plot_struct.data.F_rxtr);
+    % for i = 1:length(fieldNames)
+        x = plot_struct.data.conversion(:);
+        % y = plot_struct.data.F_out.(fieldNames{i}).x(:);
+        y = plot_struct.data.npv(:) / 15;
+
+        % figure
+        plot(x, y);
+        title(sprintf('Nominal Present Value at [ %3.0f Bar ] [ %3.0f °C ]',plot_struct.P, plot_struct.T), 'Interpreter', 'tex');
+        xlabel('\chi', 'Interpreter', 'tex');
+        ylabel('NPV [ $MM ]', 'Interpreter', 'tex');
+        
+        % omg please kill me
+        plot(x_aspen, y_aspen);
+        % Create the legend entry for this plot
+        % legendEntries{i} = sprintf('%s', strrep(fieldNames{i}, '_', " "));
+    % end
+    % The design variable point
+    % legendEntries{i + 1} = sprintf('\\chi = %0.2f, %3.1f m^3' , user.plot.isothermal.x_point, ...
+                                % (user.plot.isothermal.y_point * const.units.volume.m3_per_l));
+    xline(user.plot.isothermal.x_point, '--k', 'LineWidth', 0.5, 'HandleVisibility', 'off');
+    % yline(user.plot.isothermal.y_point * const.units.volume.m3_per_l, '--k', 'LineWidth', 0.5, 'HandleVisibility', 'off');
+    % plot(user.plot.isothermal.x_point, user.plot.isothermal.y_point * const.units.volume.m3_per_l, ...
+    %             'o', 'MarkerEdgeColor', 'k', 'MarkerFaceColor', 'r', 'MarkerSize', 3);
+
+    % Add Legend
+    % legend(legendEntries, 'Interpreter', 'tex', 'location', 'west');
+    hold off
+
+    fileName =  "isothermal_npv_"+ string(plot_struct.P) + "Bar";
+    save_plot(fileName);
 end
 
 function void = plot_npv(plot_struct)
