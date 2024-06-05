@@ -43,16 +43,62 @@ function installed_cost = get_cost_reactor(V, P)
 	installed_cost = coeff * (D.ft)^1.066 * H.ft^0.82 * (2.18 + F_c);
 	installed_cost = installed_cost * 1.5;
 	V;
-
 end
+
+function data = get_aspen_costs(V_rxtr)
+
+	if V_rxtr == 30;
+		heater_cooler.opterating_cost = 10.110 * 10^6';
+		heater_cooler.instillation_cost  = 29.141 * 10^6;
+
+		compressor_dist.opterating_cost = 7.031 * 10^6;
+		compressor_dist.installed_cost = 847 * 10^3;
+
+		catalyst_cost = 14977;
+
+		analine.annual_cost = 921.924 * 10^3;
+
+		isbl = 10; 
+		osbl = 10; 	
+	elseif V_rxtr == 120
+		isbl = 100;
+		osbl = 100;
+	elseif V_rxtr == 200
+		isbl = 1000;
+		osbl = 1000;
+	elseif V_rxtr == 300;
+		operating_costs.heater_cooler = 9.171 * 10^6;
+		capital_cost.heater_cooler = 15.581 * 10^6;	
+	else
+		disp("ERROR | get_aspen_costs | invalid V_rxtr choice")
+	end
+
+	% capital costs summation
+	isbl = 0;
+	nameFields = namefields(capital_costs)
+	for i = 1:length(nameFields)
+		name = nameFields{i};
+		isbl = isbl + capital_costs.(name);
+	end
+
+	% operating costs summation
+	osbl = 0;
+	nameFields = namefields(operating_costs)
+	for i = 1:length(nameFields)
+		name = nameFields{i};
+		osbl = osbl + operating_costs.(name);
+	end
+
+	data.isbl = isbl;
+	data.osbl = isbl;
+end                                               
 
 function isbl_capital_cost = get_ISBL_aspen_data(V_rxtr, P, opt)
 	if strcmp(opt, 'aspen')
 		isbl_capital_cost = get_cost_reactor(V_rxtr, P);
-		disp("aspen")
+		isbl_capital_cost = isbl_capital_cost + get_aspen_costs(V_rxtr);
 	elseif strcmp(opt, 'matlab')
 		isbl_capital_cost = get_cost_reactor(V_rxtr, P);	
-		disp("matlab")
 	else
 		isbl = NaN;
 		disp("ERROR | get_ISBL_aspen_data | opt not valid");
