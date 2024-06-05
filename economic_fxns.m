@@ -45,8 +45,6 @@ end
 % 	% Store the values in the structure
 % 	for i = 1:length(species_names)
 % 		F.(species_names{i}).kta = values(i);
-% 	end
-
 % 	F = flowrate_fxns().set_F_kta(F);
 
 % end
@@ -69,9 +67,7 @@ end
 
 
 function void = aspen_datapoints()
-	F = get_aspen_Vrxtr_data();
-
-
+	user = get_user_inputs();
 
 
 	% function lifetime_npv = get_npv(npv)
@@ -86,13 +82,24 @@ function void = aspen_datapoints()
 			% npv.isbl = cost_rxt_vec + cost_separation_system(P_flowrates, F_steam, R_ethane);
 	% lifetime_npv = get_npv_aspen(npv, osbl)
 	% lifetime_npv = get_npv_aspen(npv, osbl)
-	npv_params = get_main_product_revenue(F);
-	npv_params = get_byproduct_revenue(F);
-	npv_params = get_raw_material_cost(F);
-	npv_params = get_utilities_cost(F);
-	npv_params = get_aspen_dataset_conversion(V);
-		
+	for i = 1:length(user.aspen.reactor_volumes) 
+		V = user.aspen.reactor_volumes(i);
+		F = get_aspen_Vrxtr_data();
+		npv_params.mainProductRevenue = get_main_product_revenue(F);
+		npv_params.byProductRevenue = get_byproduct_revenue(F);
+		npv_params.rawMaterialsCost = get_raw_material_cost(F);
+		npv_params.utilitiesCost = get_utilities_cost(F);
+		npv_params.CO2sustainabilityCharge = get_CO2_sustainability_charge(); 
+		npv_params.conversion = get_aspen_dataset_conversion(V);
+		npv_params.isbl = get_aspen_isbl_osbl().isbl;
+		npv_params.osbl  = get_aspen_isbl_osbl().osbl;
+
+	end
 end
+
+
+
+
 
 
 function installed_cost = get_cost_reactor(V, P)
@@ -136,24 +143,8 @@ function data = get_aspen_isbl_osbl(V_rxtr)
 		return
 	end
 
-	% capital costs summation
-	isbl = 0;
-	nameFields = fieldnames(capital_costs);
-	for i = 1:length(nameFields)
-		name = nameFields{i};
-		isbl = isbl + capital_costs.(name);
-	end
-
-	% operating costs summation
-	osbl = 0;
-	nameFields = fieldnames(operating_costs);
-	for i = 1:length(nameFields)
-		name = nameFields{i};
-		osbl = osbl + operating_costs.(name);
-	end
-
-	data.isbl = isbl;
-	data.osbl = isbl;
+	data.isbl = capital_costs;
+	data.osbl = operating_costs; 
 end                                               
 
 function isbl_capital_cost = get_isbl(V_rxtr, P, opt)
