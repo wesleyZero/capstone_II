@@ -42,7 +42,7 @@ The following is going to be a bit hard to follow, whats important to know is **
 
 First, we need to know what chemical species are reacting, and how much. So we look at the reaction chemistry. 
 
-[](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/reaction_chemistry.png)
+![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/reaction_chemistry.png)
 
 # Nomenclature
 
