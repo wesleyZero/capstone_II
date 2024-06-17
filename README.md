@@ -6,6 +6,9 @@
  * [Description of the Project](#Description)
  * [How do you simulate a chemical process?](#How_do_you_simulate_a_chemical_process?)
     * [Process Flow Diagram](#Process_Flow_Diagram)
+    * [Reactor Model](#Reactor_model)
+ * [Nomenclature]
+    * [Supercritical Fluids](#)
  * [Links](#Links)
 
 
@@ -29,11 +32,18 @@ You start off with a process flow diagram, this process flow diagram shows all p
 
 We need a mathematical model for the reactor. The reactor we are using for this process is called a CSTR (constantly stirred tank reactor). It's kinda like if you imagine a witch brewing an evil potion or something like that 🧙‍♂️, however there are pipes that are flowing in and out of the brew constantly flowing reactants in and products out, there are lots of differential equations and in this particular case some of the reactants are super critical fluids! Simple right?!
 
-### But Wes...What the heck is a super-critical fluid?
+**But Wes...What the heck is a super-critical fluid?**
 
+Read in the Nomenclature section for [Supercritical Fluids](#supercritical_fluids) to learn what this is, if you don't know!
+
+# Nomenclature
+
+## Supercritical_fluids
 <img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/supercritical_phase_diagram.png" width="500">
 
 **A supercritical fluid** is a fluid that behaves like a gas and a liquid simultaneously. Depending on the thermodynamic conditions (the temperature and pressure) it will behave more like one or the other. The details of this are not what I want the focus to be, thats a topic of physics. Whats important is that we have a reactive component that changes density, **effectively changing the concentration of all of the species in the reactor depending on what thermodynamic conditions we specifiy**. For CO2 we get this type of bizarro phase behavior when we get to pressures of about 76 times atmospheric. 
+
+The function to model this is below. The functions you see are empirical regressions of experimental data since there generally isn't good physical models of these exotic phases of matter. 
 
 [get_supercritical_c02_density function](https://github.com/wesleyZero/capstone_II/blob/main/reactor_fxns.m#L368)
 ```matlab
