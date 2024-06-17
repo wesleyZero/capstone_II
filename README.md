@@ -33,7 +33,7 @@ We need a mathematical model for the reactor. The reactor we are using for this 
 
 <img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/supercritical_phase_diagram.png" width="500">
 
-**A supercritical fluid** is a fluid that behaves like a gas and a liquid simultaneously. Depending on the thermodynamic conditions (the temperature and pressure) it will behave more like one or the other. The details of this are not what I want the focus to be, thats a topic of physics. Whats important is that we have a reactive component that changes density, **effectively changing the concentration of all of the species in the reactor depending on what thermodynamic conditions we specifiy**. 
+**A supercritical fluid** is a fluid that behaves like a gas and a liquid simultaneously. Depending on the thermodynamic conditions (the temperature and pressure) it will behave more like one or the other. The details of this are not what I want the focus to be, thats a topic of physics. Whats important is that we have a reactive component that changes density, **effectively changing the concentration of all of the species in the reactor depending on what thermodynamic conditions we specifiy**. For CO2 we get this type of bizarro phase behavior when we get to pressures of about 76 times atmospheric. 
 
 [get_supercritical_c02_density function](https://github.com/wesleyZero/capstone_II/blob/main/reactor_fxns.m#L368)
 ```matlab
