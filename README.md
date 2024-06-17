@@ -7,6 +7,7 @@
  * [How do you simulate a chemical process?](#How_do_you_simulate_a_chemical_process?)
     * [Process Flow Diagram](#Process_Flow_Diagram)
     * [Reactor Model](#Reactor_model)
+        * [Reaction Chemistry](#Reaction_Chemistry)
  * [Nomenclature](#Nomenclature)
     * [Supercritical Fluids](#Supercritical_fluids)
  * [Links](#Links)
@@ -36,13 +37,15 @@ We need a mathematical model for the reactor. The reactor we are using for this 
 
 Read in the Nomenclature section for [Supercritical Fluids](#supercritical_fluids) to learn what this is, if you don't know!
 
-The following is going to be a bit hard to follow, whats important to know is **the end goal is to produce a set of graphs**. These graphs are going be be **functions of the residence time** (the mean time a chemical species spends in the reactor, symbol: tau), **conversion** (how much of the limiting species gets converted into products, symbol: chi), **temperature**, and **pressure**. 
+The following is going to be a bit hard to follow, whats important to know is **the end goal is to produce a set of graphs**. These graphs are going be be **functions of the residence time** (the mean time a chemical species spends in the reactor, symbol: tau), **conversion** (how much of the limiting species gets converted into products, symbol: chi), **temperature**, and **pressure**. The other important thing to note, is that we initially didn't know if an isothermal (constant temp) or isobaric (constant pressure) model was going to work. So we had to try out both.
 
-## Reaction_Chemistry
+### Reaction_Chemistry
 
 First, we need to know what chemical species are reacting, and how much. So we look at the reaction chemistry. 
 
 ![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/reaction_chemistry.png)
+
+The **rate constant** is a constant that tells you how fast a particular reaction will happen, for a given concentration of reactants. 
 
 # Nomenclature
 
