@@ -39,11 +39,16 @@ Read in the Nomenclature section for [Supercritical Fluids](#supercritical_fluid
 
 The following is going to be a bit hard to follow, whats important to know is **the end goal is to produce a set of graphs**. These graphs are going be be **functions of the residence time** (the mean time a chemical species spends in the reactor, symbol: tau), **conversion** (how much of the limiting species gets converted into products, symbol: chi), **temperature**, and **pressure**. The other important thing to note, is that we initially didn't know if an isothermal (constant temp) or isobaric (constant pressure) model was going to work. So we had to try out both, you will see this in the code.
 
-### Reaction_Chemistry
+## Reaction_Chemistry
 
 First, we need to know what chemical species are reacting, and how much. So we look at the reaction chemistry. 
 
 ![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/reaction_chemistry.png)
+
+## Chemical_Kinetics
+Chemical kinetics, simply means "how fast is this reaction happening?" i.e. how much will the concentration of a species change per second?. To determine this, we must first look at the rate constant. 
+
+### Rate constant
 
 The **rate constant** is a constant that tells you how fast a particular reaction will happen, for a given concentration of reactants. The rate constant is a function of temperature, because at higher tempertures we get more chemical collisions and a higher concentration of species with enough energy to react upon a collision.
 
@@ -94,6 +99,31 @@ function k = get_isothermal_rate_constant(reaction, T, P)
         otherwise
             k = NaN;
             disp("ERROR: get_isothermal_rate_constant(): invalid reaction option")
+    end
+end
+```
+
+### Reaction Rate
+
+Once we have the rate constants, we can calculate the reaction rate. 
+
+[get_reaction_rate](https://github.com/wesleyZero/capstone_II/blob/main/reactor_fxns.m#L207)
+```matlab
+function r = get_reaction_rate(C, reaction, T, P, opt)
+    % input:
+    %   opt = 'isothermal' or 'isobaric'
+
+    k = get_rate_constant(reaction, T, P, opt);
+    switch reaction
+        case '2f'
+            r = k * (C.ethylene_carbonate)^0.8;
+        case '2r'
+            r = k * C.dimethyl_carbonate * C.ethylene_carbonate;
+        case '3'
+            r = k * C.ethylene_carbonate;
+        otherwise
+            r = NaN;
+            disp("ERROR: get_reaction_rate(): invalid reaction option")
     end
 end
 ```
