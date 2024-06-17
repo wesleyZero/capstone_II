@@ -21,14 +21,14 @@ We (my capstone group) performed a detailed techno-economic analysis and design 
 
 You start off with a process flow diagram, this process flow diagram shows all processes that are included in the chemical processing plant that we are designing.
 
-# Process_Flow_Diagram 
+## Process_Flow_Diagram 
 
 ![Process Flow Diagram](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/process_flow_diagram.jpeg)
 
 
 **You can see above** all of the unit opererations (reactors, separators, distillation towers, etc.) This readme will only be focusing on the reactor near the top center-left of the diagram. Why? Well, in short chemical separations involve lots of "fudge factors" i.e. correlation factors and empirical models that account for the differences between simulation and reality. With a separation process this complex, it's not very useful to simulate the entire separation since the amount of error that will accumulate throughout the process is so large that it's neccessary to employ professional process simulation software like the one we used (Aspen HYSYS). Even the process simulation software has a large degree of error and requires a very educated chemical engineer to use correctly, and _even then_ there will be error.
 
-# Reactor_Model
+## Reactor_Model
 
 We need a mathematical model for the reactor. The reactor we are using for this process is called a CSTR (constantly stirred tank reactor). It's kinda like if you imagine a witch brewing an evil potion or something like that 🧙‍♂️, however there are pipes that are flowing in and out of the brew constantly flowing reactants in and products out, there are lots of differential equations and in this particular case some of the reactants are super critical fluids! Simple right?!
 
@@ -37,6 +37,12 @@ We need a mathematical model for the reactor. The reactor we are using for this 
 Read in the Nomenclature section for [Supercritical Fluids](#supercritical_fluids) to learn what this is, if you don't know!
 
 The following is going to be a bit hard to follow, whats important to know is **the end goal is to produce a set of graphs**. These graphs are going be be **functions of the residence time** (the mean time a chemical species spends in the reactor, symbol: tau), **conversion** (how much of the limiting species gets converted into products, symbol: chi), **temperature**, and **pressure**. 
+
+## Reaction_Chemistry
+
+First, we need to know what chemical species are reacting, and how much. So we look at the reaction chemistry. 
+
+[](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/reaction_chemistry.png)
 
 # Nomenclature
 
