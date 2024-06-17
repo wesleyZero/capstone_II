@@ -27,7 +27,7 @@ You start off with a process flow diagram, this process flow diagram shows all p
 ![Process Flow Diagram](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/process_flow_diagram.jpeg)
 
 
-**You can see above** all of the unit opererations (reactors, separators, distillation towers, etc.) This readme will only be focusing on the reactor near the top center-left of the diagram. Why? Well, in short chemical separations involve lots of "fudge factors" i.e. correlation factors and empirical models that account for the differences between simulation and reality. With a separation process this complex, it's not very useful to simulate the entire separation since the amount of error that will accumulate throughout the process is so large that it's neccessary to employ professional process simulation software like the one we used (Aspen HYSYS). Even the process simulation software has a large degree of error and requires a very educated chemical engineer to use correctly, and _even then_ there will be error.
+**You can see above** all of the unit opererations (reactors, separators, distillation towers, etc.). **This readme will only be focusing on the reactor** near the top center-left of the diagram. **Why?** Well, in short chemical separations involve lots of "fudge factors" i.e. correlation factors and empirical models that account for the differences between simulation and reality. With a separation process this complex, it's not very useful to simulate the entire separation since the amount of error that will accumulate throughout the process is so large that it's neccessary to employ professional process simulation software like the one we used (Aspen HYSYS). Even the process simulation software has a large degree of error and requires a very educated chemical engineer to use correctly, and _even then_ there will be error.
 
 ## Reactor_Model
 
@@ -37,7 +37,7 @@ We need a mathematical model for the reactor. The reactor we are using for this 
 
 Read in the Nomenclature section for [Supercritical Fluids](#supercritical_fluids) to learn what this is, if you don't know!
 
-The following is going to be a bit hard to follow, whats important to know is **the end goal is to produce a set of graphs**. These graphs are going be be **functions of the residence time** (the mean time a chemical species spends in the reactor, symbol: tau), **conversion** (how much of the limiting species gets converted into products, symbol: chi), **temperature**, and **pressure**. The other important thing to note, is that we initially didn't know if an isothermal (constant temp) or isobaric (constant pressure) model was going to work. So we had to try out both.
+The following is going to be a bit hard to follow, whats important to know is **the end goal is to produce a set of graphs**. These graphs are going be be **functions of the residence time** (the mean time a chemical species spends in the reactor, symbol: tau), **conversion** (how much of the limiting species gets converted into products, symbol: chi), **temperature**, and **pressure**. The other important thing to note, is that we initially didn't know if an isothermal (constant temp) or isobaric (constant pressure) model was going to work. So we had to try out both, you will see this in the code.
 
 ### Reaction_Chemistry
 
@@ -45,7 +45,58 @@ First, we need to know what chemical species are reacting, and how much. So we l
 
 ![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/reaction_chemistry.png)
 
-The **rate constant** is a constant that tells you how fast a particular reaction will happen, for a given concentration of reactants. 
+The **rate constant** is a constant that tells you how fast a particular reaction will happen, for a given concentration of reactants. The rate constant is a function of temperature, because at higher tempertures we get more chemical collisions and a higher concentration of species with enough energy to react upon a collision.
+
+[get_isobaric_rate_constant](https://github.com/wesleyZero/capstone_II/blob/main/reactor_fxns.m#L323)
+```matlab
+function k = get_isobaric_rate_constant(reaction, T)
+    % input: 
+    %   T [ C ]
+    % output:
+    %   k [mol / L s ]
+
+    const = get_constants();
+    thermo = const.thermo;
+    T = const.units.temperature.c_to_k(T); % [ K ]
+
+    switch reaction
+        case '2f'
+            k = 6.69 * 10^2 * exp(-37200 / (thermo.R * T));
+        case '2r'
+            k = 1.19 * 10^4 * exp(-53700 / (thermo.R * T));
+        case '3'
+            k = 1.89 * 10^6 * exp(-82400 / (thermo.R * T));
+        otherwise
+            k = NaN;
+            disp("ERROR: get_isobaric_rate_constant(): invalid reaction option");
+    end
+end
+```
+
+[get_isothermal_rate_constant](https://github.com/wesleyZero/capstone_II/blob/main/reactor_fxns.m#L346)
+```matlab
+function k = get_isothermal_rate_constant(reaction, T, P)
+    % input:
+    %   P [ bar ]
+    % These functions are from the research paper
+    rho = get_supercritical_c02_density(T, P, 'isothermal');
+    switch reaction
+        case '2f'
+            if rho > 246.82 % [g / L]
+                k = (2.486 * 10^(-2)) - (4.943 * (10^(-5)) * rho);
+            else
+                k = (1.362 * 10^(-2)) - (1.569 * (10^(-6)) * rho);
+            end
+        case '2r'
+            k = 0.01486 * rho^(-0.873);
+        case '3'
+            k = 3.014 * (10^(-4)) * exp(-5.99 * (10^(-3)) * rho);
+        otherwise
+            k = NaN;
+            disp("ERROR: get_isothermal_rate_constant(): invalid reaction option")
+    end
+end
+```
 
 # Nomenclature
 
