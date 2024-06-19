@@ -46,15 +46,18 @@ rough draft of logic flow
 
 ## Reactor Model
 
-We need a mathematical model for the reactor. The reactor we are using for this process is called a CSTR (constantly stirred tank reactor). It's kinda like if you imagine a witch brewing an evil potion or something like that 🧙‍♂️, however there are pipes that are flowing in and out of the brew constantly flowing reactants in and products out, there are lots of differential equations and in this particular case some of the reactants are super critical fluids! Simple right?!
+We need a mathematical model for the reactor. The reactor we are using for this process is called a CSTR (constantly stirred tank reactor). It's kinda like if you imagine a witch brewing an evil potion or something like that 🧙‍♂️, however there are pipes that are flowing in and out of the brew constantly flowing reactants in and products out, there are lots of differential equations, and in this particular case some of the reactants are super critical fluids! Simple right?!
 
 ### Overview of how the simulation will work
 
-The end goal of this simulation is to answer a few questions. 
+**The end goal of this simulation is to answer just a few questions.** 
 - What size of a reactor are we going to use?
-- Are we going to operate the reactor isothermally? or isobarically 
+- Are we going to operate the reactor isothermally? or isobarically? (i.e. at constant temp or pressure?)
+     -If isothermal, what pressure are we going to operate at? (note: we were only allowed one isothermal temperature)
+     -If isobaric, what temperature are we going to operate at? (note: we were only allowed one isobaric pressure to operate at)
+- What is the economic value of the reactor that we designed? how do we choose conditions to optimize the economics of the process?
 
-
+**How will we answer these questions?**
 - Look at the reaction chemistry (what reactions can occur?, what species are involved?)
 - Evaluate the chemical kinetics (given a set of conditions, how much of each reaction will occur?)
 - 
