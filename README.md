@@ -18,20 +18,46 @@ This description and readme is a _massive_ simplification of our chemical engine
 
 We (my capstone group) performed a detailed techno-economic analysis and design for a proposed 100 kiloton per year (kta) plant producing polymer-grade Dimethyl Carbonate (DMC) for optical applications. Our economic analysis included (but is certainly not limited to) calculations of net present value (NPV), internal rate of return (IRR), total capital investment (TCI), energy consumption, carbon emissions, hazard ananylsis, and _much_ more. Those details will be ommitted in this readme since the focus of the following will be the code. 
 
-# How_do_you_simulate_a_chemical_process?
+# How do you simulate a chemical reactor?
 
 You start off with a process flow diagram, this process flow diagram shows all processes that are included in the chemical processing plant that we are designing.
 
-## Process_Flow_Diagram 
+rough draft of logic flow
+
+-process flow diagram
+-reactor model
+   -overall idea
+-reaction chemistry
+-chemical kinetics 
+   -rate constant
+   -concentration
+      -flowrate
+-basis to plant scaling 
+-
+
+
+
+## Process Flow Diagram 
 
 ![Process Flow Diagram](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/process_flow_diagram.jpeg)
 
 
 **You can see above** all of the unit opererations (reactors, separators, distillation towers, etc.). **This readme will only be focusing on the reactor** near the top center-left of the diagram. **Why?** Well, in short chemical separations involve lots of "fudge factors" i.e. correlation factors and empirical models that account for the differences between simulation and reality. With a separation process this complex, it's not very useful to simulate the entire separation since the amount of error that will accumulate throughout the process is so large that it's neccessary to employ professional process simulation software like the one we used (Aspen HYSYS). Even the process simulation software has a large degree of error and requires a very educated chemical engineer to use correctly, and _even then_ there will be error.
 
-## Reactor_Model
+## Reactor Model
 
 We need a mathematical model for the reactor. The reactor we are using for this process is called a CSTR (constantly stirred tank reactor). It's kinda like if you imagine a witch brewing an evil potion or something like that 🧙‍♂️, however there are pipes that are flowing in and out of the brew constantly flowing reactants in and products out, there are lots of differential equations and in this particular case some of the reactants are super critical fluids! Simple right?!
+
+### Overview of how the simulation will work
+
+The end goal of this simulation is to answer a few questions. 
+- What size of a reactor are we going to use?
+- Are we going to operate the reactor isothermally? or isobarically 
+
+
+- Look at the reaction chemistry (what reactions can occur?, what species are involved?)
+- Evaluate the chemical kinetics (given a set of conditions, how much of each reaction will occur?)
+- 
 
 **But Wes...What the heck is a super-critical fluid?**
 
@@ -39,13 +65,13 @@ Read in the Nomenclature section for [Supercritical Fluids](#supercritical_fluid
 
 The following is going to be a bit hard to follow, whats important to know is **the end goal is to produce a set of graphs**. These graphs are going be be **functions of the residence time** (the mean time a chemical species spends in the reactor, symbol: tau), **conversion** (how much of the limiting species gets converted into products, symbol: chi), **temperature**, and **pressure**. The other important thing to note, is that we initially didn't know if an isothermal (constant temp) or isobaric (constant pressure) model was going to work. So we had to try out both, you will see this in the code.
 
-## Reaction_Chemistry
+## Reaction Chemistry
 
 First, we need to know what chemical species are reacting, and how much. So we look at the reaction chemistry. 
 
 ![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/reaction_chemistry.png)
 
-## Chemical_Kinetics
+## Chemical Kinetics
 Chemical kinetics, simply means "how fast is this reaction happening?" i.e. how much will the concentration of a species change per second?. To determine this, we must first look at the rate constant. 
 
 ### Rate constant
