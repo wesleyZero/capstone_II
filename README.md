@@ -52,8 +52,8 @@ You start off with a process flow diagram, this process flow diagram shows all p
 **The end goal of this simulation is to answer just a few questions.** 
 - What size of a reactor are we going to use?
 - Are we going to operate the reactor isothermally? or isobarically? (i.e. at constant temp or pressure?)
-     -If isothermal, what pressure are we going to operate at? (note: we were only allowed one isothermal temperature)
-     -If isobaric, what temperature are we going to operate at? (note: we were only allowed one isobaric pressure to operate at)
+     - If isothermal, what pressure are we going to operate at? (note: we were only allowed one isothermal temperature)
+     - If isobaric, what temperature are we going to operate at? (note: we were only allowed one isobaric pressure to operate at)
 - What is the economic value of the reactor that we designed? how do we choose conditions to optimize the economics of the process?
 
 **How will we answer these questions?**
