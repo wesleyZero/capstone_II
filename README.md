@@ -59,15 +59,18 @@ You start off with a process flow diagram, this process flow diagram shows all p
 **How will we answer these questions?**
 - Look at the reaction chemistry (what reactions can occur?, what species are involved?)
 - Evaluate the chemical kinetics (given a set of conditions, how much of each reaction will occur?)
+  
+Whats important to know is **the end goal is to produce a set of graphs**. These graphs are going be be **functions of the residence time** (the mean time a chemical species spends in the reactor, symbol: tau), **conversion** (how much of the limiting species gets converted into products, symbol: chi), **temperature**, and **pressure**. The other important thing to note, is that we initially didn't know if an isothermal (constant temp) or isobaric (constant pressure) model was going to work. So we had to try out both, you will see this in the code.
+
 
 ## Reactor Model
-
 We need a mathematical model for the reactor. The reactor we are using for this process is called a CSTR (constantly stirred tank reactor). It's kinda like if you imagine a witch brewing an evil potion or something like that 🧙‍♂️, however there are pipes that are flowing in and out of the brew constantly flowing reactants in and products out, there are lots of differential equations, and in this particular case some of the reactants are super critical fluids! Simple right?!
+
 **But Wes...What the heck is a super-critical fluid?**
 
 Read in the Nomenclature section for [Supercritical Fluids](#supercritical_fluids) to learn what this is, if you don't know!
 
-The following is going to be a bit hard to follow, whats important to know is **the end goal is to produce a set of graphs**. These graphs are going be be **functions of the residence time** (the mean time a chemical species spends in the reactor, symbol: tau), **conversion** (how much of the limiting species gets converted into products, symbol: chi), **temperature**, and **pressure**. The other important thing to note, is that we initially didn't know if an isothermal (constant temp) or isobaric (constant pressure) model was going to work. So we had to try out both, you will see this in the code.
+The following is going to be a bit hard to follow,
 
 ## The primary Functions
 [level3_flowrates](https://github.com/wesleyZero/capstone_II/blob/main/run_dmc.m#L198)
