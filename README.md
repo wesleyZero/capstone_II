@@ -32,22 +32,8 @@ This description and readme is a _massive_ simplification of our chemical engine
 
 We (my capstone group) performed a detailed techno-economic analysis and design for a proposed 100 kiloton per year (kta) plant producing polymer-grade Dimethyl Carbonate (DMC) for optical applications. Our economic analysis included (but is certainly not limited to) calculations of net present value (NPV), internal rate of return (IRR), total capital investment (TCI), energy consumption, carbon emissions, hazard ananylsis, and _much_ more. Those details will be ommitted in this readme since the focus of the following will be the code. 
 
-# How do you simulate a chemical reactor?
 
-You start off with a process flow diagram, this process flow diagram shows all processes that are included in the chemical processing plant that we are designing.
-
-
-
-## Process Flow Diagram 
-
-![Process Flow Diagram](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/process_flow_diagram.jpeg)
-
-
-**You can see above** all of the unit opererations (reactors, separators, distillation towers, etc.). **This readme will only be focusing on the reactor** near the top center-left of the diagram. **Why?** Well, in short chemical separations involve lots of "fudge factors" i.e. correlation factors and empirical models that account for the differences between simulation and reality. With a separation process this complex, it's not very useful to simulate the entire separation since the amount of error that will accumulate throughout the process is so large that it's neccessary to employ professional process simulation software like the one we used (Aspen HYSYS). Even the process simulation software has a large degree of error and requires a very educated chemical engineer to use correctly, and _even then_ there will be error.
-
-![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/reactor.png)
-
-### Overview of how the simulation will work
+# Overview of how the simulation will work
 
 **The end goal of this simulation is to answer just a few questions.** 
 - What size of a reactor are we going to use?
@@ -60,19 +46,24 @@ You start off with a process flow diagram, this process flow diagram shows all p
 - Look at the reaction chemistry (what reactions can occur?, what species are involved?)
 - Evaluate the chemical kinetics (given a set of conditions, how much of each reaction will occur?)
   
-Whats important to know is **the end goal is to produce a set of graphs**. These graphs are going be be **functions of the residence time** (the mean time a chemical species spends in the reactor, symbol: tau), **conversion** (how much of the limiting species gets converted into products, symbol: chi), **temperature**, and **pressure**. The other important thing to note, is that we initially didn't know if an isothermal (constant temp) or isobaric (constant pressure) model was going to work. So we had to try out both, you will see this in the code.
+Whats important to know is **the end goal is to produce a set of graphs**. These graphs are going be be **functions of the residence time** (the mean time a chemical species spends in the reactor, which is proportional to the reactor volume, symbol: tau), **conversion** (how much of the limiting species gets converted into products, symbol: chi), **temperature**, and **pressure**. The other important thing to note, is that we initially didn't know if an isothermal (constant temp) or isobaric (constant pressure) model was going to work. So we had to try out both, you will see this in the code.
+
+# How do you simulate a chemical reactor?
+
+You start off with a process flow diagram, this process flow diagram shows all processes that are included in the chemical processing plant that we are designing.
+
+## Process Flow Diagram 
+
+![Process Flow Diagram](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/process_flow_diagram.jpeg)
 
 
-## Reactor Model
-We need a mathematical model for the reactor. The reactor we are using for this process is called a CSTR (constantly stirred tank reactor). It's kinda like if you imagine a witch brewing an evil potion or something like that 🧙‍♂️, however there are pipes that are flowing in and out of the brew constantly flowing reactants in and products out, there are lots of differential equations, and in this particular case some of the reactants are super critical fluids! Simple right?!
+**You can see above** all of the unit opererations (reactors, separators, distillation towers, etc.). **This readme will only be focusing on the reactor** near the top center-left of the diagram. **Why?** Well, in short chemical separations involve lots of "fudge factors" i.e. correlation factors and empirical models that account for the differences between simulation and reality. With a separation process this complex, it's not very useful to simulate the entire separation since the amount of error that will accumulate throughout the process is so large that it's neccessary to employ professional process simulation software like the one we used (Aspen HYSYS). Even the process simulation software has a large degree of error and requires a very educated chemical engineer to use correctly, and _even then_ there will be error.
 
-**But Wes...What the heck is a super-critical fluid?**
+![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/reactor.png)
 
-Read in the Nomenclature section for [Supercritical Fluids](#supercritical_fluids) to learn what this is, if you don't know!
+The reactor we are using for this process is called a CSTR (constantly stirred tank reactor). It's kinda like if you imagine a witch brewing an evil potion or something like that 🧙‍♂️, however there are pipes that are flowing in and out of the brew constantly flowing reactants in and products out, there are lots of differential equations (which turn algebraic at steady state), and in this particular case some of the reactants are super critical fluids! Simple right?! **But Wes...What the heck is a super-critical fluid?** Read here [Supercritical Fluids](#supercritical_fluids) to learn what this is, if you wanna know! If you don't care what a supercritical fluid is, just know that it has variable density and that changes the concentration and reaction rate of everything in the reactor
 
-The following is going to be a bit hard to follow,
-
-## The primary Functions
+## The primary Functions (the higher level logic)
 [level3_flowrates](https://github.com/wesleyZero/capstone_II/blob/main/run_dmc.m#L198)
 ```matlab
 function [F_fresh, F_rxtr, F_out, R, V_rxtr] = level3_flowrates(tau, temp, P, opt)
