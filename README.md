@@ -59,6 +59,10 @@ You start off with a process flow diagram, this process flow diagram shows all p
 
 ![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/reactor.png)
 
+<p align="center">
+  <img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/reactor.png" alt="CSTR Reactor" width="400">
+</p>
+
 The reactor we are using for this process is called a CSTR (constantly stirred tank reactor). It's kinda like if you imagine a witch brewing an evil potion or something like that 🧙‍♂️, however there are pipes that are flowing in and out of the brew constantly flowing reactants in and products out, there are lots of differential equations (which turn algebraic at steady state), and in this particular case some of the reactants are super critical fluids! Simple right?! **But Wes...What the heck is a super-critical fluid?** Read here [Supercritical Fluids](#supercritical_fluids) to learn what this is, if you wanna know! If you don't care what a supercritical fluid is, just know that it has variable density and that changes the concentration and reaction rate of everything in the reactor
 
 ## The primary Functions (the higher level logic)
