@@ -57,10 +57,8 @@ You start off with a process flow diagram, this process flow diagram shows all p
 
 **You can see above** all of the unit opererations (reactors, separators, distillation towers, etc.). **This readme will only be focusing on the reactor** near the top center-left of the diagram. **Why?** Well, in short chemical separations involve lots of "fudge factors" i.e. correlation factors and empirical models that account for the differences between simulation and reality. With a separation process this complex, it's not very useful to simulate the entire separation since the amount of error that will accumulate throughout the process is so large that it's neccessary to employ professional process simulation software like the one we used (Aspen HYSYS). Even the process simulation software has a large degree of error and requires a very educated chemical engineer to use correctly, and _even then_ there will be error.
 
-![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/reactor.png)
-
 <p align="center">
-  <img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/reactor.png" alt="CSTR Reactor" width="400">
+  <img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/reactor.png" alt="CSTR Reactor">
 </p>
 
 The reactor we are using for this process is called a CSTR (constantly stirred tank reactor). It's kinda like if you imagine a witch brewing an evil potion or something like that 🧙‍♂️, however there are pipes that are flowing in and out of the brew constantly flowing reactants in and products out, there are lots of differential equations (which turn algebraic at steady state), and in this particular case some of the reactants are super critical fluids! Simple right?! **But Wes...What the heck is a super-critical fluid?** Read here [Supercritical Fluids](#supercritical_fluids) to learn what this is, if you wanna know! If you don't care what a supercritical fluid is, just know that it has variable density and that changes the concentration and reaction rate of everything in the reactor
@@ -128,8 +126,13 @@ First, we need to know what chemical species are reacting, and how much. So we l
 ## Chemical Kinetics
 Chemical kinetics, simply means "how fast is this reaction happening?" i.e. how much will the concentration of a species change per second?. The equations below are how we mathematically determine the reaction rate. The first reaction is assumed to be instantaneous. To determine this, we must first look at the rate constant. 
 
-![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/kinetics_2.png)
-![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/kinetics_3.png)
+<p align="center">
+  <img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/kinetics_2.png">
+</p>
+
+<p align="center">
+  <img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/kinetics_3.png">
+</p>
 
 ### Rate constant
 
