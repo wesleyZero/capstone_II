@@ -69,7 +69,7 @@ Read in the Nomenclature section for [Supercritical Fluids](#supercritical_fluid
 
 The following is going to be a bit hard to follow, whats important to know is **the end goal is to produce a set of graphs**. These graphs are going be be **functions of the residence time** (the mean time a chemical species spends in the reactor, symbol: tau), **conversion** (how much of the limiting species gets converted into products, symbol: chi), **temperature**, and **pressure**. The other important thing to note, is that we initially didn't know if an isothermal (constant temp) or isobaric (constant pressure) model was going to work. So we had to try out both, you will see this in the code.
 
-## The primary Function 
+## The primary Functions
 [level3_flowrates](https://github.com/wesleyZero/capstone_II/blob/main/run_dmc.m#L198)
 ```matlab
 function [F_fresh, F_rxtr, F_out, R, V_rxtr] = level3_flowrates(tau, temp, P, opt)
@@ -85,9 +85,43 @@ function [F_fresh, F_rxtr, F_out, R, V_rxtr] = level3_flowrates(tau, temp, P, op
 end
 ```
 
-This is the core function (the root of the call stack) as far as you are concerned to keep things simple. What we are going to do is call this function for a bunch of different **residence times (tau)** and conditions (T, P, isobaric/isothermal). We will plot the outputs of this and evaluate the economics of this functions outputs to create the graphs and find answers to the questions we want to answer. 
+This is the core function (the root of the call stack) as far as you are concerned to keep things simple. What we are going to do is call this function for a bunch of different **residence times (tau)** and conditions (T, P, isobaric/isothermal). We will plot the outputs of this and evaluate the economics of this functions outputs to create the graphs and find answers to the questions we want to answer. **Important note about residence time:** For a given flowrate, the residence time is proportional to the volume of the reactor. We create functions of residence time though because it's an intrinsic property of the system, and we want our calculations to be arbitrarily scalable. 
 
-**Important note about residence time:** For a given flowrate, the residence time is proportional to the volume of the reactor. We create functions of residence time though because it's an intrinsic property of the system, and we want our calculations to be arbitrarily scalable. 
+[get_reactor_flows](https://github.com/wesleyZero/capstone_II/blob/main/reactor_fxns.m#L9)
+```matlab
+function [F_fresh, F_real_feed, F_real_eff, R, V_rxtr] = get_reactor_flows(F_real_feed_basis, T, P, opt, tau)
+    F_fresh = NaN; F_real_feed = NaN; F_real_eff = NaN; R = NaN;
+    % basis calculations for the real reactor 
+    q_tot.basis = get_total_volumetric_flowrate(F_real_feed_basis, T, P, opt);
+    V_rxtr.basis = q_tot.basis * tau;
+    C_out = get_reactor_effluent_concentrations(F_real_feed_basis, T, P, opt, tau);
+
+    if any(imag(C_out) ~= 0)
+        % disp('ERROR : Complex valued concentrations');
+        return 
+    elseif any(real(C_out) < 0)
+        % disp('ERROR : Negative valued concentrations');
+        return
+    else
+        % disp('Valid solution!!!!!!!!!!')
+        C_out = get_concentration_struct(C_out);
+    end
+
+    F_real_eff_basis = conc_to_flowrate(C_out, q_tot.basis);
+        % assumption : liquid flow has no change in vol in effluent 
+
+    % Plant Scale Calculations 
+    [F_fresh, F_real_feed, F_real_eff, R] = get_plant_flowrates(F_real_feed_basis, F_real_eff_basis);
+    scale_factor = get_scale_factor(F_real_eff_basis);
+    V_rxtr.plant = V_rxtr.basis * scale_factor ; 
+
+    V_rxtr = V_rxtr.plant;
+
+end
+```
+
+This function (called by the one before) is also a core part of the logic. We start out with a **basis** for our calculations, very analogous to a vector that can be scaled. Our basis contains the intrinsic information about our feed composition. It's of an abiturary size, since we will scale it at the end to satisfy the requirements of how much product we need to generate. 
+
 
 ## Reaction Chemistry
 
