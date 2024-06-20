@@ -24,9 +24,7 @@ We (my capstone group) performed a detailed techno-economic analysis and design 
 
 You start off with a process flow diagram, this process flow diagram shows all processes that are included in the chemical processing plant that we are designing.
 
-rough draft of logic flow
-
-
+**rough draft of logic flow**
 - overall idea
 - process flow diagram (The big picture)
 - zoom in of reactor (the focus)
@@ -70,6 +68,22 @@ We need a mathematical model for the reactor. The reactor we are using for this 
 Read in the Nomenclature section for [Supercritical Fluids](#supercritical_fluids) to learn what this is, if you don't know!
 
 The following is going to be a bit hard to follow, whats important to know is **the end goal is to produce a set of graphs**. These graphs are going be be **functions of the residence time** (the mean time a chemical species spends in the reactor, symbol: tau), **conversion** (how much of the limiting species gets converted into products, symbol: chi), **temperature**, and **pressure**. The other important thing to note, is that we initially didn't know if an isothermal (constant temp) or isobaric (constant pressure) model was going to work. So we had to try out both, you will see this in the code.
+
+## The primary Function 
+![level3_flowrates](https://github.com/wesleyZero/capstone_II/blob/main/run_dmc.m#L198)
+```matlab
+function [F_fresh, F_rxtr, F_out, R, V_rxtr] = level3_flowrates(tau, temp, P, opt)
+    F_fresh = NaN; F_rxtr = NaN; F_out = NaN; R = NaN;
+    user = get_user_inputs(); 
+    flow_fxns = flowrate_fxns();
+    rxtr_fxns = reactor_fxns();
+
+    F_basis = flow_fxns.get_basis_feed_flowrates();
+    [F_fresh, F_rxtr, F_out, R, V_rxtr] = rxtr_fxns.get_reactor_flows(F_basis, temp, P, opt, tau);
+    
+
+end
+```
 
 ## Reaction Chemistry
 
