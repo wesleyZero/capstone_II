@@ -28,11 +28,7 @@
 
 
 ### Description
-This description and readme is a _massive_ simplification of our chemical engineering capstone for the intended audience of software engineers, with the entire emphasis being of how the code was written. For the full detailed report (with the intended audience of chemical engineers) please see the [PDF of our final Report](https://github.com/wesleyZero/capstone_II/blob/main/readme/pdf/capstone2_DMC.pdf).
-
-<a href="https://github.com/wesleyZero/capstone_II/blob/main/readme/pdf/capstone2_DMC.pdf" target="_blank">Go</a>
-
-We (my capstone group) performed a detailed techno-economic analysis and design for a proposed 100 kiloton per year (kta) plant producing polymer-grade Dimethyl Carbonate (DMC) for optical applications. Our economic analysis included (but is certainly not limited to) calculations of net present value (NPV), internal rate of return (IRR), total capital investment (TCI), energy consumption, carbon emissions, hazard ananylsis, and _much_ more. Those details will be ommitted in this readme since the focus of the following will be the code. 
+This description and readme is a _massive_ simplification of our chemical engineering capstone for the intended audience of software engineers, with the entire emphasis being of how the code was written. For the full detailed report (with the intended audience of chemical engineers) please see the [PDF of our final Report](https://github.com/wesleyZero/capstone_II/blob/main/readme/pdf/capstone2_DMC.pdf). We (my capstone group) performed a detailed techno-economic analysis and design for a proposed 100 kiloton per year (kta) plant producing polymer-grade Dimethyl Carbonate (DMC) for optical applications. Our economic analysis included (but is certainly not limited to) calculations of net present value (NPV), internal rate of return (IRR), total capital investment (TCI), energy consumption, carbon emissions, hazard ananylsis, and _much_ more. Those details will be ommitted in this readme since the focus of the following will be the code. 
 
 
 # Overview of the project
@@ -63,7 +59,10 @@ You start off with a process flow diagram, this process flow diagram shows all p
   <img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/reactor.png" alt="CSTR Reactor">
 </p>
 
-The reactor we are using for this process is called a CSTR (constantly stirred tank reactor). It's kinda like if you imagine a witch brewing an evil potion or something like that 🧙‍♂️, however there are pipes that are flowing in and out of the brew constantly flowing reactants in and products out, there are lots of differential equations (which turn algebraic at steady state), and in this particular case some of the reactants are super critical fluids! Simple right?! **But Wes...What the heck is a super-critical fluid?** Read here [Supercritical Fluids](#supercritical_fluids) to learn what this is, if you wanna know! If you don't care what a supercritical fluid is, just know that it has variable density and that changes the concentration and reaction rate of everything in the reactor
+The reactor we are using for this process is called a CSTR (constantly stirred tank reactor). It's kinda like if you imagine a witch brewing an evil potion or something like that 🧙‍♂️, however there are pipes that are flowing in and out of the brew constantly flowing reactants in and products out, there are lots of differential equations (which turn algebraic at steady state), and in this particular case some of the reactants are super critical fluids! Simple right?! **But Wes...What the heck is a super-critical fluid?** Read here <a href="https://github.com/wesleyZero/capstone_II/blob/main/README.md#supercritical_fluidsf" target="_blank">Supercritical Fluids</a> to learn what this is, if you wanna know! If you don't care what a supercritical fluid is, just know that it has variable density and that changes the concentration and reaction rate of everything in the reactor
+
+<a href="https://github.com/wesleyZero/capstone_II/blob/main/README.md#supercritical_fluidsf" target="_blank">Supercritical Fluids</a>
+
 
 ## The primary Functions (the higher level logic)
 [level3_flowrates](https://github.com/wesleyZero/capstone_II/blob/main/run_dmc.m#L198)
