@@ -1,6 +1,8 @@
 # Capstone II
 **UC Santa Barbara Chemical Engineering 2024**
 
+**This readme is under construction 🚧**
+
 ### Table of Contents 
 
  * [Description of the Project](#Description)
