@@ -238,6 +238,37 @@ function eqn = sys_of_eqns(C, params)
 end
 ```
 
+# How we answer the questions we initially wanted to answer
+
+**functions here are linked, but not shown directly because they are soo long** 
+
+we use all of those functions above, calling them many times for the [isothermal](https://github.com/wesleyZero/capstone_II/blob/main/run_dmc.m#L90-L196) case and the [isobaric](https://github.com/wesleyZero/capstone_II/blob/main/run_dmc.m#L212-L264) cases. Then we evaluate the economic value of these processes(at all tau, T, P) with the [NPV function](https://github.com/wesleyZero/capstone_II/blob/main/economic_fxns.m#L492-L686) to generate the plots we want, and answer the quesions that we want to answer. 
+
+![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/ReactorInlet.png)
+
+![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/SConversion.png)
+
+![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_F_effluent_74Bar.png)
+
+![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_F_rxtr_total74Bar.png)
+
+![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_NPV_all_pressures.png)
+
+![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_V_reactor.png)
+
+![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/separation_feed_composition.png)
+
+![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/total_reactor_feed.png)
+
+## If you are curious, here's a little more 
+
+To generate the plots below, we had to calulate the recycle stream flowrates. I did that in [this function here](https://github.com/wesleyZero/capstone_II/blob/main/reactor_fxns.m#L85-L111)
+
+![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/ReactorInlet.png)
+
+![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_recycle_74Bar.png)
+
+
 # Nomenclature
 
 ## Supercritical_fluids
