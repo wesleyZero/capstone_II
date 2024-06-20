@@ -46,7 +46,7 @@ You start off with a process flow diagram, this process flow diagram shows all p
 **You can see above** all of the unit opererations (reactors, separators, distillation towers, etc.). **This readme will only be focusing on the reactor** near the top center-left of the diagram. **Why?** Well, in short chemical separations involve lots of "fudge factors" i.e. correlation factors and empirical models that account for the differences between simulation and reality. With a separation process this complex, it's not very useful to simulate the entire separation since the amount of error that will accumulate throughout the process is so large that it's neccessary to employ professional process simulation software like the one we used (Aspen HYSYS). Even the process simulation software has a large degree of error and requires a very educated chemical engineer to use correctly, and _even then_ there will be error.
 
 <img src="https://raw.githubusercontent.com/wesleyZero/capstone_II/main/readme/img/reactor.png" width="100">
-
+![](https://raw.githubusercontent.com/wesleyZero/capstone_II/main/readme/img/reactor.png)
 
 ### Overview of how the simulation will work
 
