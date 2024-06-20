@@ -33,7 +33,7 @@ This description and readme is a _massive_ simplification of our chemical engine
 We (my capstone group) performed a detailed techno-economic analysis and design for a proposed 100 kiloton per year (kta) plant producing polymer-grade Dimethyl Carbonate (DMC) for optical applications. Our economic analysis included (but is certainly not limited to) calculations of net present value (NPV), internal rate of return (IRR), total capital investment (TCI), energy consumption, carbon emissions, hazard ananylsis, and _much_ more. Those details will be ommitted in this readme since the focus of the following will be the code. 
 
 
-# Overview of how the simulation will work
+# Overview of the project
 
 **The end goal of this simulation is to answer just a few questions.** 
 - What size of a reactor are we going to use?
@@ -48,14 +48,12 @@ We (my capstone group) performed a detailed techno-economic analysis and design 
   
 Whats important to know is **the end goal is to produce a set of graphs**. These graphs are going be be **functions of the residence time** (the mean time a chemical species spends in the reactor, which is proportional to the reactor volume, symbol: tau), **conversion** (how much of the limiting species gets converted into products, symbol: chi), **temperature**, and **pressure**. The other important thing to note, is that we initially didn't know if an isothermal (constant temp) or isobaric (constant pressure) model was going to work. So we had to try out both, you will see this in the code.
 
-# How do you simulate a chemical reactor?
+# So, How do you simulate a chemical reactor?
 
-You start off with a process flow diagram, this process flow diagram shows all processes that are included in the chemical processing plant that we are designing.
+You start off with a process flow diagram, this process flow diagram shows all processes that are included in the chemical processing plant that we are designing. It's good to have an idea of what the overall picture is. 
 
 ## Process Flow Diagram 
-
 ![Process Flow Diagram](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/process_flow_diagram.jpeg)
-
 
 **You can see above** all of the unit opererations (reactors, separators, distillation towers, etc.). **This readme will only be focusing on the reactor** near the top center-left of the diagram. **Why?** Well, in short chemical separations involve lots of "fudge factors" i.e. correlation factors and empirical models that account for the differences between simulation and reality. With a separation process this complex, it's not very useful to simulate the entire separation since the amount of error that will accumulate throughout the process is so large that it's neccessary to employ professional process simulation software like the one we used (Aspen HYSYS). Even the process simulation software has a large degree of error and requires a very educated chemical engineer to use correctly, and _even then_ there will be error.
 
@@ -206,6 +204,37 @@ function r = get_reaction_rate(C, reaction, T, P, opt)
             r = NaN;
             disp("ERROR: get_reaction_rate(): invalid reaction option")
     end
+end
+```
+
+### Solving the system of non-linear equations
+
+Now that we have the reaction rates we can use those reaction rates to solve a system of non-linear equations. This solution to this system will give us the concentrations coming out of the reactor. 
+
+[sys_of_eqns](https://github.com/wesleyZero/capstone_II/blob/main/reactor_fxns.m#L177)
+```matlab
+function eqn = sys_of_eqns(C, params)
+    T = params.T;
+    P = params.P;
+    opt = params.opt;
+    Ci0 = params.Ci0;
+    tau = params.tau;
+    C_struct = get_concentration_struct(C);
+    r = get_all_reaction_rates(C_struct, T, P, opt);
+
+    r.ec =  r.r2r - r.r2f - r.r3; 
+    r.meoh = (2 * r.r2r) - (2 * r.r2f) - r.r3;
+    r.co2 = r.r3;
+    r.dmc = r.r2f - r.r2r;
+    r.eg = r.r2f - r.r2r; 
+    r.me = r.r3; 
+
+    eqn(1) = Ci0.ethylene_carbonate - C(1) + (tau * r.ec);
+    eqn(2) = Ci0.methanol - C(3) + (tau * r.meoh);
+    eqn(3) = Ci0.carbon_dioxide - C(4) + (tau * r.co2);
+    eqn(4) = (-C(5)) + (tau * r.dmc); 
+    eqn(5) = (-C(2)) + (tau * r.eg);
+    eqn(6) = (-C(6)) + (tau * r.me);
 end
 ```
 
