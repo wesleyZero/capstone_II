@@ -24,16 +24,17 @@ You start off with a process flow diagram, this process flow diagram shows all p
 
 rough draft of logic flow
 
--process flow diagram
--reactor model
-   -overall idea
--reaction chemistry
--chemical kinetics 
-   -rate constant
-   -concentration
-      -flowrate
--basis to plant scaling 
--
+
+- overall idea
+- process flow diagram (The big picture)
+- zoom in of reactor (the focus)
+- the primary function (root caller, call structure) 
+- reaction chemistry
+- chemical kinetics 
+   - rate constant
+   - concentration
+      - flowrate
+   - basis to plant scaling 
 
 
 
