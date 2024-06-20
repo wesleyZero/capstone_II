@@ -133,7 +133,10 @@ First, we need to know what chemical species are reacting, and how much. So we l
 ![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/reaction_chemistry.png)
 
 ## Chemical Kinetics
-Chemical kinetics, simply means "how fast is this reaction happening?" i.e. how much will the concentration of a species change per second?. To determine this, we must first look at the rate constant. 
+Chemical kinetics, simply means "how fast is this reaction happening?" i.e. how much will the concentration of a species change per second?. The equations below are how we mathematically determine the reaction rate. The first reaction is assumed to be instantaneous. To determine this, we must first look at the rate constant. 
+
+![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/kinetics_2.png)
+![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/kinetics_3.png)
 
 ### Rate constant
 
