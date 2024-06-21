@@ -271,6 +271,26 @@ end
 
 we use all of those functions above, calling them many times for the [isothermal](https://github.com/wesleyZero/capstone_II/blob/main/run_dmc.m#L90-L196) case and the [isobaric](https://github.com/wesleyZero/capstone_II/blob/main/run_dmc.m#L212-L264) cases. Then we evaluate the economic value of these processes(at all tau, T, P) with the [NPV function](https://github.com/wesleyZero/capstone_II/blob/main/economic_fxns.m#L492-L686) to generate the plots we want, and answer the quesions that we want to answer. 
 
+<table>
+  <tr>
+    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/ReactorInlet.png" width="200px"><br><em>Caption 1</em></td>
+    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/SConversion.png" width="200px"><br><em>Caption 2</em></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_F_effluent_74Bar.png" width="200px"><br><em>Caption 3</em></td>
+    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_F_rxtr_total74Bar.png" width="200px"><br><em>Caption 4</em></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="image5.jpg" width="200px"><br><em>Caption 5</em></td>
+    <td align="center"><img src="image6.jpg" width="200px"><br><em>Caption 6</em></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="image7.jpg" width="200px"><br><em>Caption 7</em></td>
+    <td align="center"><img src="image8.jpg" width="200px"><br><em>Caption 8</em></td>
+  </tr>
+</table>
+
+
 ![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/ReactorInlet.png)
 
 ![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/SConversion.png)
