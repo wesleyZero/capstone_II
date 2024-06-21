@@ -274,23 +274,23 @@ we use all of those functions above, calling them many times for the [isothermal
 <table>
   <tr>
     <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/ReactorInlet.png" ><br><em>Flowrates going into the plant</em></td>
-    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/SConversion.png" ><br><em>How selective is our primary reaction compared to side products</em></td>
+    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/SConversion.png" ><br><em>How selective is our primary reaction compared to side reactions</em></td>
   </tr>
   <tr>
-    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_F_effluent_74Bar.png" ><br><em>Caption 3</em></td>
-    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_F_rxtr_total74Bar.png" ><br><em>Caption 4</em></td>
+    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_F_effluent_74Bar.png" ><br><em>Flowrates coming out of the reactor</em></td>
+    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_F_rxtr_total74Bar.png" ><br><em>Total flowrate going into the reactor</em></td>
   </tr>
   <tr>
-    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_NPV_all_pressures.png" ><br><em>Caption 5</em></td>
-    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_V_reactor.png"><br><em>Caption 6</em></td>
+    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_NPV_all_pressures.png" ><br><em>Econonmic value of different pressures</em></td>
+    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_V_reactor.png"><br><em>Reactor volumes at different pressures</em></td>
   </tr>
   <tr>
-    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/separation_feed_composition.png" ><br><em>Caption 7</em></td>
+    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/separation_feed_composition.png" ><br><em>Composition of whats going into our separation system</em></td>
     <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/total_reactor_feed.png"><br><em>Caption 8</em></td>
   </tr>
    <tr>
     <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/ReactorInlet.png" ><br><em>Caption 7</em></td>
-    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_recycle_74Bar.png"><br><em>Caption 8</em></td>
+    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_recycle_74Bar.png"><br><em>Flowrates of our recycle stream</em></td>
   </tr>
 </table>
 
