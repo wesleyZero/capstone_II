@@ -277,40 +277,22 @@ we use all of those functions above, calling them many times for the [isothermal
     <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/SConversion.png" ><br><em>Caption 2</em></td>
   </tr>
   <tr>
-    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_F_effluent_74Bar.png" width="200px"><br><em>Caption 3</em></td>
-    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_F_rxtr_total74Bar.png" width="200px"><br><em>Caption 4</em></td>
+    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_F_effluent_74Bar.png" ><br><em>Caption 3</em></td>
+    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_F_rxtr_total74Bar.png" ><br><em>Caption 4</em></td>
   </tr>
   <tr>
-    <td align="center"><img src="image5.jpg" width="200px"><br><em>Caption 5</em></td>
-    <td align="center"><img src="image6.jpg" width="200px"><br><em>Caption 6</em></td>
+    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_NPV_all_pressures.png" ><br><em>Caption 5</em></td>
+    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_V_reactor.png"><br><em>Caption 6</em></td>
   </tr>
   <tr>
-    <td align="center"><img src="image7.jpg" width="200px"><br><em>Caption 7</em></td>
-    <td align="center"><img src="image8.jpg" width="200px"><br><em>Caption 8</em></td>
+    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/separation_feed_composition.png" ><br><em>Caption 7</em></td>
+    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/total_reactor_feed.png"><br><em>Caption 8</em></td>
+  </tr>
+   <tr>
+    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/ReactorInlet.png" ><br><em>Caption 7</em></td>
+    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_recycle_74Bar.png"><br><em>Caption 8</em></td>
   </tr>
 </table>
-
-
-![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/ReactorInlet.png)
-
-![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/SConversion.png)
-
-![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_F_effluent_74Bar.png)
-
-![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_F_rxtr_total74Bar.png)
-
-![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_NPV_all_pressures.png)
-
-![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_V_reactor.png)
-
-![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/separation_feed_composition.png)
-
-![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/total_reactor_feed.png)
-
-![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/ReactorInlet.png)
-
-![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_recycle_74Bar.png)
-
 
 # Nomenclature
 
