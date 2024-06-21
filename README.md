@@ -35,7 +35,7 @@ This description and readme is a _massive_ simplification of our chemical engine
 - Look at the reaction chemistry (what reactions can occur?, what species are involved?)
 - Evaluate the chemical kinetics (given a set of conditions, how much of each reaction will occur?)
   
-Whats important to know is **the end goal is to produce a set of graphs**. These graphs are going be be **functions of the residence time** (the mean time a chemical species spends in the reactor, which is proportional to the reactor volume, symbol: tau), **conversion** (how much of the limiting species gets converted into products, $\chi$), **temperature**, and **pressure**. The other important thing to note, is that we initially didn't know if an isothermal (constant temp) or isobaric (constant pressure) model was going to work. So we had to try out both, you will see this in the code.
+Whats important to know is **the end goal is to produce a set of graphs**. These graphs are going be be **functions of the residence time** (the mean time a chemical species spends in the reactor, which is proportional to the reactor volume, $\tau$ ), **conversion** (how much of the limiting species gets converted into products, $\chi$ ), **temperature**, and **pressure**. The other important thing to note, is that we initially didn't know if an isothermal (constant temp) or isobaric (constant pressure) model was going to work. So we had to try out both, you will see this in the code.
 
 # So, How do you simulate a chemical reactor?
 
@@ -68,7 +68,7 @@ function [F_fresh, F_rxtr, F_out, R, V_rxtr] = level3_flowrates(tau, temp, P, op
 end
 ```
 
-This is the core function (the root of the call stack) as far as you are concerned to keep things simple. What we are going to do is call this function for a bunch of different **residence times (tau)** and conditions (T, P, isobaric/isothermal). We will plot the outputs of this and evaluate the economics of this functions outputs to create the graphs and find answers to the questions we want to answer. **Important note about residence time:** For a given flowrate, the residence time is proportional to the volume of the reactor. We create functions of residence time though because it's an intrinsic property of the system, and we want our calculations to be arbitrarily scalable. 
+This is the core function (the root of the call stack) as far as you are concerned to keep things simple. What we are going to do is call this function for a bunch of different **residence times ($\tau$)** and conditions (T, P, isobaric/isothermal). We will plot the outputs of this and evaluate the economics of this functions outputs to create the graphs and find answers to the questions we want to answer. **Important note about residence time:** For a given flowrate, the residence time is proportional to the volume of the reactor. We create functions of residence time though because it's an intrinsic property of the system, and we want our calculations to be arbitrarily scalable. 
 
 [get_reactor_flows](https://github.com/wesleyZero/capstone_II/blob/main/reactor_fxns.m#L9)
 ```matlab
@@ -103,7 +103,7 @@ function [F_fresh, F_real_feed, F_real_eff, R, V_rxtr] = get_reactor_flows(F_rea
 end
 ```
 
-This function (called by the one before) is also a core part of the logic. We start out with a **basis** for our calculations, very analogous to a vector that can be scaled. Our basis contains the intrinsic information about our feed composition. It's of an abiturary size, **since we will scale it at the end to satisfy the requirements of how much product we need to generate.** We turn the molar flowrate into a volumetric flowrate, using functions of density. This will change due to the supercritical fluid density changing. Then we can calculate the volume of the reactor and get the effluent (output) concentrations, by knowing how long reactions were allowed to take place (tau) and what the concentrations of all the species where at the provided temperature. We then make sure we have valid solution, scale it to make sure we are outputting 100 kta of DMC, and return the values we get. 
+This function (called by the one before) is also a core part of the logic. We start out with a **basis** for our calculations, very analogous to a vector that can be scaled. Our basis contains the intrinsic information about our feed composition. It's of an abiturary size, **since we will scale it at the end to satisfy the requirements of how much product we need to generate.** We turn the molar flowrate into a volumetric flowrate, using functions of density. This will change due to the supercritical fluid density changing. Then we can calculate the volume of the reactor and get the effluent (output) concentrations, by knowing how long reactions were allowed to take place ($\tau$) and what the concentrations of all the species where at the provided temperature. We then make sure we have valid solution, scale it to make sure we are outputting 100 kta of DMC, and return the values we get. 
 
 
 ## Reaction Chemistry
@@ -267,7 +267,7 @@ end
 
 **functions here are linked, but not shown directly because they are soo long** 
 
-we use all of those functions above, calling them many times for the [isothermal](https://github.com/wesleyZero/capstone_II/blob/main/run_dmc.m#L90-L196) case and the [isobaric](https://github.com/wesleyZero/capstone_II/blob/main/run_dmc.m#L212-L264) cases. Then we evaluate the economic value of these processes(at all tau, T, P) with the [NPV function](https://github.com/wesleyZero/capstone_II/blob/main/economic_fxns.m#L492-L686) to generate the plots we want, and answer the quesions that we want to answer. 
+we use all of those functions above, calling them many times for the [isothermal](https://github.com/wesleyZero/capstone_II/blob/main/run_dmc.m#L90-L196) case and the [isobaric](https://github.com/wesleyZero/capstone_II/blob/main/run_dmc.m#L212-L264) cases. Then we evaluate the economic value of these processes(at all $\tau$, T, P) with the [NPV function](https://github.com/wesleyZero/capstone_II/blob/main/economic_fxns.m#L492-L686) to generate the plots we want, and answer the quesions that we want to answer. 
 
 <table>
   <tr>
