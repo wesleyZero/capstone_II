@@ -258,7 +258,7 @@ we use all of those functions above, calling them many times for the [isothermal
 
 ![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/total_reactor_feed.png)
 
-## If you are curious, here's a little more 
+## The Recycle Stream 
 
 To generate the plots below, we had to calulate the recycle stream flowrates. I did that in [this function here](https://github.com/wesleyZero/capstone_II/blob/main/reactor_fxns.m#L85-L111)
 
