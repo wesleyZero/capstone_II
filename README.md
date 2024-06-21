@@ -273,8 +273,8 @@ we use all of those functions above, calling them many times for the [isothermal
 
 <table>
   <tr>
-    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/ReactorInlet.png" width="200px"><br><em>Caption 1</em></td>
-    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/SConversion.png" width="200px"><br><em>Caption 2</em></td>
+    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/ReactorInlet.png" ><br><em>Caption 1</em></td>
+    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/SConversion.png" ><br><em>Caption 2</em></td>
   </tr>
   <tr>
     <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_F_effluent_74Bar.png" width="200px"><br><em>Caption 3</em></td>
