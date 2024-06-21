@@ -15,7 +15,7 @@
        * [Rate Constant](https://github.com/wesleyZero/capstone_II?tab=readme-ov-file#rate-constant)
        * [Reaction Rate](https://github.com/wesleyZero/capstone_II?tab=readme-ov-file#reaction-rate)
     * [Solving the system of equations](https://github.com/wesleyZero/capstone_II?tab=readme-ov-file#solving-the-system-of-non-linear-equations)
-    * [How do we answer the questions that we initially wanted to asnwer?](https://github.com/wesleyZero/capstone_II?tab=readme-ov-file#how-we-answer-the-questions-we-initially-wanted-to-answer)
+    * [Generate Plots to Answer the Original Questions](https://github.com/wesleyZero/capstone_II?tab=readme-ov-file#genenate-plots-to-answer-the-original-questions)
     * [The recycle stream](https://github.com/wesleyZero/capstone_II?tab=readme-ov-file#the-recycle-stream)
  * [Nomenclature](#Nomenclature)
     * [Supercritical Fluids](#Supercritical_fluids)
@@ -236,6 +236,42 @@ function eqn = sys_of_eqns(C, params)
 end
 ```
 
+## The Recycle Stream 
+
+To recycle stream flowrate is one of the last things to calculate, know that we know the effluence concentrations and flowrates.
+
+[get_recycle_and_fresh_flowrates](https://github.com/wesleyZero/capstone_II/blob/main/reactor_fxns.m#L85-L111)
+```matlab
+function [F_fresh, R] = get_recycle_and_fresh_flowrates(F_virt_feed, F_real_effluent)
+    flow_fxns = flowrate_fxns();
+
+    % Initialize 
+    R = flow_fxns.get_blank_flowstream();
+    F_fresh = flow_fxns.get_blank_flowstream();
+
+    % Recycle flow
+    R.ethylene_carbonate.mol = F_real_effluent.ethylene_carbonate.mol;
+    R.methanol.mol = F_real_effluent.methanol.mol;
+    R.carbon_dioxide.mol = F_real_effluent.carbon_dioxide.mol;
+    R = flow_fxns.set_F_mol(R);
+
+    % Fresh feed flow 
+    F_fresh.ethylene_oxide.mol = F_virt_feed.ethylene_oxide.mol - R.ethylene_carbonate.mol;
+    F_fresh.methanol.mol = F_virt_feed.methanol.mol - R.methanol.mol;
+    F_fresh.carbon_dioxide.mol = F_virt_feed.carbon_dioxide.mol - R.carbon_dioxide.mol;
+    F_fresh = flow_fxns.set_F_mol(F_fresh);
+
+    % F_fresh.ethylene_oxide.mol = F_fresh.ethylene_carbonate.mol;
+    % F_fresh.ethylene_carbonate.mol = 0;
+		% EC should be turned back into EO because we need the feed into the virtual reactor
+		% ?? Look into more detail of the EO / EC and recycle stream because the
+		% VR really complicates things
+
+
+end
+```
+
+
 # Genenate Plots to Answer the Original Questions
 
 **functions here are linked, but not shown directly because they are soo long** 
@@ -257,10 +293,6 @@ we use all of those functions above, calling them many times for the [isothermal
 ![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/separation_feed_composition.png)
 
 ![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/total_reactor_feed.png)
-
-## The Recycle Stream 
-
-To generate the plots below, we had to calulate the recycle stream flowrates. I did that in [this function here](https://github.com/wesleyZero/capstone_II/blob/main/reactor_fxns.m#L85-L111)
 
 ![](https://github.com/wesleyZero/capstone_II/blob/main/readme/img/ReactorInlet.png)
 
