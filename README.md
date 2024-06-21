@@ -273,8 +273,8 @@ we use all of those functions above, calling them many times for the [isothermal
 
 <table>
   <tr>
-    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/ReactorInlet.png" ><br><em>Caption 1</em></td>
-    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/SConversion.png" ><br><em>Caption 2</em></td>
+    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/ReactorInlet.png" ><br><em>Flowrates going into the plant</em></td>
+    <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/SConversion.png" ><br><em>How selective is our primary reaction compared to side products</em></td>
   </tr>
   <tr>
     <td align="center"><img src="https://github.com/wesleyZero/capstone_II/blob/main/readme/img/isothermal_F_effluent_74Bar.png" ><br><em>Caption 3</em></td>
