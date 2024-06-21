@@ -261,13 +261,6 @@ function [F_fresh, R] = get_recycle_and_fresh_flowrates(F_virt_feed, F_real_effl
     F_fresh.carbon_dioxide.mol = F_virt_feed.carbon_dioxide.mol - R.carbon_dioxide.mol;
     F_fresh = flow_fxns.set_F_mol(F_fresh);
 
-    % F_fresh.ethylene_oxide.mol = F_fresh.ethylene_carbonate.mol;
-    % F_fresh.ethylene_carbonate.mol = 0;
-		% EC should be turned back into EO because we need the feed into the virtual reactor
-		% ?? Look into more detail of the EO / EC and recycle stream because the
-		% VR really complicates things
-
-
 end
 ```
 
