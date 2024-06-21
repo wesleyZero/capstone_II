@@ -16,7 +16,7 @@
        * [Reaction Rate](https://github.com/wesleyZero/capstone_II?tab=readme-ov-file#reaction-rate)
     * [Solving the system of equations](https://github.com/wesleyZero/capstone_II?tab=readme-ov-file#solving-the-system-of-non-linear-equations)
     * [How do we answer the questions that we initially wanted to asnwer?](https://github.com/wesleyZero/capstone_II?tab=readme-ov-file#how-we-answer-the-questions-we-initially-wanted-to-answer)
-    * [The recycle stream](https://github.com/wesleyZero/capstone_II?tab=readme-ov-file#if-you-are-curious-heres-a-little-more)
+    * [The recycle stream](https://github.com/wesleyZero/capstone_II?tab=readme-ov-file#the-recycle-stream)
  * [Nomenclature](#Nomenclature)
     * [Supercritical Fluids](#Supercritical_fluids)
  * [Links](#Links)
@@ -236,7 +236,7 @@ function eqn = sys_of_eqns(C, params)
 end
 ```
 
-# How we answer the questions we initially wanted to answer
+# Genenate Plots to Answer the Original Questions
 
 **functions here are linked, but not shown directly because they are soo long** 
 
