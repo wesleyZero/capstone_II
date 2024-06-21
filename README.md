@@ -3,9 +3,10 @@
 
 **This readme is under construction 🚧**
 
-### Table of Contents 
+## Table of Contents 
 
  * [Description of the Project](#Description)
+ * [Overview of the project](https://github.com/wesleyZero/capstone_II?tab=readme-ov-file#overview-of-the-project)
  * [How do you simulate a chemical process?](#How_do_you_simulate_a_chemical_process?)
     * [Process Flow Diagram](#Process_Flow_Diagram)
     * [Reactor Model](#Reactor_model)
@@ -14,22 +15,8 @@
     * [Supercritical Fluids](#Supercritical_fluids)
  * [Links](#Links)
 
-**rough draft of logic flow**
-- overall idea
-- process flow diagram (The big picture)
-- zoom in of reactor (the focus)
-- the primary function (root caller, call structure) 
-- reaction chemistry
-- chemical kinetics 
-   - rate constant
-   - concentration
-      - flowrate
-   - basis to plant scaling 
-
-
-### Description
+## Description
 This description and readme is a _massive_ simplification of our chemical engineering capstone for the intended audience of software engineers, with the entire emphasis being of how the code was written. For the full detailed report (with the intended audience of chemical engineers) please see the [PDF of our final Report](https://github.com/wesleyZero/capstone_II/blob/main/readme/pdf/capstone2_DMC.pdf). We (my capstone group) performed a detailed techno-economic analysis and design for a proposed 100 kiloton per year (kta) plant producing polymer-grade Dimethyl Carbonate (DMC) for optical applications. Our economic analysis included (but is certainly not limited to) calculations of net present value (NPV), internal rate of return (IRR), total capital investment (TCI), energy consumption, carbon emissions, hazard ananylsis, and _much_ more. Those details will be ommitted in this readme since the focus of the following will be the code. 
-
 
 # Overview of the project
 
