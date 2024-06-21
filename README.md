@@ -68,7 +68,11 @@ function [F_fresh, F_rxtr, F_out, R, V_rxtr] = level3_flowrates(tau, temp, P, op
 end
 ```
 
-This is the core function (the root of the call stack) as far as you are concerned to keep things simple. What we are going to do is call this function for a bunch of different **residence times ($\tau$)** and conditions (T, P, isobaric/isothermal). We will plot the outputs of this and evaluate the economics of this functions outputs to create the graphs and find answers to the questions we want to answer. **Important note about residence time:** For a given flowrate, the residence time is proportional to the volume of the reactor. We create functions of residence time though because it's an intrinsic property of the system, and we want our calculations to be arbitrarily scalable. 
+This is the core function (the root of the call stack) as far as you are concerned to keep things simple. What we are going to do is call this function for a bunch of different **residence times ($\tau$)** and conditions (T, P, isobaric/isothermal). We will plot the outputs of this and evaluate the economics of this functions outputs to create the graphs and find answers to the questions we want to answer. 
+
+**Important note about residence time $\tau$: For a given flowrate, the residence time is proportional to the volume of the reactor V, and also related to the conversion $\chi$**. Becauase the longer a chemical species spends in the reactor, the bigger it the reactor has to be, and the longer it spends in there, the more product will be generated.
+
+ We create functions of residence time though because it's an intrinsic property of the system, and we want our calculations to be arbitrarily scalable. 
 
 [get_reactor_flows](https://github.com/wesleyZero/capstone_II/blob/main/reactor_fxns.m#L9)
 ```matlab
