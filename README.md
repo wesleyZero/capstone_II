@@ -35,7 +35,7 @@ This description and readme is a _massive_ simplification of our chemical engine
 - Look at the reaction chemistry (what reactions can occur?, what species are involved?)
 - Evaluate the chemical kinetics (given a set of conditions, how much of each reaction will occur?)
   
-Whats important to know is **the end goal is to produce a set of graphs**. These graphs are going be be **functions of the residence time** (the mean time a chemical species spends in the reactor, which is proportional to the reactor volume, symbol: tau), **conversion** (how much of the limiting species gets converted into products, symbol: chi), **temperature**, and **pressure**. The other important thing to note, is that we initially didn't know if an isothermal (constant temp) or isobaric (constant pressure) model was going to work. So we had to try out both, you will see this in the code.
+Whats important to know is **the end goal is to produce a set of graphs**. These graphs are going be be **functions of the residence time** (the mean time a chemical species spends in the reactor, which is proportional to the reactor volume, symbol: tau), **conversion** (how much of the limiting species gets converted into products, $\chi$), **temperature**, and **pressure**. The other important thing to note, is that we initially didn't know if an isothermal (constant temp) or isobaric (constant pressure) model was going to work. So we had to try out both, you will see this in the code.
 
 # So, How do you simulate a chemical reactor?
 
